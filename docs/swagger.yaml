@@ -1,0 +1,164 @@
+swagger: "2.0"
+info:
+  title: Skin Care Sale System API
+  description: API for Skin Care Sale System
+  version: 1.0.0
+host: localhost:8080
+basePath: /api
+schemes:
+  - http
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /auth/register:
+    post:
+      summary: Register a new user
+      description: Register a new user
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: user
+          description: User object
+          schema:
+            type: object
+            properties:
+              email:
+                type: string
+                format: email
+              password:
+                type: string
+                format: password
+              confirmPassword:
+                type: string
+                format: password
+      responses:
+        201:
+          description: User created
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              data:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                  email:
+                    type: string
+                  password:
+                    type: string
+                  __v:
+                    type: integer
+        400:
+          description: Bad request
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    param:
+                      type: string
+                    msg:
+                      type: string
+  /auth/login:
+    post:
+      summary: Login to the system
+      description: Login to the system
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: user
+          description: User object
+          schema:
+            type: object
+            properties:
+              email:
+                type: string
+                format: email
+              password:
+                type: string
+                format: password
+      responses:
+        200:
+          description: Login successful
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              data:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                  email:
+                    type: string
+                  accessToken:
+                    type: string
+                  refreshToken:
+                    type: string
+        400:
+          description: Bad request
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    param:
+                      type: string
+                    msg:
+                      type: string
+  /auth/verify-email:
+    get:
+      summary: Verify email
+      description: Verify email
+      parameters:
+        - in: query
+          name: token
+          description: Verification token
+          required: true
+          type: string
+        - in: query
+          name: userId
+          description: User ID
+          required: true
+          type: string
+      responses:
+        200:
+          description: Email verified
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+        400:
+          description: Bad request
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    param:
+                      type: string
+                    msg:
+                      type: string

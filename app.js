@@ -7,11 +7,16 @@ const dotenv = require("dotenv");
 const routes = require("./src/routes");
 const passport = require("passport");
 const session = require("express-session");
+const swaggerUi = require("swagger-ui-express");
+const swaggerJsdoc = require("swagger-jsdoc");
+const fs = require("fs");
+const yaml = require("js-yaml");
+
 dotenv.config();
 require("./src/utils/passport");
 
 const app = express();
-const port = process.env.PORT;
+const port = process.env.PORT || 8080;
 
 mongoose
   .connect(process.env.MONGO_URI)
@@ -43,8 +48,16 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
+// Load Swagger document
+const swaggerDocument = yaml.load(
+  fs.readFileSync("./docs/swagger.yaml", "utf8")
+);
+
+// Swagger setup
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
 app.use("/api", routes);
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+app.listen(port, async () => {
+  console.log(`Server is running on port ${port}`);
 });
