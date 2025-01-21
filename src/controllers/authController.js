@@ -15,8 +15,11 @@ class AuthController {
   };
   login = async (req, res) => {
     try {
-      const respone = await authService.login(req.body);
-      return res.status(200).json(respone);
+      const response = await authService.login(req.body);
+      res.cookie("refreshToken", response.data.refreshToken, {
+        httpOnly: true,
+      });
+      return res.status(200).json(response);
     } catch (error) {
       return res.status(400).json({ message: error.message });
     }
@@ -30,28 +33,6 @@ class AuthController {
     });
   };
 
-  sendOtp = async (req, res) => {
-    try {
-      const response = await authService.sendOtp(req.body.email);
-      return res.json(response);
-    } catch (error) {
-      return res.status(400).json({ message: error.message });
-    }
-  };
-
-  verifyOtp = async (req, res) => {
-    try {
-      const { email, otp } = req.body;
-      const response = await authService.verifyOtp({ email, otp });
-      res.cookie("refreshToken", response.data.refreshToken, {
-        httpOnly: true,
-      });
-      return res.json(response);
-    } catch (error) {
-      return res.status(400).json({ message: error.message });
-    }
-  };
-
   sendEmailVerify = async (req, res) => {
     try {
       const response = await authService.sendEmailVerify(req.body);
@@ -63,7 +44,7 @@ class AuthController {
 
   verifyEmail = async (req, res) => {
     try {
-      const { id, tokenVerify } = req.params;
+      const { tokenVerify, id } = req.params;
       const response = await authService.verifyEmail({ id, tokenVerify });
       return res.json(response);
     } catch (error) {
@@ -83,7 +64,7 @@ class AuthController {
   verifyEmailResetPassword = async (req, res) => {
     try {
       const { userId, token } = req.params;
-      const { newPassword, confirmNewPassword } = req.body.data;
+      const { newPassword, confirmNewPassword } = req.body;
       const response = await authService.verifyEmailResetPassword({
         userId,
         token,
@@ -116,6 +97,16 @@ class AuthController {
       });
 
       res.redirect(`${process.env.CLIENT_URL}?access_token=${accessToken}`);
+    } catch (error) {
+      return res.status(400).json({ message: error.message });
+    }
+  };
+
+  getUserDetail = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const response = await authService.getUserDetail(id);
+      return res.json(response);
     } catch (error) {
       return res.status(400).json({ message: error.message });
     }

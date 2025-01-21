@@ -73,79 +73,6 @@ const authService = {
         return { message: "Incorrect password", status: 400 };
       }
 
-      const otpResponse = await authService.sendOtp(email);
-
-      if (otpResponse.status !== 200) {
-        return otpResponse;
-      }
-
-      return {
-        message: "OTP sent to email",
-        status: 200,
-        data: otpResponse.otp,
-      };
-    } catch (error) {
-      return { message: error.message, status: 400 };
-    }
-  },
-
-  logout: async (res) => {
-    try {
-      res.clearCookie("refreshToken");
-      return { message: "Logged out successfully", status: 200 };
-    } catch (error) {
-      return { message: error.message, status: 400 };
-    }
-  },
-
-  sendOtp: async (email) => {
-    const { error } = sendOtpSchema.validate({ email });
-    if (error) return { message: error.details[0].message, status: 400 };
-
-    const generateOtp = () => {
-      return randomstring.generate({
-        length: 6,
-        charset: "numeric",
-      });
-    };
-
-    try {
-      const newOtp = generateOtp();
-      const expOtp = new Date(Date.now() + 5 * 60 * 1000);
-      await User.updateOne({ email }, { $set: { otp: newOtp, expOtp } });
-      await sendEmail({
-        to: email,
-        subject: "OTP Verification",
-        message: `<p>Your OTP is: <strong>${newOtp}</strong></p>`,
-      });
-
-      return { message: "OTP sent successfully", status: 200, otp: newOtp };
-    } catch (error) {
-      return { message: error.message, status: 400 };
-    }
-  },
-
-  verifyOtp: async ({ email, otp }) => {
-    const { error } = verifyOtpSchema.validate({ email, otp });
-    if (error) return { message: error.details[0].message, status: 400 };
-
-    try {
-      const user = await User.findOne({ email });
-
-      if (!user) {
-        return { message: "Invalid email", status: 400 };
-      }
-
-      const isOtpValid = user.otp === otp;
-      const isOtpExpired = user.expOtp < new Date();
-
-      if (!isOtpValid || isOtpExpired) {
-        return {
-          message: isOtpValid ? "OTP expired" : "Invalid OTP",
-          status: 400,
-        };
-      }
-
       const accessToken = jwtService.generateAccessToken({
         _id: user._id,
         email: user.email,
@@ -158,13 +85,8 @@ const authService = {
         role: user.role,
       });
 
-      await User.findByIdAndUpdate(user._id, {
-        otp: "",
-        expOtp: "",
-      });
-
       return {
-        message: "OTP verified successfully",
+        message: "Login successfully",
         status: 200,
         data: {
           user,
@@ -172,6 +94,15 @@ const authService = {
           refreshToken,
         },
       };
+    } catch (error) {
+      return { message: error.message, status: 400 };
+    }
+  },
+
+  logout: async (res) => {
+    try {
+      res.clearCookie("refreshToken");
+      return { message: "Logged out successfully", status: 200 };
     } catch (error) {
       return { message: error.message, status: 400 };
     }
@@ -191,7 +122,7 @@ const authService = {
         { _id: userId },
         { $set: { tokenVerify: newToken } }
       );
-      const verificationLink = `${process.env.CLIENT_URL}/verify-email?token=${newToken}&userId=${userId}`;
+      const verificationLink = `${process.env.BASE_URL}/auth/verify-email/${newToken}/${userId}`;
       await sendEmail({
         to: email,
         subject: "Email Verification",
@@ -254,7 +185,7 @@ const authService = {
         { $set: { tokenResetPassword: token } }
       );
 
-      const resetLink = `${process.env.CLIENT_URL}/verify-reset-password?token=${token}&userId=${user._id}`;
+      const resetLink = `${process.env.BASE_URL}/auth/verify-reset-password/${token}/${user._id}`;
       await sendEmail({
         to: email,
         subject: "Reset Password",
@@ -303,6 +234,19 @@ const authService = {
         message: "Password updated successfully",
         status: 200,
       };
+    } catch (error) {
+      return { message: error.message, status: 400 };
+    }
+  },
+  getUserDetail: async (userId) => {
+    try {
+      const user = await User.findOne({ _id: userId });
+
+      if (!user) {
+        return { message: "User not found", status: 400 };
+      }
+
+      return { message: "User found", status: 200, data: user };
     } catch (error) {
       return { message: error.message, status: 400 };
     }
