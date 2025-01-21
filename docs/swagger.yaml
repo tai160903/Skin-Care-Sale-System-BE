@@ -162,3 +162,130 @@ paths:
                       type: string
                     msg:
                       type: string
+
+  /products:
+    get:
+      summary: Get all products
+      description: Retrieve a list of all products
+      responses:
+        200:
+          description: Successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Product'
+        500:
+          description: Internal server error
+
+    post:
+      summary: Create a new product
+      description: Add a new product to the database
+      parameters:
+        - in: body
+          name: product
+          description: Product object to be created
+          required: true
+          schema:
+            $ref: '#/definitions/Product'
+      responses:
+        201:
+          description: Product created successfully
+        400:
+          description: Invalid input
+        500:
+          description: Internal server error
+
+  /products/{id}:
+    get:
+      summary: Get product by ID
+      description: Retrieve a product by its ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: string
+          description: Product ID
+      responses:
+        200:
+          description: Successful operation
+          schema:
+            $ref: '#/definitions/Product'
+        404:
+          description: Product not found
+        500:
+          description: Internal server error
+
+    put:
+      summary: Update product by ID
+      description: Update the details of an existing product
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: string
+          description: Product ID
+        - in: body
+          name: product
+          description: Updated product object
+          required: true
+          schema:
+            $ref: '#/definitions/Product'
+      responses:
+        200:
+          description: Product updated successfully
+        400:
+          description: Invalid input
+        404:
+          description: Product not found
+        500:
+          description: Internal server error
+
+    delete:
+      summary: Delete product by ID
+      description: Remove a product from the database
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: string
+          description: Product ID
+      responses:
+        200:
+          description: Product deleted successfully
+        404:
+          description: Product not found
+        500:
+          description: Internal server error
+
+definitions:
+  Product:
+    type: object
+    properties:
+      name:
+        type: string
+        example: "Facial Cleanser"
+      ingredient:
+        type: string
+        example: "Aloe Vera, Vitamin E"
+      category:
+        type: string
+        example: "Skincare"
+      stock:
+        type: integer
+        example: 100
+      image:
+        type: string
+        example: "https://example.com/product.jpg"
+      rating:
+        type: number
+        format: float
+        example: 4.5
+      purchaseCount:
+        type: integer
+        example: 50
+      description:
+        type: string
+        example: "A gentle cleanser for all skin types."
+      isDisabled:
+        type: boolean
+        example: false

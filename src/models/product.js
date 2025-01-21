@@ -1,37 +1,52 @@
 const mongoose = require("mongoose");
 
+// Định nghĩa schema cho Product
 const productSchema = new mongoose.Schema(
   {
     name: {
       type: String,
       required: true,
     },
-    description: {
+    ingredient: {
+      type: String, 
+      required: false, 
+    },
+    category: {
       type: String,
-      required: true,
+      required: false,
     },
-    price: {
+    stock: {
       type: Number,
       required: true,
-    },
-    quantity: {
-      type: Number,
-      default: 0,
+      default: 0,  
     },
     image: {
       type: String,
-      required: true,
+      required: true,  
     },
-
+    rating: {
+      type: mongoose.Schema.Types.Decimal128, 
+      required: false,
+    },
+    purchaseCount: {
+      type: Number,
+      default: 0, 
+    },
+    description: {
+      type: String,
+      required: false,  
+    },
     isDisabled: {
       type: Boolean,
-      default: false,
+      default: false,  
     },
   },
   {
-    timestamps: true,
+    timestamps: true, 
+    collection: "products"
   }
 );
+
 const Product = mongoose.model("Product", productSchema);
 
 module.exports = Product;
