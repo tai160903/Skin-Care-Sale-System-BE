@@ -12,6 +12,7 @@ class ProductRepository {
     async createProduct(productData){
         try {
             const newProduct = new Product(productData)
+            return await newProduct.save();
         } catch(error){
             throw new Error('Error create product: ' + error.message);
         }
