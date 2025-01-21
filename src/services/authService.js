@@ -1,5 +1,5 @@
 const bcrypt = require("bcrypt");
-const User = require("../models/userModel");
+const User = require("../models/user");
 const randomstring = require("randomstring");
 const sendEmail = require("../utils/sendEmail");
 const jwtService = require("../services/jwtService");

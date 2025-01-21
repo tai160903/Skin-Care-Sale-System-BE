@@ -54,7 +54,7 @@ const swaggerDocument = yaml.load(
 );
 
 // Swagger setup
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use("/api", routes);
 
