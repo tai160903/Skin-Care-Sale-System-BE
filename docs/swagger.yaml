@@ -123,24 +123,117 @@ paths:
                       type: string
                     msg:
                       type: string
-  /auth/verify-email:
+  /auth/verify-email/{tokenVerify}/{id}:
     get:
       summary: Verify email
       description: Verify email
       parameters:
-        - in: query
-          name: token
+        - in: path
+          name: tokenVerify
           description: Verification token
           required: true
           type: string
-        - in: query
-          name: userId
+        - in: path
+          name: id
           description: User ID
           required: true
           type: string
       responses:
         200:
           description: Email verified
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+        400:
+          description: Bad request
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    param:
+                      type: string
+                    msg:
+                      type: string
+  /auth/reset-password:
+    post:
+      summary: Send reset password email
+      description: Send reset password email
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: email
+          description: User email
+          schema:
+            type: object
+            properties:
+              email:
+                type: string
+                format: email
+      responses:
+        200:
+          description: Reset password email sent
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+        400:
+          description: Bad request
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    param:
+                      type: string
+                    msg:
+                      type: string
+  /auth/verify-reset-password/{token}/{userId}:
+    post:
+      summary: Verify reset password
+      description: Verify reset password
+      consumes:
+        - application/json
+      parameters:
+        - in: path
+          name: token
+          description: Reset token
+          required: true
+          type: string
+        - in: path
+          name: userId
+          description: User ID
+          required: true
+          type: string
+        - in: body
+          name: passwords
+          description: New passwords
+          schema:
+            type: object
+            properties:
+              newPassword:
+                type: string
+                format: password
+              confirmNewPassword:
+                type: string
+                format: password
+      responses:
+        200:
+          description: Password updated successfully
           schema:
             type: object
             properties:
