@@ -26,16 +26,6 @@ const userSchema = new mongoose.Schema(
       enum: ["user", "admin"],
       default: "user",
     },
-    phone: {
-      type: String,
-    },
-    otp: {
-      type: String,
-    },
-    expOtp: {
-      type: Date,
-      index: { expires: "5m" },
-    },
     tokenVerify: {
       type: String,
     },

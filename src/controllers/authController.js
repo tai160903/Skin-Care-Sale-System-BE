@@ -16,7 +16,7 @@ class AuthController {
   login = async (req, res) => {
     try {
       const response = await authService.login(req.body);
-      res.cookie("refreshToken", response.data.refreshToken, {
+      res.cookie("refreshToken", response?.data?.refreshToken, {
         httpOnly: true,
       });
       return res.status(200).json(response);
@@ -102,10 +102,12 @@ class AuthController {
     }
   };
 
-  getUserDetail = async (req, res) => {
+  changePassword = async (req, res) => {
     try {
-      const { id } = req.params;
-      const response = await authService.getUserDetail(id);
+      const response = await authService.changePassword(
+        req.params.id,
+        req.body
+      );
       return res.json(response);
     } catch (error) {
       return res.status(400).json({ message: error.message });

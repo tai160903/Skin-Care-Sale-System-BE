@@ -34,6 +34,13 @@ const resetPasswordSchema = Joi.object({
   email: Joi.string().email().required(),
 });
 
+const changePasswordSchema = Joi.object({
+  id: Joi.string().required(),
+  password: Joi.string().min(6).max(20).required(),
+  newPassword: Joi.string().min(6).max(20).required(),
+  confirmNewPassword: Joi.string().valid(Joi.ref("newPassword")).required(),
+});
+
 const verifyResetPasswordSchema = Joi.object({
   token: Joi.string().required(),
   userId: Joi.string().required(),
@@ -65,4 +72,5 @@ module.exports = {
   verifyEmailSchema,
   resetPasswordSchema,
   verifyResetPasswordSchema,
+  changePasswordSchema,
 };

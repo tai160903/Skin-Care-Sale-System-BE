@@ -9,7 +9,8 @@ router.post("/logout", AuthController.logout);
 router.post("/send-verify-email", AuthController.sendEmailVerify);
 router.get("/verify-email/:tokenVerify/:id", AuthController.verifyEmail);
 router.post("/reset-password", AuthController.sendEmailResetPassword);
-router.get("/user/:id", AuthController.getUserDetail);
+router.post("/change-password/:id", AuthController.changePassword);
+
 router.post(
   "/verify-reset-password/:token/:userId",
   AuthController.verifyEmailResetPassword
