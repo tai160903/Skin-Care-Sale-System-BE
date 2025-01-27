@@ -1,18 +1,18 @@
 const bcrypt = require("bcrypt");
-const User = require("../models/user");
 const randomstring = require("randomstring");
 const sendEmail = require("../utils/sendEmail");
 const jwtService = require("../services/jwtService");
+const userRepository = require("../repositories/userRepository");
 const {
   registerSchema,
   loginSchema,
-  sendOtpSchema,
-  verifyOtpSchema,
   sendEmailVerifySchema,
   verifyEmailSchema,
   resetPasswordSchema,
   verifyResetPasswordSchema,
+  changePasswordSchema,
 } = require("../validates/authValidate");
+const customerRepository = require("../repositories/customerRepository");
 
 const authService = {
   register: async ({ email, password, confirmPassword }) => {
@@ -25,7 +25,7 @@ const authService = {
     if (error) return { message: error.details[0].message, status: 400 };
 
     try {
-      const existingUser = await User.findOne({ email });
+      const existingUser = await userRepository.findByEmail(email);
 
       if (existingUser) {
         return { message: "Email already exists", status: 400 };
@@ -33,7 +33,12 @@ const authService = {
 
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(password, salt);
-      const newUser = await User.create({ email, password: hashedPassword });
+      const newUser = await userRepository.create({
+        email,
+        password: hashedPassword,
+      });
+      await customerRepository.create({ user: newUser._id });
+
       const verifyEmail = await authService.sendEmailVerify({
         email,
         userId: newUser._id.toString(),
@@ -46,6 +51,7 @@ const authService = {
         message: "An Email sent to your account please verify",
         status: 201,
         data: newUser,
+        tokenVerify: newUser.tokenVerify,
       };
     } catch (error) {
       return { message: error.message, status: 400 };
@@ -55,9 +61,8 @@ const authService = {
   login: async ({ email, password }) => {
     const { error } = loginSchema.validate({ email, password });
     if (error) return { message: error.details[0].message, status: 400 };
-
     try {
-      const user = await User.findOne({ email });
+      const user = await userRepository.findByEmail(email);
 
       if (!user) {
         return { message: "User not found", status: 400 };
@@ -108,6 +113,31 @@ const authService = {
     }
   },
 
+  changePassword: async (id, req) => {
+    const { error } = changePasswordSchema.validate(req);
+    if (error) return { message: error.details[0].message, status: 400 };
+    try {
+      const user = await userRepository.findById(id);
+      if (!user) {
+        return { message: "User not found", status: 404 };
+      }
+      const { password, newPassword, confirmNewPassword } = req;
+      const isPasswordMatch = await bcrypt.compare(password, user.password);
+      if (!isPasswordMatch) {
+        return { message: "Incorrect password", status: 400 };
+      }
+      if (newPassword !== confirmNewPassword) {
+        return { message: "Passwords do not match", status: 400 };
+      }
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(newPassword, salt);
+      await userRepository.updateById(req.userId, { password: hashedPassword });
+      return { message: "Password changed successfully", status: 200 };
+    } catch (error) {
+      return { message: error.message, status: 400 };
+    }
+  },
+
   sendEmailVerify: async (req) => {
     const { error } = sendEmailVerifySchema.validate(req);
     if (error) return { message: error.details[0].message, status: 400 };
@@ -118,10 +148,7 @@ const authService = {
         length: 32,
         charset: "hex",
       });
-      await User.updateOne(
-        { _id: userId },
-        { $set: { tokenVerify: newToken } }
-      );
+      await userRepository.updateById(userId, { tokenVerify: newToken });
       const verificationLink = `${process.env.BASE_URL}/auth/verify-email/${newToken}/${userId}`;
       await sendEmail({
         to: email,
@@ -140,9 +167,9 @@ const authService = {
     if (error) return { message: error.details[0].message, status: 400 };
 
     try {
-      const user = await User.findOne({ _id: id, tokenVerify: tokenVerify });
+      const user = await userRepository.findById(id);
 
-      if (!user) {
+      if (!user || user.tokenVerify !== tokenVerify) {
         return { message: "Invalid link", status: 400 };
       }
 
@@ -150,10 +177,10 @@ const authService = {
         return { message: "Email already verified", status: 400 };
       }
 
-      await User.updateOne(
-        { _id: id },
-        { $set: { tokenVerify: null, isVerify: true } }
-      );
+      await userRepository.updateById(id, {
+        tokenVerify: null,
+        isVerify: true,
+      });
 
       return {
         message: "Email verified successfully",
@@ -169,7 +196,7 @@ const authService = {
     if (error) return { message: error.details[0].message, status: 400 };
 
     try {
-      const user = await User.findOne({ email });
+      const user = await userRepository.findByEmail(email);
 
       if (!user) {
         return { message: "User not found", status: 400 };
@@ -180,10 +207,7 @@ const authService = {
         charset: "hex",
       });
 
-      await User.updateOne(
-        { _id: user._id },
-        { $set: { tokenResetPassword: token } }
-      );
+      await userRepository.updateById(user._id, { tokenResetPassword: token });
 
       const resetLink = `${process.env.BASE_URL}/auth/verify-reset-password/${token}/${user._id}`;
       await sendEmail({
@@ -213,40 +237,24 @@ const authService = {
     if (error) return { message: error.message, status: 400 };
 
     try {
-      const user = await User.findOne({
-        _id: userId,
-        tokenResetPassword: token,
-      });
+      const user = await userRepository.findById(userId);
 
-      if (!user) {
+      if (!user || user.tokenResetPassword !== token) {
         return { message: "Invalid link", status: 400 };
       }
 
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(newPassword, salt);
 
-      await User.updateOne(
-        { _id: userId },
-        { $set: { tokenResetPassword: null, password: hashedPassword } }
-      );
+      await userRepository.updateById(userId, {
+        tokenResetPassword: null,
+        password: hashedPassword,
+      });
 
       return {
         message: "Password updated successfully",
         status: 200,
       };
-    } catch (error) {
-      return { message: error.message, status: 400 };
-    }
-  },
-  getUserDetail: async (userId) => {
-    try {
-      const user = await User.findOne({ _id: userId });
-
-      if (!user) {
-        return { message: "User not found", status: 400 };
-      }
-
-      return { message: "User found", status: 200, data: user };
     } catch (error) {
       return { message: error.message, status: 400 };
     }
