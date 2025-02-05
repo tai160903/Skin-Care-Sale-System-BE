@@ -25,7 +25,7 @@ router.get(
 router.get(
   "/google/callback",
   passport.authenticate("google", {
-    failureRedirect: "/signin", // Redirect to login page if authentication fails
+    failureRedirect: "http://localhost:5173/signin", // Redirect to login page if authentication fails
     scope: ["email", "profile"], // Define the requested scopes
   }),
   AuthController.loginGoogleCallback // Once authenticated, handle the callback
