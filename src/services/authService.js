@@ -94,7 +94,6 @@ const authService = {
         message: "Login successfully",
         status: 200,
         data: {
-          user,
           accessToken,
           refreshToken,
         },

@@ -40,6 +40,20 @@ const userService = {
       status: 200,
     };
   },
-};
 
+  deleteUserById: async (id) => {
+    const user = await customerRepository.findByUserId(id);
+    if (!user) {
+      return {
+        message: "User not found",
+        status: 404,
+      };
+    }
+    await customerRepository.updateById(user._id, { isDeleted: true });
+    return {
+      message: "Delete user by id successfully",
+      status: 200,
+    };
+  },
+};
 module.exports = userService;
