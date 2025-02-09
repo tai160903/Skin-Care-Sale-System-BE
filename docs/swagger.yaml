@@ -21,11 +21,10 @@ securityDefinitions:
 
 tags:
   - name: Authentication
-    description: Operations related to user authentication
   - name: Products
-    description: Operations related to products
   - name: Users
-    description: Operations related to users
+  - name: Promotions
+  - name: Cart
 
 paths:
   /auth/register:
@@ -285,6 +284,193 @@ paths:
                       type: string
                     msg:
                       type: string
+  /promotions:
+    get:
+      tags:
+        - Promotions
+      summary: Get all promotions
+      description: Retrieve a list of all promotions
+      responses:
+        200:
+          description: Successful operation
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Promotion"
+    post:
+      tags:
+        - Promotions
+      summary: Create a new promotion
+      description: Add a new promotion to the system
+      parameters:
+        - in: body
+          name: promotion
+          description: Promotion object to be created
+          required: true
+          schema:
+            $ref: "#/definitions/Promotion"
+      responses:
+        201:
+          description: Promotion created successfully
+        400:
+          description: Invalid input
+
+  /promotions/{id}:
+    get:
+      tags:
+        - Promotions
+      summary: Get promotion by ID
+      description: Retrieve a promotion by its ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: string
+          description: Promotion ID
+      responses:
+        200:
+          description: Successful operation
+          schema:
+            $ref: "#/definitions/Promotion"
+        404:
+          description: Promotion not found
+
+    put:
+      tags:
+        - Promotions
+      summary: Update promotion by ID
+      description: Update the details of an existing promotion
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: string
+          description: Promotion ID
+        - in: body
+          name: promotion
+          description: Updated promotion object
+          required: true
+          schema:
+            $ref: "#/definitions/Promotion"
+      responses:
+        200:
+          description: Promotion updated successfully
+        400:
+          description: Invalid input
+        404:
+          description: Promotion not found
+
+    delete:
+      tags:
+        - Promotions
+      summary: Delete promotion by ID
+      description: Remove a promotion from the system
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: string
+          description: Promotion ID
+      responses:
+        200:
+          description: Promotion deleted successfully
+        404:
+          description: Promotion not found
+
+  /cart/{customerId}:
+    get:
+      tags:
+        - Cart
+      summary: Get customer's cart
+      description: Retrieve the current cart of a customer
+      parameters:
+        - in: query
+          name: customerId
+          required: true
+          type: string
+          description: Customer ID
+      responses:
+        200:
+          description: Cart retrieved successfully
+          schema:
+            $ref: "#/definitions/Cart"
+        404:
+          description: Cart not found
+
+  /cart/add:
+    post:
+      tags:
+        - Cart
+      summary: Add a product to the cart
+      description: Add a specified quantity of a product to the customer's cart
+      parameters:
+        - in: body
+          name: cartItem
+          required: true
+          schema:
+            $ref: "#/definitions/AddToCartRequest"
+      responses:
+        200:
+          description: Product added to cart successfully
+        400:
+          description: Invalid input
+
+  /cart/apply-promotion:
+    post:
+      tags:
+        - Cart
+      summary: Apply a promotion code
+      description: Apply a discount code to the customer's cart
+      parameters:
+        - in: body
+          name: promotion
+          required: true
+          schema:
+            $ref: "#/definitions/ApplyPromotionRequest"
+      responses:
+        200:
+          description: Promotion applied successfully
+        400:
+          description: Invalid promotion code or expired
+  /cart/remove-item:
+    put:
+      tags:
+        - Cart
+      summary: Remove a product from the cart
+      description: Remove a product from the customer's cart
+      parameters:
+        - in: query
+          name: customerId
+          required: true
+          type: string
+          description: Customer ID
+        - in: query
+          name: productId
+          required: true
+          type: string
+          description: Product ID
+      responses:
+        200:
+          description: Product removed from cart successfully
+        404:
+          description: Product not found
+  /cart/clear:
+    post:
+      tags:
+        - Cart
+      summary: Clear the cart
+      description: Remove all items from the customer's cart
+      parameters:
+        - in: query
+          name: customerId
+          required: true
+          type: string
+          description: Customer ID
+      responses:
+        200:
+          description: Cart cleared successfully
+        404:
+          description: Cart not found
 
   /products:
     get:
@@ -554,3 +740,82 @@ definitions:
         type: string
       __v:
         type: integer
+  Promotion:
+    type: object
+    properties:
+      name:
+        type: string
+        example: "Holiday Sale"
+      code:
+        type: string
+        example: "HOLIDAY20"
+      description:
+        type: string
+        example: "20% off for the holiday season"
+      discount_percentage:
+        type: number
+        format: float
+        example: 20.0
+      start_date:
+        type: string
+        format: date-time
+        example: "2025-02-01T00:00:00Z"
+      end_date:
+        type: string
+        format: date-time
+        example: "2025-02-28T23:59:59Z"
+  CartItem:
+    type: object
+    properties:
+      productId:
+        type: string
+        example: "60d5f9b5fc13ae21b8000000"
+      quantity:
+        type: integer
+        example: 2
+      priceAtTime:
+        type: number
+        example: 19.99
+
+  Cart:
+    type: object
+    properties:
+      customerId:
+        type: string
+        example: "60d5f9b5fc13ae21b8000001"
+      items:
+        type: array
+        items:
+          $ref: "#/definitions/CartItem"
+      totalPrice:
+        type: number
+        example: 39.98
+      discount:
+        type: number
+        example: 5.00
+      finalPrice:
+        type: number
+        example: 34.98
+
+  AddToCartRequest:
+    type: object
+    properties:
+      customerId:
+        type: string
+        example: "60d5f9b5fc13ae21b8000001"
+      productId:
+        type: string
+        example: "60d5f9b5fc13ae21b8000000"
+      quantity:
+        type: integer
+        example: 1
+  ApplyPromotionRequest:
+    type: object
+    properties:
+      customerId:
+        type: string
+        example: "60d5f9b5fc13ae21b8000001"
+      promoCode:
+        type: string
+        example: "DISCOUNT10"
+        

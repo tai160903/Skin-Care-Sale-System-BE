@@ -7,6 +7,10 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    price: {
+      type: mongoose.Schema.Types.Decimal128,
+      required: true,
+    },
     ingredient: {
       type: String, 
       required: false, 

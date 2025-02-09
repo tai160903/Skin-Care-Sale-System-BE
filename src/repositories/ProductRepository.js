@@ -20,6 +20,7 @@ class ProductRepository {
 
       async getProductById(productId){
         try {
+            console.log("productId",productId)
             return await Product.findById(productId);
 
         } catch(error){
