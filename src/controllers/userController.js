@@ -3,10 +3,15 @@ const userService = require("../services/userService");
 const userController = {
   getAllUsers: async (req, res) => {
     try {
-      const users = await userService.getAllUsers();
-      return res.json(users);
+      const response = await userService.getAllUsers();
+
+      return res.status(response?.status || 200).json({
+        message: response?.message || "Users retrieved successfully",
+        data: response?.data || [],
+      });
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+      console.error("Error fetching users:", error.message);
+      return res.status(500).json({ message: "Internal server error" });
     }
   },
 
@@ -22,6 +27,15 @@ const userController = {
   updateUserById: async (req, res) => {
     try {
       const user = await userService.updateUserById(req.params.id, req.body);
+      return res.json(user);
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
+    }
+  },
+
+  deleteUserById: async (req, res) => {
+    try {
+      const user = await userService.deleteUserById(req.params.id);
       return res.json(user);
     } catch (error) {
       return res.status(500).json({ message: error.message });
