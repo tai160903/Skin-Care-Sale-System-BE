@@ -25,6 +25,8 @@ tags:
   - name: Users
   - name: Promotions
   - name: Cart
+  - name: Quiz
+    description: Operations related to quizzes
 
 paths:
   /auth/register:
@@ -696,6 +698,109 @@ paths:
               message:
                 type: string
 
+  /quiz/questions:
+    get:
+      tags:
+        - Quiz
+      summary: Get all questions
+      description: Retrieve a list of all quiz questions
+      responses:
+        200:
+          description: Questions retrieved successfully
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Question"
+        500:
+          description: Internal server error
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Internal server error"
+
+  /quiz/answers/{questionId}:
+    get:
+      tags:
+        - Quiz
+      summary: Get answers for a specific question
+      description: Retrieve a list of answers for a specific question
+      parameters:
+        - name: questionId
+          in: path
+          required: true
+          type: string
+          description: ID of the question
+      responses:
+        200:
+          description: Answers retrieved successfully
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Answer"
+        500:
+          description: Internal server error
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Internal server error"
+
+  /quiz/submit:
+    post:
+      tags:
+        - Quiz
+      summary: Submit quiz answers
+      description: Submit answers for a quiz
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: quizSubmission
+          description: Quiz submission object
+          schema:
+            type: object
+            properties:
+              userId:
+                type: string
+                description: ID of the user
+              answers:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    questionId:
+                      type: string
+                      description: ID of the question
+                    answer:
+                      type: string
+                      description: User's answer
+      responses:
+        200:
+          description: Quiz submitted successfully
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Quiz submitted successfully"
+              data:
+                type: object
+                properties:
+                  score:
+                    type: integer
+                    description: User's score
+        500:
+          description: Internal server error
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Internal server error"
+
 definitions:
   Product:
     type: object
@@ -818,4 +923,26 @@ definitions:
       promoCode:
         type: string
         example: "DISCOUNT10"
-        
+  Question:
+    type: object
+    properties:
+      _id:
+        type: string
+      text:
+        type: string
+      options:
+        type: array
+        items:
+          type: string
+
+  Answer:
+    type: object
+    properties:
+      _id:
+        type: string
+      questionId:
+        type: string
+      text:
+        type: string
+      isCorrect:
+        type: boolean

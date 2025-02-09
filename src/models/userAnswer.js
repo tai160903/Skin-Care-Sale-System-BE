@@ -4,11 +4,11 @@ const userAnswerSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   answers: [
     {
-      questionId: mongoose.Schema.Types.ObjectId,
-      answerId: mongoose.Schema.Types.ObjectId,
+      questionId: { type: mongoose.Schema.Types.ObjectId, ref: "Question" },
+      answerId: { type: mongoose.Schema.Types.ObjectId, ref: "Answer" },
     },
   ],
-  resultSkinType: String, // Final skin type after processing
+  resultSkinType: { type: mongoose.Schema.Types.ObjectId, ref: "SkinType" }, // Reference to SkinType collection
   date: { type: Date, default: Date.now },
 });
 
