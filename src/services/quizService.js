@@ -1,4 +1,5 @@
 const quizRepository = require("../repositories/quizRepository");
+const SkinType = require("../models/SkinType");
 
 class QuizService {
   async getQuestions() {
@@ -6,10 +7,7 @@ class QuizService {
   }
 
   async getAnswers(questionId) {
-    console.log("Fetching answers for question id:", questionId);
-    const answers = await quizRepository.getAnswersByQuestionId(questionId);
-    console.log("Fetched answers:", answers);
-    return answers;
+    return await quizRepository.getAnswersByQuestionId(questionId);
   }
 
   async submitQuiz(userId, answers) {
@@ -20,12 +18,15 @@ class QuizService {
       Normal: 0,
     };
 
-    // Fetch answer details to count skin types
+    // Fetch all answers at once (Optimize DB calls)
+    const questionIds = answers.map((answer) => answer.questionId);
+    const allAnswers = await quizRepository.getAnswersByQuestionIds(
+      questionIds
+    );
+
+    // Count skin types
     for (let answer of answers) {
-      const answerData = await quizRepository.getAnswersByQuestionId(
-        answer.questionId
-      );
-      const selectedAnswer = answerData.find(
+      const selectedAnswer = allAnswers.find(
         (a) => a._id.toString() === answer.answerId
       );
       if (selectedAnswer) {
@@ -34,15 +35,21 @@ class QuizService {
     }
 
     // Determine the most frequent skin type
-    const resultSkinType = Object.keys(skinTypeCount).reduce((a, b) =>
+    const resultSkinTypeName = Object.keys(skinTypeCount).reduce((a, b) =>
       skinTypeCount[a] > skinTypeCount[b] ? a : b
     );
+
+    // Fetch SkinType _id from the database
+    const skinTypeDoc = await SkinType.findOne({ name: resultSkinTypeName });
+    if (!skinTypeDoc) {
+      throw new Error("SkinType not found");
+    }
 
     // Save result
     const userQuizResult = {
       userId,
       answers,
-      resultSkinType,
+      resultSkinType: skinTypeDoc._id, // Store ObjectId, not string
     };
 
     return await quizRepository.saveUserAnswers(userQuizResult);
