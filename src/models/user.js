@@ -17,7 +17,7 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    isDelete: {
+    isBanned: {
       type: Boolean,
       default: false,
     },
