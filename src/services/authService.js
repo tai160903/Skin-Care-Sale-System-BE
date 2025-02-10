@@ -93,9 +93,12 @@ const authService = {
       return {
         message: "Login successfully",
         status: 200,
-        data: {
-          accessToken,
-          refreshToken,
+        accessToken,
+        refreshToken,
+        user: {
+          _id: user._id,
+          email: user.email,
+          role: user.role,
         },
       };
     } catch (error) {
