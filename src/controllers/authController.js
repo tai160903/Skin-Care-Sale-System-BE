@@ -96,7 +96,11 @@ class AuthController {
         httpOnly: true,
       });
 
-      res.redirect(`${process.env.CLIENT_URL}?access_token=${accessToken}`);
+      res.redirect(
+        `${
+          process.env.CLIENT_URL
+        }?access_token=${accessToken}&user=${JSON.stringify(req.user)}`
+      );
     } catch (error) {
       return res.status(400).json({ message: error.message });
     }
