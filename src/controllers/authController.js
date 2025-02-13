@@ -1,3 +1,4 @@
+const customerRepository = require("../repositories/customerRepository");
 const authService = require("../services/authService");
 const {
   generateAccessToken,
@@ -91,6 +92,7 @@ class AuthController {
         _id: req.user.id,
         role: req.user.role,
       });
+      await customerRepository.create({ user: req.user._id });
 
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
