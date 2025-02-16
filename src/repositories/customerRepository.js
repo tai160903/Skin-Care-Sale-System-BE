@@ -9,6 +9,14 @@ const customerRepository = {
       throw new Error("Failed to create customer.");
     }
   },
+  findById: async (id) => {
+    try{
+      return await Customer.findById(id);
+    } catch (error) {
+      console.error("Error fetching customer by ID:", error.message);
+      throw new Error("Failed to fetch customer.");
+  }
+  },
 
   findAll: async () => {
     try {
@@ -24,15 +32,6 @@ const customerRepository = {
       return await Customer.findOne({ user: userId }).populate("user", "email");
     } catch (error) {
       console.error("Error fetching customer by user ID:", error.message);
-      throw new Error("Failed to fetch customer.");
-    }
-  },
-
-  findById: async (id) => {
-    try {
-      return await Customer.findById(id).populate("user", "email");
-    } catch (error) {
-      console.error("Error fetching customer by ID:", error.message);
       throw new Error("Failed to fetch customer.");
     }
   },
