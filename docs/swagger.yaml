@@ -715,7 +715,46 @@ paths:
               message:
                 type: string
 
-  /quiz/questions:
+  /users/create-employee:
+    post:
+      tags:
+        - Users
+      summary: Create a new employee
+      description: Add a new employee to the system
+      parameters:
+        - in: body
+          name: employee
+          description: Employee object to be created
+          required: true
+          schema:
+            $ref: "#/definitions/User"
+      responses:
+        201:
+          description: Employee created successfully
+        400:
+          description: Invalid input
+
+  /users/delete/{id}:
+    put:
+      tags:
+        - Users
+      summary: Delete user by ID
+      description: Remove a user from the system
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: string
+          description: User ID
+      responses:
+        200:
+          description: User deleted successfully
+        404:
+          description: User not found
+        500:
+          description: Internal server error
+
+  /questions:
     get:
       tags:
         - Quiz
@@ -723,26 +762,19 @@ paths:
       description: Retrieve a list of all quiz questions
       responses:
         200:
-          description: Questions retrieved successfully
+          description: Successful operation
           schema:
             type: array
             items:
               $ref: "#/definitions/Question"
         500:
           description: Internal server error
-          schema:
-            type: object
-            properties:
-              message:
-                type: string
-                example: "Internal server error"
 
-  /quiz/answers/{questionId}:
+  /answers/{questionId}:
     get:
       tags:
         - Quiz
       summary: Get answers for a specific question
-      description: Retrieve a list of answers for a specific question
       parameters:
         - name: questionId
           in: path
@@ -751,67 +783,115 @@ paths:
           description: ID of the question
       responses:
         200:
-          description: Answers retrieved successfully
+          description: Successful operation
           schema:
-            type: array
-            items:
-              $ref: "#/definitions/Answer"
+            $ref: "#/definitions/Answer"
+        404:
+          description: Question not found
         500:
           description: Internal server error
-          schema:
-            type: object
-            properties:
-              message:
-                type: string
-                example: "Internal server error"
 
-  /quiz/submit:
+  /results/{userId}:
+    get:
+      tags:
+        - Quiz
+      summary: Get quiz results for a user
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          type: string
+          description: ID of the user
+      responses:
+        200:
+          description: Successful operation
+          schema:
+            $ref: "#/definitions/QuizResult"
+        404:
+          description: User not found
+        500:
+          description: Internal server error
+
+  /create:
     post:
       tags:
         - Quiz
-      summary: Submit quiz answers
-      description: Submit answers for a quiz
-      consumes:
-        - application/json
+      summary: Create a new question
       parameters:
         - in: body
-          name: quizSubmission
-          description: Quiz submission object
+          name: question
+          required: true
           schema:
-            type: object
-            properties:
-              userId:
-                type: string
-                description: ID of the user
-              answers:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    questionId:
-                      type: string
-                      description: ID of the question
-                    answer:
-                      type: string
-                      description: User's answer
+            $ref: "#/definitions/QuestionInput"
       responses:
-        200:
-          description: Quiz submitted successfully
-          schema:
-            type: object
-            properties:
-              message:
-                type: string
-                example: "Quiz submitted successfully"
-              data:
-                type: object
-                properties:
-                  score:
-                    type: integer
-                    description: User's score
+        201:
+          description: Question created successfully
+        400:
+          description: Invalid input
         500:
           description: Internal server error
+
+  /submit:
+    post:
+      tags:
+        - Quiz
+      summary: Submit an answer to a question
+      parameters:
+        - in: body
+          name: submission
+          required: true
           schema:
+            $ref: "#/definitions/QuizSubmission"
+      responses:
+        200:
+          description: Answer submitted successfully
+        400:
+          description: Invalid submission
+        500:
+          description: Internal server error
+
+  /update/{questionId}:
+    put:
+      tags:
+        - Quiz
+      summary: Update an existing question
+      parameters:
+        - name: questionId
+          in: path
+          required: true
+          type: string
+          description: ID of the question to update
+        - in: body
+          name: question
+          required: true
+          schema:
+            $ref: "#/definitions/QuestionInput"
+      responses:
+        200:
+          description: Question updated successfully
+        404:
+          description: Question not found
+        500:
+          description: Internal server error
+
+  /delete/{questionId}:
+    put:
+      tags:
+        - Quiz
+      summary: Delete a question (soft delete)
+      parameters:
+        - name: questionId
+          in: path
+          required: true
+          type: string
+          description: ID of the question to delete
+      responses:
+        200:
+          description: Question deleted successfully
+        404:
+          description: Question not found
+        500:
+          description: Internal server error
             type: object
             properties:
               message:
@@ -975,7 +1055,6 @@ paths:
               message:
                 type: string
                 example: "Internal server error"
-
 definitions:
   Product:
     type: object
@@ -1124,3 +1203,48 @@ definitions:
         type: string
       isCorrect:
         type: boolean
+
+  QuestionInput:
+    type: object
+    required:
+      - text
+      - options
+      - correctAnswer
+    properties:
+      text:
+        type: string
+      options:
+        type: array
+        items:
+          type: string
+      correctAnswer:
+        type: string
+
+  QuizSubmission:
+    type: object
+    required:
+      - questionId
+      - userId
+      - answer
+    properties:
+      questionId:
+        type: string
+      userId:
+        type: string
+      answer:
+        type: string
+
+  QuizResult:
+    type: object
+    properties:
+      userId:
+        type: string
+      totalQuestions:
+        type: integer
+      correctAnswers:
+        type: integer
+      score:
+        type: number
+      completedAt:
+        type: string
+        format: date-time
