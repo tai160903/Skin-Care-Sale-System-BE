@@ -1,13 +1,13 @@
-const quizRepository = require("../repositories/quizRepository");
+const questionRepository = require("../repositories/questionRepository");
 const SkinType = require("../models/SkinType");
 
-class QuizService {
+class QuestionService {
   async getQuestions() {
-    return await quizRepository.getAllQuestions();
+    return await questionRepository.getAllQuestions();
   }
 
   async getAnswers(questionId) {
-    return await quizRepository.getAnswersByQuestionId(questionId);
+    return await questionRepository.getAnswersByQuestionId(questionId);
   }
 
   async submitQuiz(userId, answers) {
@@ -20,7 +20,7 @@ class QuizService {
 
     // Fetch all answers at once (Optimize DB calls)
     const questionIds = answers.map((answer) => answer.questionId);
-    const allAnswers = await quizRepository.getAnswersByQuestionIds(
+    const allAnswers = await questionRepository.getAnswersByQuestionIds(
       questionIds
     );
 
@@ -52,8 +52,36 @@ class QuizService {
       resultSkinType: skinTypeDoc._id, // Store ObjectId, not string
     };
 
-    return await quizRepository.saveUserAnswers(userQuizResult);
+    return await questionRepository.saveUserAnswers(userQuizResult);
+  }
+
+  async getResults(userId) {
+    return await questionRepository.getUserAnswers(userId);
+  }
+
+  async createQuiz(questions) {
+    return await questionRepository.createQuiz(questions);
+  }
+
+  async updateQuiz(questionId, question) {
+    return await questionRepository.updateQuiz(questionId, question);
+  }
+
+  async deleteQuiz(questionId) {
+    return await questionRepository.deleteQuiz(questionId);
+  }
+
+  async createQuestion(question) {
+    return await questionRepository.createQuestion(question);
+  }
+
+  async updateQuestion(questionId, question) {
+    return await questionRepository.updateQuestion(questionId, question);
+  }
+
+  async deleteQuestion(questionId) {
+    return await questionRepository.deleteQuestion(questionId);
   }
 }
 
-module.exports = new QuizService();
+module.exports = new QuestionService();

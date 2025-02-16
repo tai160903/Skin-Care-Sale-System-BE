@@ -59,7 +59,6 @@ const authService = {
   },
 
   login: async ({ email, password }) => {
-    console.log(email, password);
     const { error } = loginSchema.validate({ email, password });
     if (error) return { message: error.details[0].message, status: 400 };
     try {
