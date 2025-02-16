@@ -26,9 +26,13 @@ tags:
   - name: Promotions
   - name: Cart
   - name: Quiz
-    description: Operations related to quizzes
+  - name: Draft Order
+  - name:  Orders
+  - name : versions
 
 paths:
+
+
   /auth/register:
     post:
       tags:
@@ -510,6 +514,19 @@ paths:
         500:
           description: Internal server error
 
+  /version: 
+  
+    get:
+      tags:
+      - version
+      summary: ""
+      description: ""
+      responses:
+        200:
+          description: Successful operation
+        500:
+          description: Internal server error
+
   /products/{id}:
     get:
       tags:
@@ -875,7 +892,169 @@ paths:
           description: Question not found
         500:
           description: Internal server error
-
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Internal server error"
+  /orders/create:
+    post:
+      tags:
+        - Orders
+      summary: Tạo đơn hàng mới
+      description: Tạo đơn hàng mới từ giỏ hàng và thông tin khách hàng
+      security:
+        - Bearer: []
+      parameters:
+        - in: body
+          name: order
+          required: true
+          description: Thông tin đơn hàng
+          schema:
+            type: object
+            required:
+              - customerId
+              - payment_method
+              - address
+              - phone
+            properties:
+              customerId:
+                type: string
+                example: "64df0bf4123abc456d789ef0"
+              payment_method:
+                type: string
+                enum: [Cash, PayPal, CreditCard]
+                example: "PayPal"
+              address:
+                type: string
+                example: "123 Đường ABC, Quận 1, TP. HCM"
+              phone:
+                type: string
+                example: "0987654321"
+      responses:
+        201:
+          description: Đơn hàng được tạo thành công
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Order created successfully"
+              order:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                    example: "650123abcdef4567890"
+                  customerId:
+                    type: string
+                    example: "64df0bf4123abc456d789ef0"
+                  payment_method:
+                    type: string
+                    example: "PayPal"
+                  totalPrice:
+                    type: number
+                    example: 250.5
+                  payment_status:
+                    type: string
+                    example: "Pending"
+              shipping:
+                type: object
+                properties:
+                  order_id:
+                    type: string
+                    example: "650123abcdef4567890"
+                  address:
+                    type: string
+                    example: "123 Đường ABC, Quận 1, TP. HCM"
+                  phone:
+                    type: string
+                    example: "0987654321"
+                  status:
+                    type: string
+                    example: "Pending"
+              checkoutUrl:
+                type: string
+                example: "https://checkout.stripe.com/pay/123abc456def"
+        400:
+          description: Thiếu thông tin bắt buộc
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Missing required fields"
+        500:
+          description: Lỗi server
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Internal server error"
+  /draftOrders/{customerId}:
+    post:
+      tags:
+        - Draft Order
+      summary: Create a draft order
+      description: Create a draft order for a customer
+      parameters:
+        - in: query
+          name: customer_id
+          required: true
+          type: string
+          description: Customer ID
+      responses:
+        201:
+          description: Draft order created successfully
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Draft order created successfully"
+              data:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                    description: ID of the draft order
+        400:
+          description: Invalid input
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Invalid input"
+        500:
+          description: Internal server error
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Internal server error"
+    get:
+      tags:
+        - Draft Order
+      summary: Get draft orders
+      description: Get a draft order
+      responses:
+        200:
+          description: Draft orders retrieved successfully
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Cart"
+        500:
+          description: Internal server error
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Internal server error"
 definitions:
   Product:
     type: object
@@ -908,6 +1087,9 @@ definitions:
       isDisabled:
         type: boolean
         example: false
+      price :
+        type: number
+        example: 19.99
 
   User:
     type: object
