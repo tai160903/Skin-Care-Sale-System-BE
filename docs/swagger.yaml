@@ -27,12 +27,10 @@ tags:
   - name: Cart
   - name: Quiz
   - name: Draft Order
-  - name:  Orders
-  - name : versions
+  - name: Orders
+  - name: versions
 
 paths:
-
-
   /auth/register:
     post:
       tags:
@@ -514,11 +512,10 @@ paths:
         500:
           description: Internal server error
 
-  /version: 
-  
+  /version:
     get:
       tags:
-      - version
+        - version
       summary: ""
       description: ""
       responses:
@@ -770,7 +767,7 @@ paths:
         500:
           description: Internal server error
 
-  /answers/{questionId}:
+  /questions/answers/{questionId}:
     get:
       tags:
         - Quiz
@@ -791,7 +788,7 @@ paths:
         500:
           description: Internal server error
 
-  /results/{userId}:
+  /questions/results/{userId}:
     get:
       tags:
         - Quiz
@@ -812,7 +809,7 @@ paths:
         500:
           description: Internal server error
 
-  /create:
+  /questions/create:
     post:
       tags:
         - Quiz
@@ -831,7 +828,7 @@ paths:
         500:
           description: Internal server error
 
-  /submit:
+  /questions/submit:
     post:
       tags:
         - Quiz
@@ -850,7 +847,7 @@ paths:
         500:
           description: Internal server error
 
-  /update/{questionId}:
+  /questions/update/{questionId}:
     put:
       tags:
         - Quiz
@@ -874,7 +871,7 @@ paths:
         500:
           description: Internal server error
 
-  /delete/{questionId}:
+  /questions/delete/{questionId}:
     put:
       tags:
         - Quiz
@@ -892,6 +889,7 @@ paths:
           description: Question not found
         500:
           description: Internal server error
+          schema:
             type: object
             properties:
               message:
@@ -1087,7 +1085,7 @@ definitions:
       isDisabled:
         type: boolean
         example: false
-      price :
+      price:
         type: number
         example: 19.99
 
