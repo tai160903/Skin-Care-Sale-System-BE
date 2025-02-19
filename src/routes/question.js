@@ -7,7 +7,7 @@ const {
 
 const router = express.Router();
 
-router.get("/questions", quizController.getQuestions);
+router.get("/", quizController.getQuestions);
 router.get("/answers/:questionId", quizController.getAnswers);
 router.get("/results/:userId", quizController.getResults);
 router.post("/create", quizController.createQuestion);

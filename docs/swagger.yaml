@@ -32,8 +32,6 @@ tags:
 
 
 paths:
-
-
   /auth/register:
     post:
       tags:
@@ -739,7 +737,46 @@ paths:
               message:
                 type: string
 
-  /quiz/questions:
+  /users/create-employee:
+    post:
+      tags:
+        - Users
+      summary: Create a new employee
+      description: Add a new employee to the system
+      parameters:
+        - in: body
+          name: employee
+          description: Employee object to be created
+          required: true
+          schema:
+            $ref: "#/definitions/User"
+      responses:
+        201:
+          description: Employee created successfully
+        400:
+          description: Invalid input
+
+  /users/delete/{id}:
+    put:
+      tags:
+        - Users
+      summary: Delete user by ID
+      description: Remove a user from the system
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: string
+          description: User ID
+      responses:
+        200:
+          description: User deleted successfully
+        404:
+          description: User not found
+        500:
+          description: Internal server error
+
+  /questions:
     get:
       tags:
         - Quiz
@@ -747,26 +784,19 @@ paths:
       description: Retrieve a list of all quiz questions
       responses:
         200:
-          description: Questions retrieved successfully
+          description: Successful operation
           schema:
             type: array
             items:
               $ref: "#/definitions/Question"
         500:
           description: Internal server error
-          schema:
-            type: object
-            properties:
-              message:
-                type: string
-                example: "Internal server error"
 
-  /quiz/answers/{questionId}:
+  /questions/answers/{questionId}:
     get:
       tags:
         - Quiz
       summary: Get answers for a specific question
-      description: Retrieve a list of answers for a specific question
       parameters:
         - name: questionId
           in: path
@@ -775,64 +805,113 @@ paths:
           description: ID of the question
       responses:
         200:
-          description: Answers retrieved successfully
+          description: Successful operation
           schema:
-            type: array
-            items:
-              $ref: "#/definitions/Answer"
+            $ref: "#/definitions/Answer"
+        404:
+          description: Question not found
         500:
           description: Internal server error
-          schema:
-            type: object
-            properties:
-              message:
-                type: string
-                example: "Internal server error"
 
-  /quiz/submit:
+  /questions/results/{userId}:
+    get:
+      tags:
+        - Quiz
+      summary: Get quiz results for a user
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          type: string
+          description: ID of the user
+      responses:
+        200:
+          description: Successful operation
+          schema:
+            $ref: "#/definitions/QuizResult"
+        404:
+          description: User not found
+        500:
+          description: Internal server error
+
+  /questions/create:
     post:
       tags:
         - Quiz
-      summary: Submit quiz answers
-      description: Submit answers for a quiz
-      consumes:
-        - application/json
+      summary: Create a new question
       parameters:
         - in: body
-          name: quizSubmission
-          description: Quiz submission object
+          name: question
+          required: true
           schema:
-            type: object
-            properties:
-              userId:
-                type: string
-                description: ID of the user
-              answers:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    questionId:
-                      type: string
-                      description: ID of the question
-                    answer:
-                      type: string
-                      description: User's answer
+            $ref: "#/definitions/QuestionInput"
+      responses:
+        201:
+          description: Question created successfully
+        400:
+          description: Invalid input
+        500:
+          description: Internal server error
+
+  /questions/submit:
+    post:
+      tags:
+        - Quiz
+      summary: Submit an answer to a question
+      parameters:
+        - in: body
+          name: submission
+          required: true
+          schema:
+            $ref: "#/definitions/QuizSubmission"
       responses:
         200:
-          description: Quiz submitted successfully
+          description: Answer submitted successfully
+        400:
+          description: Invalid submission
+        500:
+          description: Internal server error
+
+  /questions/update/{questionId}:
+    put:
+      tags:
+        - Quiz
+      summary: Update an existing question
+      parameters:
+        - name: questionId
+          in: path
+          required: true
+          type: string
+          description: ID of the question to update
+        - in: body
+          name: question
+          required: true
           schema:
-            type: object
-            properties:
-              message:
-                type: string
-                example: "Quiz submitted successfully"
-              data:
-                type: object
-                properties:
-                  score:
-                    type: integer
-                    description: User's score
+            $ref: "#/definitions/QuestionInput"
+      responses:
+        200:
+          description: Question updated successfully
+        404:
+          description: Question not found
+        500:
+          description: Internal server error
+
+  /questions/delete/{questionId}:
+    put:
+      tags:
+        - Quiz
+      summary: Delete a question (soft delete)
+      parameters:
+        - name: questionId
+          in: path
+          required: true
+          type: string
+          description: ID of the question to delete
+      responses:
+        200:
+          description: Question deleted successfully
+        404:
+          description: Question not found
         500:
           description: Internal server error
           schema:
@@ -1091,7 +1170,136 @@ paths:
             $ref: "#/definitions/Shipping"
         404:
           description: "Shipping record not found."
- 
+  /reviews:
+    get:
+      tags:
+        - Reviews
+      summary: Get all reviews
+      description: Retrieve a list of all reviews
+      responses:
+        200:
+          description: Successfully retrieved list of reviews
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Review"
+    post:
+      tags:
+        - Reviews
+      summary: Create a new review
+      description: Add a new review for a product
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: review
+          description: Review object
+          schema:
+            $ref: "#/definitions/Review"
+      responses:
+        201:
+          description: Review created successfully
+          schema:
+            $ref: "#/definitions/Review"
+        400:
+          description: Bad request
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+  /reviews/update-rating/{Id}:
+    put:
+      tags:
+        - Reviews
+      summary: Update rating for a product
+      description: Modify the rating of a product based on reviews
+      consumes:
+        - application/json
+      parameters:
+      - in: path
+        name: Id
+        required: true
+        type: string
+        description: ID of the product to update rating
+      - in: body
+        name: body
+        description: New rating and comment values
+        required: true
+        schema:
+          type: object
+          properties:
+            rating:
+              type: number
+              description: New rating value
+            comment:
+              type: string
+              description: New comment value
+      responses:
+        200:
+          description: Rating updated successfully
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+        400:
+          description: Bad request
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+  /reviews/{id}:
+    get:
+      tags: 
+        - Reviews
+      summary: Get a review by ID
+      description: Retrieve a specific review by its ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: string
+          description: ID of the review to retrieve
+      responses:
+        200:
+          description: Successfully retrieved the review
+          schema:
+            $ref: "#/definitions/Review"
+        404:
+          description: Review not found
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+    delete:
+      tags:
+        - Reviews
+      summary: Delete a review
+      description: Remove a specific review by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: string
+          description: ID of the review to delete
+      responses:
+        200:
+          description: Review deleted successfully
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+        404:
+          description: Review not found
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
 definitions:
   Product:
     type: object
@@ -1124,7 +1332,7 @@ definitions:
       isDisabled:
         type: boolean
         example: false
-      price :
+      price:
         type: number
         example: 19.99
 
@@ -1268,4 +1476,72 @@ definitions:
       updatedAt:
         type: "string"
         format: "date-time"
+  QuestionInput:
+    type: object
+    required:
+      - text
+      - options
+      - correctAnswer
+    properties:
+      text:
+        type: string
+      options:
+        type: array
+        items:
+          type: string
+      correctAnswer:
+        type: string
+
+  QuizSubmission:
+    type: object
+    required:
+      - questionId
+      - userId
+      - answer
+    properties:
+      questionId:
+        type: string
+      userId:
+        type: string
+      answer:
+        type: string
+
+  QuizResult:
+    type: object
+    properties:
+      userId:
+        type: string
+      totalQuestions:
+        type: integer
+      correctAnswers:
+        type: integer
+      score:
+        type: number
+      completedAt:
+        type: string
+        format: date-time
+  Review:
+    type: object
+    properties:
+      customer_id:
+        type: string
+        example: "64f8c2a1b3a4e5d6f7g8h9i0"
+      product_id:
+        type: string
+        example: "7g8h9i0j1k2l3m4n5o6p7q8r"
+      rating:
+        type: number
+        format: float
+        example: 4.5
+      comment:
+        type: string
+        example: "Great product! Very satisfied."
+      createdAt:
+        type: string
+        format: date-time
+        example: "2025-02-19T12:00:00Z"
+      updatedAt:
+        type: string
+        format: date-time
+        example: "2025-02-19T14:00:00Z"
 

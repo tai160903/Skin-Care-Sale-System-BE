@@ -34,7 +34,13 @@ class ProductRepository {
             }
         }
     }
-
+    async updateProductRating(productId, rating){
+        return await Product.findByIdAndUpdate(
+            productId ,
+            {rating : rating},
+            {new : true}
+        );
+    }
     async createProduct(productData){
         try {
             const newProduct = new Product(productData)

@@ -20,13 +20,22 @@ class ReviewRepository{
             throw new Error('Error fetching reviews' + error.message);
         }
     }
-    async updateRating(id, rating, comment){
+    async updateRating(id, Ratingdata){
         try {
             return await Review.findByIdAndUpdate(
-                id,
-                {rating : rating, comment : comment})
-        } catch(errorerror) {
-            throw new Error('Error fetching reviews' + erroror.message);
+                {_id : id},
+                {rating : Ratingdata.rating,
+                comment : Ratingdata.comment},
+                {new : true})
+        } catch(error) {
+            throw new Error('Error fetching reviews' + error.message);
+        }
+    }
+    async getReviewById(id){
+        try{
+            return Review.findById(id);
+        }catch(error){
+            throw new Error('Error fetching reviews' + error.message);
         }
     }
     async deleteReview(id){
@@ -36,5 +45,8 @@ class ReviewRepository{
             throw new Error('Error fetching reviews' + error.message);
         }
     } 
+    async getReviewsByProductId(productId) {
+        return await Review.find({ product_id: productId });
+    }
 }
 module.exports = new ReviewRepository(); 

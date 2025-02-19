@@ -3,84 +3,128 @@ const SkinType = require("../models/SkinType");
 
 class QuestionService {
   async getQuestions() {
-    return await questionRepository.getAllQuestions();
+    try {
+      return await questionRepository.getAllQuestions();
+    } catch (error) {
+      console.error("Error fetching questions:", error);
+      throw new Error("Something went wrong while fetching questions");
+    }
   }
 
   async getAnswers(questionId) {
-    return await questionRepository.getAnswersByQuestionId(questionId);
+    try {
+      return await questionRepository.getAnswersByQuestionId(questionId);
+    } catch (error) {
+      console.error("Error fetching answers:", error);
+      throw new Error("Something went wrong while fetching answers");
+    }
   }
 
   async submitQuiz(userId, answers) {
-    let skinTypeCount = {
-      Oily: 0,
-      Dry: 0,
-      Combination: 0,
-      Normal: 0,
-    };
-
-    // Fetch all answers at once (Optimize DB calls)
-    const questionIds = answers.map((answer) => answer.questionId);
-    const allAnswers = await questionRepository.getAnswersByQuestionIds(
-      questionIds
-    );
-
-    // Count skin types
-    for (let answer of answers) {
-      const selectedAnswer = allAnswers.find(
-        (a) => a._id.toString() === answer.answerId
+    try {
+      const skinTypeCounts = { Oily: 0, Dry: 0, Combination: 0, Normal: 0 };
+      const questionIds = answers.map((answer) => answer.questionId);
+      const allAnswers = await questionRepository.getAnswersByQuestionIds(
+        questionIds
       );
-      if (selectedAnswer) {
-        skinTypeCount[selectedAnswer.skinType] += 1;
+      const answerMap = new Map(allAnswers.map((a) => [a._id.toString(), a]));
+
+      answers.forEach((answer) => {
+        const selectedAnswer = answerMap.get(answer.answerId);
+        if (selectedAnswer) {
+          skinTypeCounts[selectedAnswer.skinType] += 1;
+        }
+      });
+
+      const maxCount = Math.max(...Object.values(skinTypeCounts));
+      const topSkinTypes = Object.keys(skinTypeCounts).filter(
+        (type) => skinTypeCounts[type] === maxCount
+      );
+
+      const resultSkinType = topSkinTypes[0];
+      const skinTypeDoc = await SkinType.findOne({ name: resultSkinType });
+      if (!skinTypeDoc) {
+        throw new Error("SkinType not found");
       }
+
+      const userQuizResult = {
+        userId,
+        answers,
+        resultSkinType: skinTypeDoc._id,
+      };
+
+      await questionRepository.saveUserAnswers(userQuizResult);
+      await customerRepository.updateById(userId, {
+        skinType: skinTypeDoc._id,
+      });
+      return skinTypeDoc.name;
+    } catch (error) {
+      console.error("Error submitting quiz:", error);
+      throw new Error("Something went wrong while submitting the quiz");
     }
-
-    // Determine the most frequent skin type
-    const resultSkinTypeName = Object.keys(skinTypeCount).reduce((a, b) =>
-      skinTypeCount[a] > skinTypeCount[b] ? a : b
-    );
-
-    // Fetch SkinType _id from the database
-    const skinTypeDoc = await SkinType.findOne({ name: resultSkinTypeName });
-    if (!skinTypeDoc) {
-      throw new Error("SkinType not found");
-    }
-
-    // Save result
-    const userQuizResult = {
-      userId,
-      answers,
-      resultSkinType: skinTypeDoc._id, // Store ObjectId, not string
-    };
-
-    return await questionRepository.saveUserAnswers(userQuizResult);
   }
 
   async getResults(userId) {
-    return await questionRepository.getUserAnswers(userId);
+    try {
+      return await questionRepository.getUserAnswers(userId);
+    } catch (error) {
+      console.error("Error fetching results:", error);
+      throw new Error("Something went wrong while fetching results");
+    }
   }
 
   async createQuiz(questions) {
-    return await questionRepository.createQuiz(questions);
+    try {
+      return await questionRepository.createQuiz(questions);
+    } catch (error) {
+      console.error("Error creating quiz:", error);
+      throw new Error("Something went wrong while creating the quiz");
+    }
   }
 
   async updateQuiz(questionId, question) {
-    return await questionRepository.updateQuiz(questionId, question);
+    try {
+      return await questionRepository.updateQuiz(questionId, question);
+    } catch (error) {
+      console.error("Error updating quiz:", error);
+      throw new Error("Something went wrong while updating the quiz");
+    }
   }
 
   async deleteQuiz(questionId) {
-    return await questionRepository.deleteQuiz(questionId);
+    try {
+      return await questionRepository.deleteQuestion(questionId);
+    } catch (error) {
+      console.error("Error deleting quiz:", error);
+      throw new Error("Something went wrong while deleting the quiz");
+    }
   }
 
   async createQuestion(question) {
-    return await questionRepository.createQuestion(question);
+    try {
+      return await questionRepository.createQuestion(question);
+    } catch (error) {
+      console.error("Error creating question:", error);
+      throw new Error("Something went wrong while creating the question");
+    }
   }
 
   async updateQuestion(questionId, question) {
-    return await questionRepository.updateQuestion(questionId, question);
+    try {
+      return await questionRepository.updateQuestion(questionId, question);
+    } catch (error) {
+      console.error("Error updating question:", error);
+      throw new Error("Something went wrong while updating the question");
+    }
   }
 
   async deleteQuestion(questionId) {
-    return await questionRepository.deleteQuestion(questionId);
+    try {
+      return await questionRepository.deleteQuestion(questionId);
+    } catch (error) {
+      console.error("Error deleting question:", error);
+      throw new Error("Something went wrong while deleting the question");
+    }
   }
 }
 
