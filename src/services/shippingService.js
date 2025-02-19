@@ -18,9 +18,9 @@ const ShippingService = {
         }
     },
     
-    async getShippingByOrderId(order_id) {
+    async getShippingByOrderId(orderId) {
         try {
-            return await ShippingRepository.getShippingByOrderId(order_id);
+            return await ShippingRepository.getShippingByOrderId(orderId);
         } catch (error) {
             console.error("Error fetching shipping by order_id:", error);
             throw error;
@@ -38,6 +38,7 @@ const ShippingService = {
 
     async updateStatusShipping(id, status) {
         try {
+            console.log("status" , status);
             return await ShippingRepository.updateStatusShipping(id, status);
         } catch (error) {
             console.error("Error updating shipping status:", error);

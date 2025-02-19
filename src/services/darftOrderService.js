@@ -37,6 +37,9 @@ const DraftOrderService = {
 
     async clearDraftOrder(customerId) {
     return await DarftOrderRepository.clearDraftOrder(customerId);
-}
+},
+    async deleteDraftOrder(customerId){
+        return await DarftOrderRepository.deleteOrderCard(customerId);
+    }
 };
 module.exports = DraftOrderService;

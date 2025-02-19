@@ -27,6 +27,9 @@ const DarftOrderRepository = {
             { new: true }
         );
     },
+    async deleteOrderCard(customerId){
+        return await DraftOrder.findOneAndDelete({customer_id: customerId})
+    }
 };
 
 module.exports = DarftOrderRepository;

@@ -29,7 +29,7 @@ const productSchema = new mongoose.Schema(
       required: true,  
     },
     rating: {
-      type: mongoose.Schema.Types.Decimal128, 
+      type: Number, 
       required: false,
     },
     purchaseCount: {

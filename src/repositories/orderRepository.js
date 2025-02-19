@@ -7,5 +7,11 @@ const OrderRepository = {
     async createOrder(orderData) {
         return await Order.create(orderData);
     },
+    async getOrderById(orderId) {
+        return await Order.findById(orderId).populate('items.product_id');
+    },
+    async deleteOrderById(orderId) {
+        return await Order.findByIdAndDelete(orderId);
+    }
 }
 module.exports = OrderRepository;

@@ -12,5 +12,6 @@ router.put("/update/:id", userController.updateUserById);
 router.get("/", checkAdmin, userController.getAllUsers);
 router.post("/create-employee", checkAdmin, userController.createEmployee);
 router.put("/delete/:id", checkAdmin, userController.deleteUserById);
+router.get("/customerId/:userId", userController.GetCustomerIdByUserId);
 
 module.exports = router;
