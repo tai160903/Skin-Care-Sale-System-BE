@@ -7,7 +7,8 @@ const promotion = require("./promotion");
 const cart = require("./cart");
 const draftOrder = require("./draftOrder");
 const order = require("./order");
-const version = require("./version");
+const shipping = require("./shipping");
+const review = require("./review");
 const router = express.Router();
 
 router.use("/auth", auth);
@@ -15,9 +16,11 @@ router.use("/products", product);
 router.use("/users", user);
 router.use("/questions", question);
 router.use("/cart", cart);
-router.use("/promotions", promotion);
+router.use("/promotions",promotion)
 router.use("/draftOrders", draftOrder);
 router.use("/orders", order);
-router.use("/version", version);
+router.use("/shippings", shipping);
+router.use("/reviews", review);
+
 
 module.exports = router;

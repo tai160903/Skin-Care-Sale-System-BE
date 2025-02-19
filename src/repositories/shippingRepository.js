@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const Shipping = require('../models/shipping');
 
 const ShippingRepository = {
@@ -22,9 +23,11 @@ const ShippingRepository = {
         }
     },
 
-    async getShippingByOrderId(order_id) {
+    async getShippingByOrderId(orderId) {
         try {
-            return await Shipping.findOne({ order_id });
+            console.log("check: ", orderId)
+
+            return await Shipping.findOne({ order_id: orderId.order_id });
         } catch (error) {
             console.error("Error fetching shipping by order_id:", error);
             throw error;
@@ -42,7 +45,7 @@ const ShippingRepository = {
 
     async updateStatusShipping(id, status) {
         try {
-            return await Shipping.findByIdAndUpdate(id, { status }, { new: true });
+            return await Shipping.findByIdAndUpdate(id, { shipping_status : status }, { new: true });
         } catch (error) {
             console.error("Error updating shipping status:", error);
             throw error;

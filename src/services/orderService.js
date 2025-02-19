@@ -4,6 +4,7 @@ const DraftOrderService = require("./darftOrderService");
 const ShippingRepository = require("../repositories/shippingRepository");
 const ProductRepository = require("../repositories/productRepository");
 const  stripe  = require("../config/stripe");
+const CustomerRepository = require("../repositories/customerRepository");
 
 
 
@@ -15,6 +16,7 @@ const OrderService = {
         let draftOrder = await DraftOrderService.getDraftOrderByCustomerId(customerId);
         if (!draftOrder) throw new Error("Draft order not found");
         console.log("draftOrder",draftOrder);
+ 
 
         await ProductRepository.checkStockAvailability(draftOrder.items);
 
@@ -76,13 +78,19 @@ const OrderService = {
         }
 
         await ProductRepository.updateStockAndPurchaseCount(draftOrder.items);
-
+        await CustomerRepository.updatePoint(customerId,draftOrder.finalPrice);
         // Xóa giỏ hàng và draft order
         await CartRepository.clearCart(customerId);
-        await DraftOrderService.clearDraftOrder(customerId);
+        await DraftOrderService.deleteDraftOrder(customerId);
 
         return { newOrder,newShipping, checkoutUrl }; // Trả về đơn hàng và link thanh toán (nếu có)
     },
+    async getOrderById(id){
+        return await OrderRepository.getOrderById(id);
+    } ,  
+    async deleteOrderById(id){
+        return await OrderRepository.deleteOrderById(id);
+    }
 };
 
 module.exports = OrderService;

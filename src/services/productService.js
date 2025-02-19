@@ -14,7 +14,9 @@ class ProductService {
     async createProduct(productData){
         return await productRepository.createProduct(productData);
     }
-
+    async updateProductRating(productId, Rating){
+        return await productRepository.updateProductRating(productId,Rating);
+    }
     async updateProduct(productId,productData){
         return await productRepository.updateProduct(productId,productData);
     }

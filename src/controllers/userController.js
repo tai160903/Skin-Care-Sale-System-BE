@@ -58,6 +58,15 @@ const userController = {
       return res.status(500).json({ message: error.message });
     }
   },
+  async  GetCustomerIdByUserId(req, res) {
+    try {
+      const customerId = await userService.getCustomerIdByUserId(req.params.userId);
+      return res.json(customerId);
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
+    }
+  }
 };
+
 
 module.exports = userController;

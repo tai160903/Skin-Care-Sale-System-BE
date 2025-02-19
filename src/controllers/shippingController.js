@@ -1,4 +1,3 @@
-const { updateStatusShipping, updateReasonShipping, getShippingByOrderId } = require('../repositories/shippingRepository');
 const ShippingService = require('../services/shippingService');
 
 const ShippingController = {
@@ -12,7 +11,8 @@ const ShippingController = {
         },
     async updateStatusShipping(req, res){
         try{
-            const updatedShipping = await ShippingService.updateStatusShipping(req.params.id, req.body.status);
+            console.log("status: ",req.body.shipping_status);
+            const updatedShipping = await ShippingService.updateStatusShipping(req.params.id, req.body.shipping_status);
             if(!updatedShipping){
                 return res.status(404).json({message: "Shipping not found"});
             }
@@ -34,7 +34,10 @@ const ShippingController = {
         },
     async getShippingByOrderId(req, res){
         try{
-            const shipping = await ShippingService.getShippingByOrderId(req.params.order_id);
+            const orderId = req.params;
+            console.log("orderID", orderId);
+            const shipping = await ShippingService.getShippingByOrderId(req.params);
+            
             if(!shipping){
                 return res.status(404).json({message: "Shipping not found"});
             }
@@ -44,4 +47,4 @@ const ShippingController = {
           }
         }
 };
-moudle.exports = ShippingController;
+module.exports = ShippingController;

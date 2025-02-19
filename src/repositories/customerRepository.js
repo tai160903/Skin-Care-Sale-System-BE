@@ -47,6 +47,31 @@ const customerRepository = {
       throw new Error("Failed to update customer.");
     }
   },
+  async getCustomerIdByUserId(userId) {
+    try {
+      const customer = await Customer.findOne({ user: userId }); 
+      return customer ; 
+    } catch (error) {
+      console.error("Error fetching customerId:", error);
+      throw error;
+    }
+  },
+  async updatePoint(customerId,total){
+    try {
+      const customer = await Customer.findById(customerId);
+      if (!customer) {
+        throw new Error("Customer not found.");
+      }
+      var points = Math.floor(total/100);
+      customer.point += points;
+      await customer.save();
+
+      return customer;
+    } catch (error) {
+      console.error("Error updating customer points:", error.message);
+      throw new Error("Failed to update customer points.");
+    }
+  },
 };
 
 module.exports = customerRepository;
