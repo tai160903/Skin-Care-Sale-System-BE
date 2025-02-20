@@ -23,7 +23,13 @@ class QuestionService {
 
   async submitQuiz(userId, answers) {
     try {
-      const skinTypeCounts = { Oily: 0, Dry: 0, Combination: 0, Normal: 0 };
+      const skinTypeCounts = {
+        Oily: 0,
+        Dry: 0,
+        Combination: 0,
+        Normal: 0,
+        Sensitive: 0,
+      };
       const questionIds = answers.map((answer) => answer.questionId);
       const allAnswers = await questionRepository.getAnswersByQuestionIds(
         questionIds
