@@ -14,9 +14,10 @@ const userController = {
     }
   },
 
-  getUserById: async (req, res) => {
+  getCustomerById: async (req, res) => {
     try {
-      const response = await userService.getUserById(req.params.id);
+      const id = req.params.userId;
+      const response = await userService.getCustomerById(id);
       return res.status(response?.status || 200).json({
         message: response?.message,
         data: response?.data,

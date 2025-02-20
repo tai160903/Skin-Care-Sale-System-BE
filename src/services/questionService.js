@@ -1,5 +1,6 @@
 const questionRepository = require("../repositories/questionRepository");
 const SkinType = require("../models/SkinType");
+const customerRepository = require("../repositories/customerRepository");
 
 class QuestionService {
   async getQuestions() {

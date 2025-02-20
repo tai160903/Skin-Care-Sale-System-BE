@@ -10,8 +10,8 @@ const userService = {
     };
   },
 
-  getUserById: async (id) => {
-    const user = await customerRepository.findByUserId(id);
+  getCustomerById: async (id) => {
+    const user = await customerRepository.findByCustomerId(id);
     if (!user) {
       return {
         message: "User not found",

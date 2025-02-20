@@ -1,3 +1,4 @@
+const { Types } = require("mongoose");
 const Customer = require("../models/customer");
 
 const customerRepository = {
@@ -10,12 +11,12 @@ const customerRepository = {
     }
   },
   findById: async (id) => {
-    try{
+    try {
       return await Customer.findById(id);
     } catch (error) {
       console.error("Error fetching customer by ID:", error.message);
       throw new Error("Failed to fetch customer.");
-  }
+    }
   },
 
   findAll: async () => {
@@ -27,11 +28,14 @@ const customerRepository = {
     }
   },
 
-  findByUserId: async (userId) => {
+  findByCustomerId: async (userId) => {
     try {
-      return await Customer.findOne({ user: userId }).populate("user", "email");
+      const customer = await Customer.findOne({
+        user: Types.ObjectId(userId),
+      }).populate("user", "email");
+      return customer || null;
     } catch (error) {
-      console.error("Error fetching customer by user ID:", error.message);
+      console.error("Error fetching customer by userId:", error.message);
       throw new Error("Failed to fetch customer.");
     }
   },
