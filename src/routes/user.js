@@ -5,7 +5,7 @@ const userController = require("../controllers/userController");
 const router = express.Router();
 
 //user
-router.get("/:id", userController.getUserById);
+router.get("/:userId", userController.getCustomerById);
 router.put("/update/:id", userController.updateUserById);
 
 //admin

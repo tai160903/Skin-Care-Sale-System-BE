@@ -92,7 +92,13 @@ class AuthController {
         _id: req.user.id,
         role: req.user.role,
       });
-      await customerRepository.create({ user: req.user._id });
+
+      const existingCustomer = await customerRepository.findOne({
+        user: req.user._id,
+      });
+      if (!existingCustomer) {
+        await customerRepository.create({ user: req.user._id });
+      }
 
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
@@ -101,7 +107,9 @@ class AuthController {
       res.redirect(
         `${
           process.env.CLIENT_URL
-        }?access_token=${accessToken}&user=${JSON.stringify(req.user)}`
+        }?access_token=${accessToken}&user=${encodeURIComponent(
+          JSON.stringify(req.user)
+        )}`
       );
     } catch (error) {
       return res.status(400).json({ message: error.message });
