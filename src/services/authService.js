@@ -89,7 +89,8 @@ const authService = {
         email: user.email,
         role: user.role,
       });
-
+      const customer = await customerRepository.getCustomerIdByUserId(user._id);
+      console.log("customer" , customer);
       return {
         message: "Login successfully",
         status: 200,
@@ -100,6 +101,7 @@ const authService = {
           email: user.email,
           role: user.role,
         },
+        customer
       };
     } catch (error) {
       return { message: error.message, status: 400 };
