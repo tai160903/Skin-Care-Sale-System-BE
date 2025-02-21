@@ -7,10 +7,22 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+
     price: {
       type: Number,
       required: true,
     },
+
+    discountPercentage: {
+      type: Number,
+      default :0,
+    },
+
+    discountedPrice: {
+      type: Number,
+      default : 0
+    },
+
     ingredient: {
       type: String, 
       required: false, 
@@ -50,6 +62,7 @@ const productSchema = new mongoose.Schema(
     collection: "products"
   }
 );
+
 
 const Product = mongoose.model("Product", productSchema);
 

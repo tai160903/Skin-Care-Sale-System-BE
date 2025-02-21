@@ -513,6 +513,39 @@ paths:
         500:
           description: Internal server error
 
+  /products/updateDiscount/{id}:
+    put:
+      tags:
+        - Products
+      summary: Update product discount by ID
+      description: Update the discount percentage of an existing product
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: string
+          description: Product ID
+        - in: body
+          name: discount
+          description: Updated discount details
+          required: true
+          schema:
+            type: object
+            properties:
+              discountPercent:
+                type: number
+                format: float
+                description: Discount percentage for the product
+      responses:
+        200:
+          description: Discount updated successfully
+        400:
+          description: Invalid request
+        404:
+          description: Product not found
+            
+     
+
   /products/{id}:
     get:
       tags:
@@ -1313,6 +1346,12 @@ definitions:
       category:
         type: string
         example: "Skincare"
+      discountPercentage:
+        type: number
+        example: 0
+    #  discountedPrice:
+     #   type: number
+      #  example: 0
       stock:
         type: integer
         example: 100

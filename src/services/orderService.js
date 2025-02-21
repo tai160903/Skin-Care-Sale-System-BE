@@ -1,10 +1,10 @@
 const OrderRepository = require("../repositories/orderRepository");
-const CartRepository = require("../repositories/CartRepository");
+const CartRepository = require("../repositories/cartRepository");
 const DraftOrderService = require("./darftOrderService");
 const ShippingRepository = require("../repositories/shippingRepository");
-const ProductRepository = require("../repositories/productRepository");
 const  stripe  = require("../config/stripe");
 const CustomerRepository = require("../repositories/customerRepository");
+const ProductRepository = require("../repositories/productRepository")
 
 
 
@@ -23,13 +23,14 @@ const OrderService = {
         let newOrder = await OrderRepository.createOrder({
             customer_id: customerId,
             items: draftOrder.items,
-            totalPrice: draftOrder.finalPrice,
+            totalPrice: draftOrder.totalPrice,
             discount: draftOrder.discount,
-            description: draftOrder.description,
+            descriptions : draftOrder.descriptions,
             finalPrice: draftOrder.finalPrice,
             payment_method: payment_method,
             payment_status: "Pending", 
         });
+        console.log(newOrder)
 
         let newShipping = await ShippingRepository.createShipping({
             order_id: newOrder._id,
