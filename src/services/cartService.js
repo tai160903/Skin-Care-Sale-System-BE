@@ -1,5 +1,5 @@
-const CartRepository = require("../repositories/CartRepository");
-const productRepository = require("../repositories/ProductRepository");
+const CartRepository = require("../repositories/cartRepository");
+const productRepository = require("../repositories/productRepository");
 const PromotionRepository = require("../repositories/promotionRepository");
 
 const CartService = {
@@ -11,8 +11,12 @@ const CartService = {
    
     const product = await productRepository.getProductById(productId);
     if (!product) throw new Error("Product not found");
- 
-    const priceAtTime = product.price;
+    var priceAtTime = 0;
+    if(product.discountPercentage > 0){
+      priceAtTime = product.discountedPrice ;
+    } else{
+      priceAtTime = product.price;
+    }
     const existingItem = cart.items.find(item => item.product_id.equals(productId));
 
     if (existingItem) {
