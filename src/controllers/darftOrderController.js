@@ -7,7 +7,7 @@ const DraftOrderController = {
             const draftOrder = await DraftOrderService.getDraftOrderByCustomerId(customerId);
             res.send(draftOrder);
         } catch (error) {
-            res.status(400).send(error.message);
+            res.status(500).send(error.message);
         }
     },
     async creatDraftOrder(req, res) {
@@ -17,7 +17,7 @@ const DraftOrderController = {
             const newDraftOrder = await DraftOrderService.creatDraftOrder(customerId);
             res.send(newDraftOrder);
         } catch (error) {
-            res.status(400).send(error.message);
+            res.status(500).send(error.message);
         }
     },
 };
