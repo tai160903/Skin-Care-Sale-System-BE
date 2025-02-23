@@ -29,6 +29,7 @@ tags:
   - name: Draft Order
   - name:  Orders
   - name: Shipping
+  - name : Blog
 
 
 paths:
@@ -512,6 +513,39 @@ paths:
           description: Invalid input
         500:
           description: Internal server error
+
+  /products/updateDiscount/{id}:
+    put:
+      tags:
+        - Products
+      summary: Update product discount by ID
+      description: Update the discount percentage of an existing product
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: string
+          description: Product ID
+        - in: body
+          name: discount
+          description: Updated discount details
+          required: true
+          schema:
+            type: object
+            properties:
+              discountPercent:
+                type: number
+                format: float
+                description: Discount percentage for the product
+      responses:
+        200:
+          description: Discount updated successfully
+        400:
+          description: Invalid request
+        404:
+          description: Product not found
+            
+     
 
   /products/{id}:
     get:
@@ -1170,6 +1204,110 @@ paths:
             $ref: "#/definitions/Shipping"
         404:
           description: "Shipping record not found."
+  /blogs:
+    post:
+      tags:
+        - Blog
+      summary: Create a new blog
+      description: Create a new blog in the system
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: blog
+          description: Blog information
+          schema:
+            $ref: '#/definitions/Blog'
+      responses:
+        201:
+          description: Blog created successfully
+          schema:
+            $ref: '#/definitions/Blog'
+        400:
+          description: Invalid request
+        500:
+          description: Server error
+
+    get:
+      tags:
+        - Blog
+      summary: Get all blogs
+      description: Returns a list of all blogs
+      responses:
+        200:
+          description: Success
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Blog'
+        500:
+          description: Server error
+
+  /blogs/{id}:
+    get:
+      tags:
+        - Blog
+      summary: Get blog by ID
+      description: Returns detailed information of a blog by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: Blog ID
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: '#/definitions/Blog'
+        404:
+          description: Blog not found
+        500:
+          description: Server error
+
+    put:
+      tags:
+        - Blog
+      summary: Update blog
+      description: Update blog information by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: Blog ID
+        - in: body
+          name: blog
+          description: Blog data to update
+          schema:
+            $ref: '#/definitions/Blog'
+      responses:
+        200:
+          description: Blog updated successfully
+        404:
+          description: Blog not found
+        500:
+          description: Server error
+
+    delete:
+      tags:
+        - Blog
+      summary: Delete blog
+      description: Delete a blog by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: Blog ID
+      responses:
+        200:
+          description: Blog deleted successfully
+        404:
+          description: Blog not found
+        500:
+          description: Server error
+
   /reviews:
     get:
       tags:
@@ -1313,6 +1451,12 @@ definitions:
       category:
         type: string
         example: "Skincare"
+      discountPercentage:
+        type: number
+        example: 0
+    #  discountedPrice:
+     #   type: number
+      #  example: 0
       stock:
         type: integer
         example: 100
@@ -1544,4 +1688,23 @@ definitions:
         type: string
         format: date-time
         example: "2025-02-19T14:00:00Z"
-
+  Blog:
+    type: object
+    properties:
+      user_id:
+        type: string
+        description: ID of the user who created the blog
+        example: "12345"
+      title:
+        type: string
+        description: Blog title
+        example: "Guide to Writing Blogs with Node.js"
+      content:
+        type: string
+        description: Detailed content of the blog
+        example: "The detailed content of the article..."
+      image:
+        type: string
+        description: URL of the blog image
+        example: "https://example.com/image.jpg"
+     

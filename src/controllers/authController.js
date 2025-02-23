@@ -1,4 +1,5 @@
 const customerRepository = require("../repositories/customerRepository");
+const userRepository = require("../repositories/userRepository");
 const authService = require("../services/authService");
 const {
   generateAccessToken,
@@ -93,11 +94,16 @@ class AuthController {
         role: req.user.role,
       });
 
-      const existingCustomer = await customerRepository.findOne({
+      console.log("id",req.user._id )
+      const existingUser = await userRepository.findById({
         user: req.user._id,
       });
-      if (!existingCustomer) {
-        await customerRepository.create({ user: req.user._id });
+      const customer = await customerRepository.getCustomerIdByUserId({
+        user : req.user._id});
+
+      if (!existingUser) {
+        await userRepository.create({ user: req.user._id });
+        
       }
 
       res.cookie("refreshToken", refreshToken, {
@@ -108,7 +114,7 @@ class AuthController {
         `${
           process.env.CLIENT_URL
         }?access_token=${accessToken}&user=${encodeURIComponent(
-          JSON.stringify(req.user)
+          JSON.stringify(req.user, customer)
         )}`
       );
     } catch (error) {
