@@ -17,7 +17,7 @@ const CartRepository = {
 
 
   async updateCart(cart) {
-   console.log("Updating cart:", cart);
+   //console.log("Updating cart:", cart);
     return await cart.save();
   },
 

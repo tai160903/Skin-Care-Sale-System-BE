@@ -5,14 +5,14 @@ const DarftOrderRepository = {
         return await DraftOrder.findOne({ customer_id: customerId }).populate("items.product_id");  
     },
     async createDraftOrder(customerId) {
-        console.log
         try {
             const newDraftOrder = await DraftOrder.create({ customer_id: customerId.customer_id,
                 items: customerId.items,
                 totalPrice: customerId.totalPrice,
                 discount: customerId.discount,
                 descriptions: customerId.description,
-                finalPrice: customerId.finalPrice
+                amountPrice: customerId.amountPrice,
+                finalPrice : customerId.finalPrice
  });
             return newDraftOrder;
         } catch (error) {
@@ -29,6 +29,9 @@ const DarftOrderRepository = {
     },
     async deleteOrderCard(customerId){
         return await DraftOrder.findOneAndDelete({customer_id: customerId})
+    },
+    async updateDraftOrder(draftorder){
+        return await draftorder.save();
     }
 };
 

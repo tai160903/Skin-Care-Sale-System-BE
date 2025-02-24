@@ -4,7 +4,9 @@ const DraftOrderService = require("./darftOrderService");
 const ShippingRepository = require("../repositories/shippingRepository");
 const  stripe  = require("../config/stripe");
 const CustomerRepository = require("../repositories/customerRepository");
-const ProductRepository = require("../repositories/productRepository")
+const ProductRepository = require("../repositories/productRepository");
+const { applyPromotion } = require("./cartService");
+const DarftOrderRepository = require("../repositories/draftOrderRepository");
 
 
 
@@ -20,12 +22,15 @@ const OrderService = {
 
         await ProductRepository.checkStockAvailability(draftOrder.items);
 
+        const desc =   draftOrder.desc +  " and " + draftOrder.descriptions ;
+        const discount = draftOrder.discount + draftOrder.promoPrice;
+
         let newOrder = await OrderRepository.createOrder({
             customer_id: customerId,
             items: draftOrder.items,
             totalPrice: draftOrder.totalPrice,
-            discount: draftOrder.discount,
-            descriptions : draftOrder.descriptions,
+            discount: discount,
+            descriptions : desc,
             finalPrice: draftOrder.finalPrice,
             payment_method: payment_method,
             payment_status: "Pending", 
@@ -91,7 +96,7 @@ const OrderService = {
     } ,  
     async deleteOrderById(id){
         return await OrderRepository.deleteOrderById(id);
-    }
+    },
 };
 
 module.exports = OrderService;
