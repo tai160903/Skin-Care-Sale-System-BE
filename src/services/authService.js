@@ -90,7 +90,7 @@ const authService = {
         role: user.role,
       });
       const customer = await customerRepository.getCustomerIdByUserId(user._id);
-      console.log("customer" , customer);
+      console.log("customer", customer);
       return {
         message: "Login successfully",
         status: 200,
@@ -101,7 +101,7 @@ const authService = {
           email: user.email,
           role: user.role,
         },
-        customer
+        customer,
       };
     } catch (error) {
       return { message: error.message, status: 400 };
@@ -117,25 +117,35 @@ const authService = {
     }
   },
 
-  changePassword: async (id, req) => {
-    const { error } = changePasswordSchema.validate(req);
+  changePassword: async (id, token, req) => {
+    const { newPassword, confirmNewPassword } = req;
+    const { error } = changePasswordSchema.validate({
+      id,
+      token,
+      newPassword,
+      confirmNewPassword,
+    });
     if (error) return { message: error.details[0].message, status: 400 };
     try {
       const user = await userRepository.findById(id);
+      console.log("user", user);
       if (!user) {
         return { message: "User not found", status: 404 };
       }
-      const { password, newPassword, confirmNewPassword } = req;
-      const isPasswordMatch = await bcrypt.compare(password, user.password);
-      if (!isPasswordMatch) {
-        return { message: "Incorrect password", status: 400 };
+      if (user.tokenResetPassword !== token) {
+        return { message: "Invalid link", status: 400 };
       }
+
       if (newPassword !== confirmNewPassword) {
         return { message: "Passwords do not match", status: 400 };
       }
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(newPassword, salt);
-      await userRepository.updateById(req.userId, { password: hashedPassword });
+      console.log("hashedPassword", hashedPassword);
+      await userRepository.updateById(id, {
+        password: hashedPassword,
+        tokenResetPassword: null,
+      });
       return { message: "Password changed successfully", status: 200 };
     } catch (error) {
       return { message: error.message, status: 400 };
@@ -153,7 +163,7 @@ const authService = {
         charset: "hex",
       });
       await userRepository.updateById(userId, { tokenVerify: newToken });
-      const verificationLink = `${process.env.BASE_URL}/auth/verify-email/${newToken}/${userId}`;
+      const verificationLink = `${process.env.CLIENT_URL}/verify-email?token=${newToken}&userId=${userId}`;
       await sendEmail({
         to: email,
         subject: "Email Verification",
@@ -167,6 +177,8 @@ const authService = {
   },
 
   verifyEmail: async ({ id, tokenVerify }) => {
+    console.log("id", id);
+    console.log("tokenVerify", tokenVerify);
     const { error } = verifyEmailSchema.validate({ id, tokenVerify });
     if (error) return { message: error.details[0].message, status: 400 };
 
@@ -213,7 +225,7 @@ const authService = {
 
       await userRepository.updateById(user._id, { tokenResetPassword: token });
 
-      const resetLink = `${process.env.BASE_URL}/auth/verify-reset-password/${token}/${user._id}`;
+      const resetLink = `${process.env.CLIENT_URL}/verify-reset-password?token=${token}&userId=${user._id}`;
       await sendEmail({
         to: email,
         subject: "Reset Password",
