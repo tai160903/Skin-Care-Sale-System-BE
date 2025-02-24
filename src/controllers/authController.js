@@ -119,8 +119,7 @@ class AuthController {
   changePassword = async (req, res) => {
     try {
       const { id, token } = req.params;
-      console.log("userId", id);
-      console.log("token", token);
+
       const response = await authService.changePassword(id, token, req.body);
       return res.json(response);
     } catch (error) {

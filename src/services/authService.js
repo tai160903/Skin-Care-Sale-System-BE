@@ -90,7 +90,6 @@ const authService = {
         role: user.role,
       });
       const customer = await customerRepository.getCustomerIdByUserId(user._id);
-      console.log("customer", customer);
       return {
         message: "Login successfully",
         status: 200,
@@ -128,7 +127,6 @@ const authService = {
     if (error) return { message: error.details[0].message, status: 400 };
     try {
       const user = await userRepository.findById(id);
-      console.log("user", user);
       if (!user) {
         return { message: "User not found", status: 404 };
       }
@@ -141,7 +139,6 @@ const authService = {
       }
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(newPassword, salt);
-      console.log("hashedPassword", hashedPassword);
       await userRepository.updateById(id, {
         password: hashedPassword,
         tokenResetPassword: null,
@@ -177,8 +174,6 @@ const authService = {
   },
 
   verifyEmail: async ({ id, tokenVerify }) => {
-    console.log("id", id);
-    console.log("tokenVerify", tokenVerify);
     const { error } = verifyEmailSchema.validate({ id, tokenVerify });
     if (error) return { message: error.details[0].message, status: 400 };
 

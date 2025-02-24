@@ -19,7 +19,6 @@ const CartController = {
   async getCart(req, res) {
     try {
       const { customerId } = req.params;
-      console.log("customerId", customerId);
       const cart = await CartService.getCart(customerId);
       res.json(cart);
     } catch (error) {
@@ -29,6 +28,7 @@ const CartController = {
   async removeItem(req, res) {
     try {
       const { customerId, productId } = req.query;
+
       const updatedCart = await CartService.removeItem(customerId, productId);
       res.json(updatedCart);
     } catch (error) {

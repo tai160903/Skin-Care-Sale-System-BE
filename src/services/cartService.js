@@ -37,31 +37,27 @@ const CartService = {
   },
 
   async removeItem(customerId, productId) {
-    let cart = await CartRepository.getCartByCustomerId(customerId);
+    const cart = await CartRepository.getCartByCustomerId(customerId);
+
     if (!cart) throw new Error("Cart not found");
 
-    const itemIndex = cart.items.findIndex((item) =>
-      item.product_id.equals(productId)
+    cart.items = cart.items.filter(
+      (item) => item.product_id._id.toString() !== productId.toString()
     );
-    if (itemIndex < 0) throw new Error("Product not found in cart");
 
-    if (cart.items[itemIndex].quantity > 1) {
-      cart.items[itemIndex].quantity -= 1;
-    } else {
-      // Nếu quantity = 1 thì xóa sản phẩm khỏi giỏ hàng
-      cart.items.splice(itemIndex, 1);
-    }
-
-    // Cập nhật tổng tiền và giá cuối cùng
     cart.totalPrice = cart.items.reduce(
       (total, item) => total + item.quantity * item.priceAtTime,
       0
     );
-    cart.finalPrice = cart.totalPrice - cart.discount;
+    cart.finalPrice = cart.totalPrice - (cart.discount || 0);
 
-    return await CartRepository.updateCart(cart);
+    const updatedCart = await CartRepository.updateCart(cart);
+
+    return {
+      message: "Product removed from cart successfully",
+      cart: updatedCart,
+    };
   },
-
   async applyPromotion(customerId, promoCode) {
     let cart = await CartRepository.getCartByCustomerId(customerId);
     if (!cart) throw new Error("Cart not found");
