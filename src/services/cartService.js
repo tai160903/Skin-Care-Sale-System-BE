@@ -52,24 +52,24 @@ const CartService = {
     return await CartRepository.updateCart(cart);
 },
 
-  async applyPromotion(customerId, promoCode) {
-    let cart = await CartRepository.getCartByCustomerId(customerId);
-    if (!cart) throw new Error("Cart not found");
+  // async applyPromotion(customerId, promoCode) {
+  //   let cart = await CartRepository.getCartByCustomerId(customerId);
+  //   if (!cart) throw new Error("Cart not found");
 
-    const promotion = await PromotionRepository.getByCode(promoCode);
-    if (!promotion) throw new Error("Invalid promotion code");
+  //   const promotion = await PromotionRepository.getByCode(promoCode);
+  //   if (!promotion) throw new Error("Invalid promotion code");
 
-    const now = new Date();
-    if (promotion.start_date > now || promotion.end_date < now) {
-      throw new Error("Promotion is not valid at this time");
-    }
+  //   const now = new Date();
+  //   if (promotion.start_date > now || promotion.end_date < now) {
+  //     throw new Error("Promotion is not valid at this time");
+  //   }
 
-    // Tính giảm giá
-    cart.discount = (cart.totalPrice * promotion.discount_percentage) / 100;
-    cart.finalPrice = Math.max(cart.totalPrice - cart.discount, 0);
+  //   // Tính giảm giá
+  //   cart.discount = (cart.totalPrice * promotion.discount_percentage) / 100;
+  //   cart.finalPrice = Math.max(cart.totalPrice - cart.discount, 0);
 
-    return await CartRepository.updateCart(cart);
-  },
+  //   return await CartRepository.updateCart(cart);
+  // },
 
 
   async getCart(customerId) {

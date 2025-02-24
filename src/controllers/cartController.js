@@ -7,7 +7,7 @@ const CartController = {
       const updatedCart = await CartService.addToCart(customerId, productId, quantity);
       res.json(updatedCart);
     } catch (error) {
-      res.status(400).json({ message: error.message });
+      res.status(500).json({ message: error.message });
     }
   },
 
@@ -17,7 +17,7 @@ const CartController = {
       const cart = await CartService.getCart(customerId);
       res.json(cart);
     } catch (error) {
-      res.status(400).json({ message: error.message });
+      res.status(500).json({ message: error.message });
     }
   },
   async removeItem(req, res) { 
@@ -26,7 +26,7 @@ const CartController = {
       const updatedCart = await CartService.removeItem(customerId, productId);
       res.json(updatedCart);
     } catch (error) {
-      res.status(400).json({ message: error.message });
+      res.status(500).json({ message: error.message });
     }
   },
 
@@ -36,7 +36,7 @@ const CartController = {
       const updatedCart = await CartService.applyPromotion(customerId, promoCode);
       res.json(updatedCart);
     } catch (error) {
-      res.status(400).json({ message: error.message });
+      res.status(500).json({ message: error.message });
     }
   },
   
@@ -46,7 +46,7 @@ const CartController = {
       await CartService.clearCart(customerId);
       res.json({ message: "Cart cleared successfully" });
     } catch (error) {
-      res.status(400).json({ message: error.message });
+      res.status(500).json({ message: error.message });
     }
   }
 };
