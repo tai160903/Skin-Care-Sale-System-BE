@@ -1,6 +1,7 @@
 const DarftOrderRepository = require("../repositories/draftOrderRepository");
 const CustomerRepository = require("../repositories/customerRepository");
-const CartRepository = require("../repositories/CartRepository");
+const CartRepository = require("../repositories/cartRepository");
+const PromotionRepository = require("../repositories/promotionRepository");
 
 const DraftOrderService = {
     async creatDraftOrder(customerId) {
@@ -19,6 +20,7 @@ const DraftOrderService = {
         discount = cart.finalPrice * 0.15;
         description = "Discount 15% for platinum customer";
     }
+
     const finalPrice = cart.finalPrice - discount;
 
     const newDraftOrder = await DarftOrderRepository.createDraftOrder({
@@ -27,6 +29,7 @@ const DraftOrderService = {
         totalPrice: cart.finalPrice,
         discount : discount,
         description: description,
+        amountPrice: finalPrice,
         finalPrice: finalPrice,
     });
     return newDraftOrder;
@@ -40,6 +43,25 @@ const DraftOrderService = {
 },
     async deleteDraftOrder(customerId){
         return await DarftOrderRepository.deleteOrderCard(customerId);
+    },
+    async applyPromotion(customerId,promocode){
+        let draftOrder = await DarftOrderRepository.getDraftOrderByCustomerId(customerId);
+        if (!draftOrder) throw new Error("Order not found");
+        const promotion = await PromotionRepository.getByCode(promocode);
+        if (!promotion) throw new Error("Invalid promotion code");
+    
+        const now = new Date();
+        if (promotion.start_date > now || promotion.end_date < now) {
+          throw new Error("Promotion is not valid at this time");
+        }
+
+        draftOrder.promoPrice = (draftOrder.amountPrice * promotion.discount_percentage) / 100;
+        draftOrder.finalPrice = Math.max(draftOrder.amountPrice - draftOrder.promoPrice, 0);
+
+        draftOrder.desc = "sale " + promotion.description ; 
+
+        return await DarftOrderRepository.updateDraftOrder(draftOrder);
     }
 };
+
 module.exports = DraftOrderService;

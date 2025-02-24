@@ -9,7 +9,9 @@ const draftOrder = require("./draftOrder");
 const order = require("./order");
 const shipping = require("./shipping");
 const review = require("./review");
-const blog = require("./blog")
+const blog = require("./blog");
+const routine = require("./routine");
+const shipFee = require("./shipFee");
 const router = express.Router();
 
 router.use("/auth", auth);
@@ -23,6 +25,7 @@ router.use("/orders", order);
 router.use("/shippings", shipping);
 router.use("/reviews", review);
 router.use("/blogs", blog);
-
+router.use("/routines", routine);
+router.use("/shipfees",shipFee);
 
 module.exports = router;
