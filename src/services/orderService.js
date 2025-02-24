@@ -1,10 +1,11 @@
 const OrderRepository = require("../repositories/orderRepository");
-const CartRepository = require("../repositories/CartRepository");
+const CartRepository = require("../repositories/cartRepository");
 const DraftOrderService = require("./darftOrderService");
 const ShippingRepository = require("../repositories/shippingRepository");
 const ProductRepository = require("../repositories/ProductRepository");
 const stripe = require("../config/stripe");
 const CustomerRepository = require("../repositories/customerRepository");
+const ProductRepository = require("../repositories/productRepository");
 
 const OrderService = {
   async createOrder(customerId, payment_method, address, phone) {

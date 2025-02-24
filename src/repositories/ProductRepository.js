@@ -34,6 +34,7 @@ class ProductRepository {
             }
         }
     }
+    
     async updateProductRating(productId, rating){
         return await Product.findByIdAndUpdate(
             productId ,
@@ -43,6 +44,7 @@ class ProductRepository {
     }
     async createProduct(productData){
         try {
+            
             const newProduct = new Product(productData)
             return await newProduct.save();
         } catch(error){
@@ -52,7 +54,6 @@ class ProductRepository {
 
       async getProductById(productId){
         try {
-            console.log("productId",productId)
             return await Product.findById(productId);
 
         } catch(error){

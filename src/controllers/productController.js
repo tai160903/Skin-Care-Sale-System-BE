@@ -1,4 +1,3 @@
-const { updateProduct } = require("../repositories/ProductRepository");
 const productService = require("../services/productService");
 
 class ProductController {
@@ -55,5 +54,14 @@ class ProductController {
             res.status(500).json({ message: error.message });
           }
         }
+      
+    async updateDiscount(req,res){
+      try{
+        const UpdateDiscount = await productService.updateDiscount(req.params.id, req.body.discountPercent);
+        res.status(200).json(UpdateDiscount);
+      } catch (error) {
+        res.status(500).json({ message: error.message });
       }
+    }
+  }
 module.exports = new ProductController();
