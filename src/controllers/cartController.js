@@ -3,11 +3,10 @@ const CartService = require("../services/cartService");
 const CartController = {
   async addToCart(req, res) {
     try {
-      const { customerId, product_id, quantity } = req.body;
-
+      const { customerId, productId, quantity } = req.body;
       const updatedCart = await CartService.addToCart(
         customerId,
-        product_id,
+        productId,
         quantity
       );
       res.json(updatedCart);
