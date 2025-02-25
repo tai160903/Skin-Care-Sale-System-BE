@@ -1,6 +1,7 @@
 const DraftOrderService = require("../services/darftOrderService");
 
 const DraftOrderController = {
+
     async getDraftOrderByCustomerId(req, res) {
         try {
             const customerId = req.params.customerId;
@@ -30,5 +31,6 @@ const DraftOrderController = {
             res.status(500).json({ message: error.message });
           }
         }
+
 };
 module.exports = DraftOrderController;

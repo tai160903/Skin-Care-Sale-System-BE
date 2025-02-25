@@ -1,6 +1,7 @@
 const DraftOrder = require("../models/draftOrder");
 
 const DarftOrderRepository = {
+
     async getDraftOrderByCustomerId(customerId) {
         return await DraftOrder.findOne({ customer_id: customerId }).populate("items.product_id");  
     },
@@ -32,7 +33,25 @@ const DarftOrderRepository = {
     },
     async updateDraftOrder(draftorder){
         return await draftorder.save();
+
     }
+  },
+  async clearDraftOrder(customerId) {
+    return await DraftOrder.findOneAndUpdate(
+      { customer_id: customerId },
+      {
+        items: [],
+        totalPrice: 0,
+        descriptions: "",
+        discount: 0,
+        finalPrice: 0,
+      },
+      { new: true }
+    );
+  },
+  async deleteOrderCard(customerId) {
+    return await DraftOrder.findOneAndDelete({ customer_id: customerId });
+  },
 };
 
 module.exports = DarftOrderRepository;
