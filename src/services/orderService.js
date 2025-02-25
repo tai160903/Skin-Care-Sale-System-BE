@@ -2,16 +2,12 @@ const OrderRepository = require("../repositories/orderRepository");
 const CartRepository = require("../repositories/cartRepository");
 const DraftOrderService = require("./darftOrderService");
 const ShippingRepository = require("../repositories/shippingRepository");
-const ProductRepository = require("../repositories/ProductRepository");
 const stripe = require("../config/stripe");
 const CustomerRepository = require("../repositories/customerRepository");
 
 const ProductRepository = require("../repositories/productRepository");
 const { applyPromotion } = require("./cartService");
 const DarftOrderRepository = require("../repositories/draftOrderRepository");
-
-
-
 
 const OrderService = {
   async createOrder(customerId, payment_method, address, phone) {
@@ -25,22 +21,20 @@ const OrderService = {
 
     await ProductRepository.checkStockAvailability(draftOrder.items);
 
+    const desc = draftOrder.desc + " and " + draftOrder.descriptions;
+    const discount = draftOrder.discount + draftOrder.promoPrice;
 
-        const desc =   draftOrder.desc +  " and " + draftOrder.descriptions ;
-        const discount = draftOrder.discount + draftOrder.promoPrice;
-
-        let newOrder = await OrderRepository.createOrder({
-            customer_id: customerId,
-            items: draftOrder.items,
-            totalPrice: draftOrder.totalPrice,
-            discount: discount,
-            descriptions : desc,
-            finalPrice: draftOrder.finalPrice,
-            payment_method: payment_method,
-            payment_status: "Pending", 
-        });
-        console.log(newOrder)
-
+    let newOrder = await OrderRepository.createOrder({
+      customer_id: customerId,
+      items: draftOrder.items,
+      totalPrice: draftOrder.totalPrice,
+      discount: discount,
+      descriptions: desc,
+      finalPrice: draftOrder.finalPrice,
+      payment_method: payment_method,
+      payment_status: "Pending",
+    });
+    console.log(newOrder);
 
     let newShipping = await ShippingRepository.createShipping({
       order_id: newOrder._id,
@@ -93,16 +87,14 @@ const OrderService = {
     await CartRepository.clearCart(customerId);
     await DraftOrderService.deleteDraftOrder(customerId);
 
-
-        return { newOrder,newShipping, checkoutUrl }; // Trả về đơn hàng và link thanh toán (nếu có)
-    },
-    async getOrderById(id){
-        return await OrderRepository.getOrderById(id);
-    } ,  
-    async deleteOrderById(id){
-        return await OrderRepository.deleteOrderById(id);
-    },
-
+    return { newOrder, newShipping, checkoutUrl }; // Trả về đơn hàng và link thanh toán (nếu có)
+  },
+  async getOrderById(id) {
+    return await OrderRepository.getOrderById(id);
+  },
+  async deleteOrderById(id) {
+    return await OrderRepository.deleteOrderById(id);
+  },
 };
 
 module.exports = OrderService;
