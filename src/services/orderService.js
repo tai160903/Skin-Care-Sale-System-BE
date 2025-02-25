@@ -2,8 +2,9 @@ const OrderRepository = require("../repositories/orderRepository");
 const CartRepository = require("../repositories/cartRepository");
 const DraftOrderService = require("./darftOrderService");
 const ShippingRepository = require("../repositories/shippingRepository");
-const  stripe  = require("../config/stripe");
+const stripe = require("../config/stripe");
 const CustomerRepository = require("../repositories/customerRepository");
+
 const ProductRepository = require("../repositories/productRepository");
 const { applyPromotion } = require("./cartService");
 const productRepository = require("../repositories/productRepository");
@@ -12,15 +13,15 @@ const productRepository = require("../repositories/productRepository");
 
 
 const OrderService = {
-    async createOrder(customerId, payment_method, address, phone) {
-        let cart = await CartRepository.getCartByCustomerId(customerId);
-        if (!cart) throw new Error("Cart not found");
+  async createOrder(customerId, payment_method, address, phone) {
+    let cart = await CartRepository.getCartByCustomerId(customerId);
+    if (!cart) throw new Error("Cart not found");
 
         let draftOrder = await DraftOrderService.getDraftOrderByCustomerId(customerId);
         if (!draftOrder) throw new Error("Draft order not found");
  
 
-        await ProductRepository.checkStockAvailability(draftOrder.items);
+    await ProductRepository.checkStockAvailability(draftOrder.items);
 
         const desc =   draftOrder.desc +  "   " + draftOrder.descriptions ;
         const discount = draftOrder.discount + draftOrder.promoPrice;
@@ -36,14 +37,14 @@ const OrderService = {
             payment_status: "Pending Confirmation", 
         });
 
-        let newShipping = await ShippingRepository.createShipping({
-            order_id: newOrder._id,
-            shippingdata: {  
-                address: address,
-                phone: phone,
-                status: "Pending"
-            }
-        });
+    let newShipping = await ShippingRepository.createShipping({
+      order_id: newOrder._id,
+      shippingdata: {
+        address: address,
+        phone: phone,
+        status: "Pending",
+      },
+    });
 
         let checkoutUrl = null;
         if (!newOrder._id || !newShipping._id) {
@@ -77,17 +78,17 @@ const OrderService = {
                     },
                 });
 
-                checkoutUrl = session.url; // Lưu URL thanh toán để gửi về FE
-            } catch (error) {
-                throw new Error(error.message);
-            }
-        }
+        checkoutUrl = session.url; // Lưu URL thanh toán để gửi về FE
+      } catch (error) {
+        throw new Error(error.message);
+      }
+    }
 
-        await ProductRepository.updateStockAndPurchaseCount(draftOrder.items);
-        await CustomerRepository.updatePoint(customerId,draftOrder.finalPrice);
-        // Xóa giỏ hàng và draft order
-        await CartRepository.clearCart(customerId);
-        await DraftOrderService.deleteDraftOrder(customerId);
+    await ProductRepository.updateStockAndPurchaseCount(draftOrder.items);
+    await CustomerRepository.updatePoint(customerId, draftOrder.finalPrice);
+    // Xóa giỏ hàng và draft order
+    await CartRepository.clearCart(customerId);
+    await DraftOrderService.deleteDraftOrder(customerId);
 
         return { newOrder,newShipping, checkoutUrl }; // Trả về đơn hàng và link thanh toán (nếu có)
     },
