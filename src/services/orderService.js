@@ -6,7 +6,8 @@ const  stripe  = require("../config/stripe");
 const CustomerRepository = require("../repositories/customerRepository");
 const ProductRepository = require("../repositories/productRepository");
 const { applyPromotion } = require("./cartService");
-const DarftOrderRepository = require("../repositories/draftOrderRepository");
+const productRepository = require("../repositories/productRepository");
+//const DarftOrderRepository = require("../repositories/draftOrderRepository");
 
 
 
@@ -17,12 +18,11 @@ const OrderService = {
 
         let draftOrder = await DraftOrderService.getDraftOrderByCustomerId(customerId);
         if (!draftOrder) throw new Error("Draft order not found");
-        console.log("draftOrder",draftOrder);
  
 
         await ProductRepository.checkStockAvailability(draftOrder.items);
 
-        const desc =   draftOrder.desc +  " and " + draftOrder.descriptions ;
+        const desc =   draftOrder.desc +  "   " + draftOrder.descriptions ;
         const discount = draftOrder.discount + draftOrder.promoPrice;
 
         let newOrder = await OrderRepository.createOrder({
@@ -33,9 +33,8 @@ const OrderService = {
             descriptions : desc,
             finalPrice: draftOrder.finalPrice,
             payment_method: payment_method,
-            payment_status: "Pending", 
+            payment_status: "Pending Confirmation", 
         });
-        console.log(newOrder)
 
         let newShipping = await ShippingRepository.createShipping({
             order_id: newOrder._id,
@@ -70,7 +69,8 @@ const OrderService = {
                     ],
                     mode: "payment",
                     success_url: `http://localhost:5173/success?orderId=${newOrder._id}`,
-                    cancel_url: "http://localhost:5173/cancel",
+                    cancel_url: `http://localhost:5173/cancel?orderId=${newOrder._id}`,
+
                     metadata: {
                         order_id: newOrder._id.toString(),
                        shipping_id: newShipping._id.toString(),
@@ -92,11 +92,35 @@ const OrderService = {
         return { newOrder,newShipping, checkoutUrl }; // Trả về đơn hàng và link thanh toán (nếu có)
     },
     async getOrderById(id){
-        return await OrderRepository.getOrderById(id);
+        const order =  await OrderRepository.getOrderById(id);
+        if(!order){
+            throw new Error("order not found");
+        }
+        return order;
     } ,  
     async deleteOrderById(id){
+        const order = await this.getOrderById(id);
+
+        await productRepository.restoreStockAndPurchaseCount(order.items);
+
         return await OrderRepository.deleteOrderById(id);
     },
+    async getAllOrder(){
+        return await OrderRepository.getAllOrders();
+    },
+    async getOrdersByCustomerId(customerId){
+        return await OrderRepository.getOrdersByCustomerId(customerId);
+    },
+    async updateStatusOrder(id,status){
+        const order = await OrderRepository.getOrderById(id);
+        if(status == "Cancelled"){
+            await productRepository.restoreStockAndPurchaseCount(order.items);
+        }   
+        if(order.order_status == "Cancelled"){
+         throw new Error("this Order cancelled, it can't not update status " )   
+        }
+        return await OrderRepository.updateStatusOrder(id,status);
+    }
 };
 
 module.exports = OrderService;

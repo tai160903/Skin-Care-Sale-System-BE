@@ -76,6 +76,19 @@ class ProductRepository {
             throw new Error('Error delete product: ' + error.message);
         }
       }
+      async restoreStockAndPurchaseCount(items) {
+        for (let item of items) {
+            await Product.updateOne(
+                { _id: item.product_id },
+                {
+                    $inc: {
+                        stock: item.quantity, // Hoàn lại stock
+                        purchaseCount: -item.quantity // Giảm purchaseCount
+                    }
+                }
+            );
+        }
+    }
 }
 
 module.exports = new ProductRepository();
