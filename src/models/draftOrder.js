@@ -35,10 +35,24 @@ const OrderItemSchema = new mongoose.Schema({
             type: String,
             default: ""
         },
-        finalPrice: {
+        amountPrice: {
             type: Number,
             default: 0
         }, 
+        promoPrice:{
+            type: Number,
+            default: 0
+        },
+        // promotion
+        desc :{
+            type: String,
+            default: "" 
+        },
+        finalPrice : {
+            type: Number,
+            default: 0
+        }
+
         },{ timestamps: true });
 
 module.exports = mongoose.model("DraftOrder", DraftOrderSchema);

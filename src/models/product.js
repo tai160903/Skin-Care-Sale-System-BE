@@ -31,6 +31,11 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: false,
     },
+    skinType : {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "SkinType",
+      require : true
+    },
     stock: {
       type: Number,
       required: true,

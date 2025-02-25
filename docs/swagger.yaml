@@ -421,23 +421,6 @@ paths:
         400:
           description: Invalid input
 
-  /cart/apply-promotion:
-    post:
-      tags:
-        - Cart
-      summary: Apply a promotion code
-      description: Apply a discount code to the customer's cart
-      parameters:
-        - in: body
-          name: promotion
-          required: true
-          schema:
-            $ref: "#/definitions/ApplyPromotionRequest"
-      responses:
-        200:
-          description: Promotion applied successfully
-        400:
-          description: Invalid promotion code or expired
   /cart/remove-item:
     put:
       tags:
@@ -1049,6 +1032,23 @@ paths:
               message:
                 type: string
                 example: "Internal server error"
+  /draftOrders/apply-promotion:
+    put:
+      tags:
+        - Draft Order
+      summary: Apply a promotion code
+      description: Apply a discount code to the customer's Draft Order
+      parameters:
+        - in: body
+          name: promotion
+          required: true
+          schema:
+            $ref: "#/definitions/ApplyPromotionRequest"
+      responses:
+        200:
+          description: Promotion applied successfully
+        400:
+          description: Invalid promotion code or expired
   /draftOrders/{customerId}:
     post:
       tags:
@@ -1112,6 +1112,107 @@ paths:
               message:
                 type: string
                 example: "Internal server error"
+  /shipfees:
+    get:
+      tags:
+        - Ship Fee
+      summary: Get all ship fees
+      description: Returns a list of all ship fees
+      responses:
+        200:
+          description: Success
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ShipFee'
+        500:
+          description: Server error
+    post:
+      tags:
+        - Ship Fee
+      summary: Create a new ship fee
+      description: Create a new ship fee in the system
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: shipFee
+          description: Ship fee information
+          schema:
+            $ref: '#/definitions/ShipFee'
+      responses:
+        201:
+          description: Ship fee created successfully
+          schema:
+            $ref: '#/definitions/ShipFee'
+        400:
+          description: Invalid request
+        500:
+          description: Server error
+  /shipfees/location:
+    get:
+      tags:
+        - Ship Fee
+      summary: Get ship fee by location
+      description: Returns a ship fee based on location
+      parameters:
+      - in: query
+        name: location
+        required: true
+        type: string
+        description: Location to search
+
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: '#/definitions/ShipFee'
+        404:
+          description: Ship fee not found
+        500:
+          description: Server error
+  /shipfees/{id}:
+    put:
+      tags:
+        - Ship Fee
+      summary: Update ship fee
+      description: Update a ship fee by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: Ship fee ID
+        - in: body
+          name: shipFee
+          description: Ship fee data to update
+          schema:
+            $ref: '#/definitions/ShipFee'
+      responses:
+        200:
+          description: Ship fee updated successfully
+        404:
+          description: Ship fee not found
+        500:
+          description: Server error
+    delete:
+      tags:
+        - Ship Fee
+      summary: Delete ship fee
+      description: Delete a ship fee by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: Ship fee ID
+      responses:
+        200:
+          description: Ship fee deleted successfully
+        404:
+          description: Ship fee not found
+        500:
+          description: Server error
 
   /shippings:
     get:
@@ -1438,7 +1539,107 @@ paths:
             properties:
               message:
                 type: string
+  /routines/skintype/{skintypeId}:
+    get:
+      tags:
+        - Routine
+      summary: Get routines by skin type
+      description: Returns a list of routines filtered by skin type ID
+      parameters:
+        - name: skintypeId
+          in: path
+          required: true
+          type: string
+          description: Skin Type ID
+      responses:
+        200:
+          description: Success
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Routine'
+        404:
+          description: Routines not found
+        500:
+          description: Server error
+  /routines:
+    post:
+      tags:
+        - Routine
+      summary: Create a new routine
+      description: Create a new routine in the system
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: routine
+          description: Routine information
+          schema:
+            $ref: '#/definitions/Routine'
+      responses:
+        201:
+          description: Routine created successfully
+          schema:
+            $ref: '#/definitions/Routine'
+        400:
+          description: Invalid request
+        500:
+          description: Server error
+  /routines/{id}:
+    put:
+      tags:
+        - Routine
+      summary: Update routine
+      description: Update routine information by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: Routine ID
+        - in: body
+          name: routine
+          description: Routine data to update
+          schema:
+            $ref: '#/definitions/Routine'
+      responses:
+        200:
+          description: Routine updated successfully
+        404:
+          description: Routine not found
+        500:
+          description: Server error
+
+    delete:
+      tags:
+        - Routine
+      summary: Delete routine
+      description: Delete a routine by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: Routine ID
+      responses:
+        200:
+          description: Routine deleted successfully
+        404:
+          description: Routine not found
+        500:
+          description: Server error
+  
+  
 definitions:
+  ShipFee:
+    type: object
+    properties:
+      location:
+        type: string
+        example: 'New York'
+      price:
+        type: number
+        example: 5.99
   Product:
     type: object
     properties:
@@ -1454,9 +1655,9 @@ definitions:
       discountPercentage:
         type: number
         example: 0
-    #  discountedPrice:
-     #   type: number
-      #  example: 0
+      skinType:
+        type: string
+        example: "64e9f8c8b4d6c5a2f4d8e7f1" 
       stock:
         type: integer
         example: 100
@@ -1707,4 +1908,31 @@ definitions:
         type: string
         description: URL of the blog image
         example: "https://example.com/image.jpg"
-     
+  Routine:
+    type: object
+    required:
+      - skinType
+      - step
+    properties:
+      skinType:
+        type: string
+        description: The ID of the associated skin type
+      steps:
+        type: array
+        items:
+          type: object
+          properties:
+            stepNumber:
+              type: integer
+              description: Step number in the routine
+            title:
+              type: string
+              description: Title of the step
+            description:
+              type: string
+              description: Description of the step
+            recommendProducts:
+              type: array
+              items:
+                type: string
+                description: Product ID
