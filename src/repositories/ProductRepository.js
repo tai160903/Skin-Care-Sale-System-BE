@@ -9,6 +9,15 @@ class ProductRepository {
             throw new Error('Error fetching products: ' + error.message);
         }
       }
+    async getTopSellingProducts(){
+        try{
+            return await Product.find()
+            .sort({purchaseCount:  -1 })
+            .limit(10);
+        } catch(error){
+            throw new Error('Error fetching products: ' + error.message);
+        }
+    }
       async updateStockAndPurchaseCount(orderItems) {
         for (const item of orderItems) {
             await Product.findByIdAndUpdate(
@@ -51,6 +60,7 @@ class ProductRepository {
             throw new Error('Error create product: ' + error.message);
         }
       }
+      //async Getby
 
       async getProductById(productId){
         try {
@@ -82,12 +92,22 @@ class ProductRepository {
                 { _id: item.product_id },
                 {
                     $inc: {
-                        stock: item.quantity, // Hoàn lại stock
-                        purchaseCount: -item.quantity // Giảm purchaseCount
+                        stock: item.quantity, 
+                        purchaseCount: -item.quantity 
                     }
                 }
             );
         }
+    }
+    async getProductsByCategory(category){
+        
+        const products = await Product.find({ 
+            category: { $regex: new RegExp(category, "i")}
+        });
+        if(!products || products.length ==0 ){
+            throw new Error(`not found product with ${category}`)
+        }
+        return products
     }
 }
 
