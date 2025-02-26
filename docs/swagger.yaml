@@ -402,7 +402,23 @@ paths:
             $ref: "#/definitions/Cart"
         404:
           description: Cart not found
-
+  /cart/apply-promotion:
+    post:
+      tags:
+        - Cart
+      summary: Apply a promotion code
+      description: Apply a discount code to the customer's cart
+      parameters:
+        - in: body
+          name: promotion
+          required: true
+          schema:
+            $ref: "#/definitions/ApplyPromotionRequest"
+      responses:
+        200:
+          description: Promotion applied successfully
+        400:
+          description: Invalid promotion code or expired
   /cart/add:
     post:
       tags:
@@ -1205,88 +1221,6 @@ paths:
           description: No orders found for this customer
         500:
           description: Server error
-        
-  
-  /draftOrders/apply-promotion:
-    put:
-      tags:
-        - Draft Order
-      summary: Apply a promotion code
-      description: Apply a discount code to the customer's Draft Order
-      parameters:
-        - in: body
-          name: promotion
-          required: true
-          schema:
-            $ref: "#/definitions/ApplyPromotionRequest"
-      responses:
-        200:
-          description: Promotion applied successfully
-        400:
-          description: Invalid promotion code or expired
-  /draftOrders/{customerId}:
-    post:
-      tags:
-        - Draft Order
-      summary: Create a draft order
-      description: Create a draft order for a customer
-      parameters:
-        - in: query
-          name: customer_id
-          required: true
-          type: string
-          description: Customer ID
-      responses:
-        201:
-          description: Draft order created successfully
-          schema:
-            type: object
-            properties:
-              message:
-                type: string
-                example: "Draft order created successfully"
-              data:
-                type: object
-                properties:
-                  _id:
-                    type: string
-                    description: ID of the draft order
-        400:
-          description: Invalid input
-          schema:
-            type: object
-            properties:
-              message:
-                type: string
-                example: "Invalid input"
-        500:
-          description: Internal server error
-          schema:
-            type: object
-            properties:
-              message:
-                type: string
-                example: "Internal server error"
-    get:
-      tags:
-        - Draft Order
-      summary: Get draft orders
-      description: Get a draft order
-      responses:
-        200:
-          description: Draft orders retrieved successfully
-          schema:
-            type: array
-            items:
-              $ref: "#/definitions/Cart"
-        500:
-          description: Internal server error
-          schema:
-            type: object
-            properties:
-              message:
-                type: string
-                example: "Internal server error"
   /shipfees:
     get:
       tags:
@@ -1803,7 +1737,7 @@ paths:
           description: Routine not found
         500:
           description: Server error\
-  /address//Province:
+  /address/province:
     get:
       tags:
         - Address

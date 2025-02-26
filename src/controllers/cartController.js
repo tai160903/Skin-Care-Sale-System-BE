@@ -4,6 +4,7 @@ const CartController = {
   async addToCart(req, res) {
     try {
       const { customerId, productId, quantity } = req.body;
+   
 
       const updatedCart = await CartService.addToCart(
         customerId,
@@ -32,8 +33,9 @@ const CartController = {
 
   async getCart(req, res) {
     try {
+      
       const cart = await CartService.getCart(req.params.customerId);
-      res.json(cart);
+      res.status(200).json(cart);
     } catch (error) {
       res.status(500).json({ message: error.message });
     }

@@ -1,6 +1,7 @@
 const Cart = require("../models/cart");
 const CartRepository = {
   async getCartByCustomerId(customerId) {
+    
     return await Cart.findOne({ customer_id: customerId }).populate(
       "items.product_id"
     );
