@@ -421,30 +421,33 @@ paths:
         400:
           description: Invalid input
 
-  /cart/update-quanity:
+  /cart/update-quantity:
     put:
       tags: 
       - Cart
       summary: Update the quantity of a product in the cart
       description: Update the quantity of a product in the customer's cart
       parameters:
-        - in: query
-          name: customerId
-          required: true
-          type: string
-          description: Customer ID
-        - in: query
-          name: productId
-          required: true
-          type: string
-          description: Product ID
         - in: body
-          name: quantity
+          name: body
           required: true
           schema:
-            type: integer
-            minimum: 1
-          description: New quantity of the product
+            type: object
+            properties:
+              customerId:
+                type: string
+                description: Customer ID
+              productId:
+                type: string
+                description: Product ID
+              quantity:
+                type: integer
+                minimum: 1
+                description: New quantity of the product
+            required:
+              - customerId
+              - productId
+              - quantity
       responses:
         200:
           description: Product quantity updated successfully
@@ -452,6 +455,7 @@ paths:
           description: Invalid quantity value
         404:
           description: Product not found
+
         
   /cart/remove-item:
     put:

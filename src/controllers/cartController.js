@@ -9,7 +9,7 @@ const CartController = {
         productId,
         quantity
       );
-      res.json(updatedCart);
+      res.status(200).json(updatedCart);
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
@@ -31,8 +31,8 @@ const CartController = {
 
   async getCart(req, res) {
     try {
-    //  const { customer_id } = req.params.customerId;
-      console.log( req.params.customerId);
+     const { customer_id } = req.params.customerId;
+    //  console.log( req.params.customerId);
       const cart = await CartService.getCart(req.params.customerId);
       res.json(cart);
     } catch (error) {
