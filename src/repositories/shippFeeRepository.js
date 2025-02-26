@@ -3,7 +3,7 @@ const shipFee = require("../models/shipFee");
 const ShipFeeRepositoy = {
     async GetShipFeeByLocation(location){
         try {
-            const lowerLocation = location.location.toLowerCase();
+            const lowerLocation = location.toLowerCase();
             
             const importantKeywords = await this.getImportantKeywords();
 

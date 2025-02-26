@@ -1,6 +1,5 @@
 const OrderRepository = require("../repositories/orderRepository");
 const CartRepository = require("../repositories/cartRepository");
-const DraftOrderService = require("./darftOrderService");
 const ShippingRepository = require("../repositories/shippingRepository");
 const stripe = require("../config/stripe");
 const CustomerRepository = require("../repositories/customerRepository");
@@ -17,29 +16,24 @@ const OrderService = {
     let cart = await CartRepository.getCartByCustomerId(customerId);
     if (!cart) throw new Error("Cart not found");
 
-        let draftOrder = await DraftOrderService.getDraftOrderByCustomerId(customerId);
-        if (!draftOrder) throw new Error("Draft order not found");
- 
+   
+    await ProductRepository.checkStockAvailability(cart.items);
 
-    await ProductRepository.checkStockAvailability(draftOrder.items);
-
-        const desc =   draftOrder.desc +  "   " + draftOrder.descriptions ;
-        const discount = draftOrder.discount + draftOrder.promoPrice;
-
-        const shipfee = await ShipFeeService.GetShipFeeByLocation({location : address});
+      
         
-        console.log(shipfee);
-
+        const shipfee = await ShipFeeService.GetShipFeeByLocation( address);
+        
+     
         let newOrder = await OrderRepository.createOrder({
             customer_id: customerId,
-            items: draftOrder.items,
-            totalPrice: draftOrder.totalPrice,
-            discount: discount,
-            descriptions : desc,
-            finalPrice: draftOrder.finalPrice + shipfee.price ,
+            items: cart.items,
+            totalPrice: cart.totalPrice,
+            discount: cart.discount,
+            finalPrice: cart.finalPrice  ,
             payment_method: payment_method,
             payment_status: "Pending Confirmation",
-            shipping_fee : shipfee.price 
+            totalPay : cart.finalPrice + shipfee.shiping_price,
+            shipping_fee : shipfee.shiping_price 
         });
 
     let newShipping = await ShippingRepository.createShipping({
@@ -67,7 +61,7 @@ const OrderService = {
                                 product_data: {
                                     name: "Total Payment",
                                 },
-                                unit_amount: Math.round((draftOrder.finalPrice + shipfee.price ) * 100),
+                                unit_amount: Math.round(newOrder.totalPay * 100),
                                 // Chuyển sang cents
                             },
                             quantity: 1,
@@ -89,11 +83,11 @@ const OrderService = {
       }
     }
 
-    await ProductRepository.updateStockAndPurchaseCount(draftOrder.items);
-    await CustomerRepository.updatePoint(customerId, draftOrder.finalPrice);
+    await ProductRepository.updateStockAndPurchaseCount(newOrder.items);
+    await CustomerRepository.updatePoint(customerId, newOrder.finalPrice);
     // Xóa giỏ hàng và draft order
     await CartRepository.clearCart(customerId);
-    await DraftOrderService.deleteDraftOrder(customerId);
+   // await DraftOrderService.deleteDraftOrder(customerId);
 
         return { newOrder,newShipping, checkoutUrl }; // Trả về đơn hàng và link thanh toán (nếu có)
     },

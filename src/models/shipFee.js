@@ -6,7 +6,7 @@ const ShipFeeSchema = new mongoose.Schema({
         type : String,
         required: true
     },
-    price :{
+    shiping_price :{
         type : Number,
         required: true
     }
