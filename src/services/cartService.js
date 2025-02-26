@@ -39,6 +39,37 @@ const CartService = {
 
     return await CartRepository.updateCart(cart);
   },
+  
+  async updateQuantity(customerId, productId, quantity) {
+    //console.log("customerId", quantity);
+    const cart = await CartRepository.getCartByCustomerId(customerId);
+
+    if (!cart) throw new Error("Cart not found");
+
+    const existingItem = cart.items.find((item) =>
+      item.product_id.equals(productId)
+    );
+
+    if (!existingItem) throw new Error("Product not found in cart");
+
+    if (quantity === 0) {
+      cart.items = cart.items.filter(
+        (item) => item.product_id._id.toString() !== productId.toString()
+      );
+    } else {
+      existingItem.quantity = quantity;
+    }
+
+    cart.totalPrice = cart.items.reduce(
+      (total, item) => total + item.quantity * item.priceAtTime,
+      0
+    );
+    cart.finalPrice = cart.totalPrice - (cart.discount || 0);
+
+    return await CartRepository.updateCart(cart);
+  },
+  
+
 
   async removeItem(customerId, productId) {
     const cart = await CartRepository.getCartByCustomerId(customerId);

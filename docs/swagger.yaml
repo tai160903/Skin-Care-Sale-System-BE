@@ -390,7 +390,7 @@ paths:
       summary: Get customer's cart
       description: Retrieve the current cart of a customer
       parameters:
-        - in: query
+        - in: path
           name: customerId
           required: true
           type: string
@@ -421,6 +421,29 @@ paths:
         400:
           description: Invalid input
 
+  /cart/update-quanity:
+    put:
+      tags: 
+      - Cart
+      summary: Update the quantity of a product in the cart
+      description: Update the quantity of a product in the customer's cart
+      parameters:
+        - in: query
+          name: customerId
+          required: true
+          type: string
+          description: Customer ID
+        - in: query
+          name: productId
+          required: true
+          type: string
+          description: Product ID
+      responses:
+          200:
+            description: Product removed from cart successfully
+          404:
+            description: Product not found
+        
   /cart/remove-item:
     put:
       tags:

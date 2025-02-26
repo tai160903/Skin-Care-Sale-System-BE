@@ -14,11 +14,26 @@ const CartController = {
       res.status(500).json({ message: error.message });
     }
   },
+ 
+  async updateQuantity(req, res) {
+    try {
+      const { customerId, productId, quantity } = req.body;
+      const updatedCart = await CartService.updateQuantity(
+        customerId,
+        productId,
+        quantity
+      );
+      res.json(updatedCart);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  },
 
   async getCart(req, res) {
     try {
-      const { customerId } = req.params;
-      const cart = await CartService.getCart(customerId);
+    //  const { customer_id } = req.params.customerId;
+      console.log( req.params.customerId);
+      const cart = await CartService.getCart(req.params.customerId);
       res.json(cart);
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -29,7 +44,7 @@ const CartController = {
       const { customerId, productId } = req.query;
 
       const updatedCart = await CartService.removeItem(customerId, productId);
-      res.json(updatedCart);
+      res.status(200).json(updatedCart);
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
