@@ -10,6 +10,9 @@ const AddressService = {
     getWardsByDistrict: async (district) => {
         return await AddressRepository.getWardsByDistrict(district);
     },
+    getAllProvince: async () => {
+        return await AddressRepository.getAllProvince();
+    },        
     getDistrictsByProvince: async (province) => {
         return await AddressRepository.getDistrictsByProvince(province);
     }

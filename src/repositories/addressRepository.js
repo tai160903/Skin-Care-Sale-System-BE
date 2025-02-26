@@ -19,13 +19,15 @@ const AddressRepository = {
         }    
     },
     getDistrictsByProvince: async (province) => {
-        console.log(province);
         try {
             return await Address.find({ province: province }).select("district -_id").distinct("district");
         } catch (error) {
             console.error("Error fetching districts by province:", error);
             throw error;
         }
+    },
+    getAllProvince: async () => {
+        return await Address.find().select("province -_id").distinct("province");
     },
 
     getWardsByDistrict: async (district) => {
