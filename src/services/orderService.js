@@ -115,6 +115,7 @@ const OrderService = {
         return await OrderRepository.getAllOrders();
     },
     async getOrdersByCustomerId(customerId){
+        console.log(customerId)
         return await OrderRepository.getOrdersByCustomerId(customerId);
     },
     async updateStatusOrder(id,status){
