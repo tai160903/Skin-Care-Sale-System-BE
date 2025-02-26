@@ -41,30 +41,22 @@ const CartService = {
   },
 
   async updateQuantity(customerId, productId, quantity) {
-    //console.log("customerId", quantity);
-    const cart = await CartRepository.getCartByCustomerId(customerId);
-
+    let cart = await CartRepository.getCartByCustomerId(customerId);
     if (!cart) throw new Error("Cart not found");
 
-    const existingItem = cart.items.find((item) =>
-      item.product_id.equals(productId)
-    );
+    const itemIndex = cart.items.findIndex(item => item.product_id.equals(productId));
+    if (itemIndex < 0) throw new Error("Product not found in cart");
+    
+    if (cart.items[itemIndex].quantity > 1) {
+      cart.items[itemIndex].quantity -= 1;
+  } else {
+      // Nếu quantity = 1 thì xóa sản phẩm khỏi giỏ hàng
+      cart.items.splice(itemIndex, 1);
+  }
 
-    if (!existingItem) throw new Error("Product not found in cart");
-
-    if (quantity === 0) {
-      cart.items = cart.items.filter(
-        (item) => item.product_id._id.toString() !== productId.toString()
-      );
-    } else {
-      existingItem.quantity = quantity;
-    }
-
-    cart.totalPrice = cart.items.reduce(
-      (total, item) => total + item.quantity * item.priceAtTime,
-      0
-    );
-    cart.finalPrice = cart.totalPrice - (cart.discount || 0);
+    // Cập nhật tổng tiền và giá cuối cùng
+    cart.totalPrice = cart.items.reduce((total, item) => total + item.quantity * item.priceAtTime, 0);
+    cart.finalPrice = cart.totalPrice - cart.discount;
 
     return await CartRepository.updateCart(cart);
   },

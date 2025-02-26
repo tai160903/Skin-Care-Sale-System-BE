@@ -12,6 +12,7 @@ const review = require("./review");
 const blog = require("./blog");
 const routine = require("./routine");
 const shipFee = require("./shipFee");
+const address = require("./address");
 const router = express.Router();
 
 router.use("/auth", auth);
@@ -27,5 +28,6 @@ router.use("/reviews", review);
 router.use("/blogs", blog);
 router.use("/routines", routine);
 router.use("/shipfees",shipFee);
+router.use("/address",address);
 
 module.exports = router;

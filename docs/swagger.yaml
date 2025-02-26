@@ -421,30 +421,33 @@ paths:
         400:
           description: Invalid input
 
-  /cart/update-quanity:
+  /cart/update-quantity:
     put:
       tags: 
       - Cart
       summary: Update the quantity of a product in the cart
       description: Update the quantity of a product in the customer's cart
       parameters:
-        - in: query
-          name: customerId
-          required: true
-          type: string
-          description: Customer ID
-        - in: query
-          name: productId
-          required: true
-          type: string
-          description: Product ID
         - in: body
-          name: quantity
+          name: body
           required: true
           schema:
-            type: integer
-            minimum: 1
-          description: New quantity of the product
+            type: object
+            properties:
+              customerId:
+                type: string
+                description: Customer ID
+              productId:
+                type: string
+                description: Product ID
+              quantity:
+                type: integer
+                minimum: 1
+                description: New quantity of the product
+            required:
+              - customerId
+              - productId
+              - quantity
       responses:
         200:
           description: Product quantity updated successfully
@@ -452,6 +455,7 @@ paths:
           description: Invalid quantity value
         404:
           description: Product not found
+
         
   /cart/remove-item:
     put:
@@ -1798,7 +1802,159 @@ paths:
         404:
           description: Routine not found
         500:
-          description: Server error
+          description: Server error\
+  /address:
+    get:
+      tags:
+        - Address
+      summary: Get all addresses
+      description: Retrieve a list of all addresses
+      responses:
+        200:
+          description: A list of addresses
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                _id:
+                  type: string
+                province:
+                  type: string
+                district:
+                  type: string
+                ward:
+                  type: string
+                street:
+                  type: string
+                createdAt:
+                  type: string
+                  format: date-time
+                updatedAt:
+                  type: string
+                  format: date-time
+        400:
+          description: Bad request
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+    post:
+      tags:
+        - Address
+      summary: Create a new address
+      description: Add a new address to the system
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: address
+          description: Address object to be created
+          required: true
+          schema:
+            type: object
+            properties:
+              province:
+                type: string
+                example: "Hanoi"
+              district:
+                type: string
+                example: "Ba Dinh"
+              ward:
+                type: string
+                example: "Kim Ma"
+              street:
+                type: string
+                example: "123 Kim Ma Street"
+      responses:
+        201:
+          description: Address created successfully
+          schema:
+            type: object
+            properties:
+              _id:
+                type: string
+              province:
+                type: string
+              district:
+                type: string
+              ward:
+                type: string
+              street:
+                type: string
+              createdAt:
+                type: string
+                format: date-time
+              updatedAt:
+                type: string
+                format: date-time
+        400:
+          description: Bad request
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+  /address/wards/{district}:
+    get:
+      tags:
+        - Address
+      summary: Get wards by district
+      description: Retrieve a list of wards based on the district
+      parameters:
+        - in: path
+          name: district
+          required: true
+          type: string
+          description: The district name
+      responses:
+        200:
+          description: A list of wards in the district
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                ward:
+                  type: string
+        400:
+          description: Bad request
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+
+  /address/districts/{province}:
+    get:
+      tags:
+        - Address
+      summary: Get districts by province
+      description: Retrieve a list of districts based on the province
+      parameters:
+        - in: path
+          name: province
+          required: true
+          type: string
+          description: The province name
+      responses:
+        200:
+          description: A list of districts in the province
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                district:
+                  type: string
+        400:
+          description: Bad request
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
   
   
 definitions:
