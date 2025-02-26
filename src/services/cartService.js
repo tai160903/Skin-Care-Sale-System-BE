@@ -39,7 +39,7 @@ const CartService = {
 
     return await CartRepository.updateCart(cart);
   },
-  
+
   async updateQuantity(customerId, productId, quantity) {
     //console.log("customerId", quantity);
     const cart = await CartRepository.getCartByCustomerId(customerId);
@@ -68,12 +68,12 @@ const CartService = {
 
     return await CartRepository.updateCart(cart);
   },
-  
-
 
   async removeItem(customerId, productId) {
+    console.log("customerId", customerId);
+    console.log("productId", productId);
     const cart = await CartRepository.getCartByCustomerId(customerId);
-
+    console.log("cart", cart);
     if (!cart) throw new Error("Cart not found");
 
     cart.items = cart.items.filter(
@@ -87,6 +87,11 @@ const CartService = {
     cart.finalPrice = cart.totalPrice - (cart.discount || 0);
 
     const updatedCart = await CartRepository.updateCart(cart);
+
+    return {
+      cart: updatedCart,
+      message: "Product removed from cart succe xssfully",
+    };
 
     // async applyPromotion(customerId, promoCode) {
     //   let cart = await CartRepository.getCartByCustomerId(customerId);

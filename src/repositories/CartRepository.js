@@ -16,7 +16,6 @@ const CartRepository = {
   },
 
   async updateCart(cart) {
-
     return await cart.save();
   },
 
