@@ -438,11 +438,20 @@ paths:
           required: true
           type: string
           description: Product ID
+        - in: body
+          name: quantity
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: New quantity of the product
       responses:
-          200:
-            description: Product removed from cart successfully
-          404:
-            description: Product not found
+        200:
+          description: Product quantity updated successfully
+        400:
+          description: Invalid quantity value
+        404:
+          description: Product not found
         
   /cart/remove-item:
     put:
