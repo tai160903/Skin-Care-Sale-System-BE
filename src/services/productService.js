@@ -10,6 +10,12 @@ class ProductService {
     async getProductById(productId){
         return await productRepository.getProductById(productId);
     }
+    async getProductsByCategory(category){
+        return await productRepository.getProductsByCategory(category);
+    }
+    async getTopSellingProduct(){
+        return await productRepository.getTopSellingProducts();
+    }
 
     async createProduct(productData){
         if (productData.discountPercentage < 0 || productData.discountPercentage > 100) {

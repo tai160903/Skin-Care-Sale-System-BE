@@ -4,11 +4,11 @@ const DraftOrderService = require("./darftOrderService");
 const ShippingRepository = require("../repositories/shippingRepository");
 const stripe = require("../config/stripe");
 const CustomerRepository = require("../repositories/customerRepository");
-
+const ShipFeeService = require("../services/shipFeeService");
 const ProductRepository = require("../repositories/productRepository");
-const { applyPromotion } = require("./cartService");
+
 const productRepository = require("../repositories/productRepository");
-//const DarftOrderRepository = require("../repositories/draftOrderRepository");
+;
 
 
 
@@ -26,15 +26,20 @@ const OrderService = {
         const desc =   draftOrder.desc +  "   " + draftOrder.descriptions ;
         const discount = draftOrder.discount + draftOrder.promoPrice;
 
+        const shipfee = await ShipFeeService.GetShipFeeByLocation({location : address});
+        
+        console.log(shipfee);
+
         let newOrder = await OrderRepository.createOrder({
             customer_id: customerId,
             items: draftOrder.items,
             totalPrice: draftOrder.totalPrice,
             discount: discount,
             descriptions : desc,
-            finalPrice: draftOrder.finalPrice,
+            finalPrice: draftOrder.finalPrice + shipfee.price ,
             payment_method: payment_method,
-            payment_status: "Pending Confirmation", 
+            payment_status: "Pending Confirmation",
+            shipping_fee : shipfee.price 
         });
 
     let newShipping = await ShippingRepository.createShipping({
@@ -62,7 +67,7 @@ const OrderService = {
                                 product_data: {
                                     name: "Total Payment",
                                 },
-                                unit_amount: Math.round(draftOrder.finalPrice * 100),
+                                unit_amount: Math.round((draftOrder.finalPrice + shipfee.price ) * 100),
                                 // Chuyển sang cents
                             },
                             quantity: 1,

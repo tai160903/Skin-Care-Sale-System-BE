@@ -30,6 +30,24 @@ class ProductController {
             res.status(500).json({ message: error.message });
           }
         }
+      async getProductsByCategory(req,res){
+        try{
+        const products = await productService.getProductsByCategory(req.params.category);
+        res.status(200).json(products);
+        } catch(error){
+          res.status(500).json({ message: error.message });
+        }
+      }
+
+      async getTopSellingProducts(req,res){
+        try{
+          const products = await productService.getTopSellingProduct();
+          res.status(200).json(products);
+
+        } catch(error){
+          res.status(500).json({ message: error.message });
+        }
+      }
 
     async updateProduct(req, res){
         try{
@@ -54,6 +72,7 @@ class ProductController {
             res.status(500).json({ message: error.message });
           }
         }
+      
       
     async updateDiscount(req,res){
       try{

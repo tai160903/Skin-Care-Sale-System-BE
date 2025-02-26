@@ -527,9 +527,42 @@ paths:
           description: Invalid request
         404:
           description: Product not found
-            
-     
+  /products/top-sell:
+    get:
+      tags:
+        - Products
+      summary: Get top Products
+      description: Get top 10 Products
+      responses:
+        200:
+          description: Successful operation
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Product"
+        500:
+          description: Internal server error
 
+  /products/category/{category}:
+    get:
+      tags:
+        - Products
+      summary: Get Product by category
+      description: Retreve products by them category
+      parameters:
+        - in : path 
+          name : category
+          required: true
+          type: string
+      responses:
+         200:
+          description: Successful operation
+          schema:
+            $ref: "#/definitions/Product"
+         404:
+          description: Product not found
+         500:
+          description: Internal server error 
   /products/{id}:
     get:
       tags:
@@ -967,7 +1000,7 @@ paths:
                 example: "PayPal"
               address:
                 type: string
-                example: "123 Đường ABC, Quận 1, TP. HCM"
+                example: "123 Đường ABC, Quận 1, Thành phố Hồ Chí Minh"
               phone:
                 type: string
                 example: "0987654321"

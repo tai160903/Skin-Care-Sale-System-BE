@@ -46,6 +46,10 @@ const OrderSchema = new mongoose.Schema({
         type: String, 
         enum: ["PayPal", "Cash"], 
         required: true },
+    shipping_fee :{
+        type: Number,
+        required: true
+    },
   }, { timestamps: true });
   
   module.exports = mongoose.model("Order", OrderSchema);
