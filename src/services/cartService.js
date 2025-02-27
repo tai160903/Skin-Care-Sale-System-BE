@@ -44,18 +44,23 @@ const CartService = {
     let cart = await CartRepository.getCartByCustomerId(customerId);
     if (!cart) throw new Error("Cart not found");
 
-    const itemIndex = cart.items.findIndex(item => item.product_id.equals(productId));
+    const itemIndex = cart.items.findIndex((item) =>
+      item.product_id.equals(productId)
+    );
     if (itemIndex < 0) throw new Error("Product not found in cart");
-    
+
     if (cart.items[itemIndex].quantity > 1) {
       cart.items[itemIndex].quantity -= 1;
-  } else {
+    } else {
       // Nếu quantity = 1 thì xóa sản phẩm khỏi giỏ hàng
       cart.items.splice(itemIndex, 1);
-  }
+    }
 
     // Cập nhật tổng tiền và giá cuối cùng
-    cart.totalPrice = cart.items.reduce((total, item) => total + item.quantity * item.priceAtTime, 0);
+    cart.totalPrice = cart.items.reduce(
+      (total, item) => total + item.quantity * item.priceAtTime,
+      0
+    );
     cart.finalPrice = cart.totalPrice - cart.discount;
 
     return await CartRepository.updateCart(cart);
@@ -86,23 +91,16 @@ const CartService = {
     };
   },
 
-    async applyPromotion(customerId, promoCode) {
-      let cart = await CartRepository.getCartByCustomerId(customerId);
-      if (!cart) throw new Error("Cart not found");
+  async applyPromotion(promoCode) {
+    const promotion = await PromotionRepository.getByCode(promoCode);
+    if (!promotion) throw new Error("Invalid promotion code");
 
-      const promotion = await PromotionRepository.getByCode(promoCode);
-      if (!promotion) throw new Error("Invalid promotion code");
+    const now = new Date();
+    if (promotion.start_date > now || promotion.end_date < now) {
+      throw new Error("Promotion is not valid at this time");
+    }
 
-      const now = new Date();
-      if (promotion.start_date > now || promotion.end_date < now) {
-        throw new Error("Promotion is not valid at this time");
-      }
-
-      // Tính giảm giá
-      cart.discount = (cart.totalPrice * promotion.discount_percentage) / 100;
-      cart.finalPrice = Math.max(cart.totalPrice - cart.discount, 0);
-
-      return await CartRepository.updateCart(cart);
+    return promotion;
   },
 
   async getCart(customerId) {
