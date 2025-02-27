@@ -19,14 +19,13 @@ router.use("/products", product);
 router.use("/users", user);
 router.use("/questions", question);
 router.use("/cart", cart);
-router.use("/promotions",promotion)
-
+router.use("/promotions", promotion);
 router.use("/orders", order);
 router.use("/shippings", shipping);
 router.use("/reviews", review);
 router.use("/blogs", blog);
 router.use("/routines", routine);
-router.use("/shipfees",shipFee);
-router.use("/address",address);
+router.use("/shipfees", shipFee);
+router.use("/address", address);
 
 module.exports = router;

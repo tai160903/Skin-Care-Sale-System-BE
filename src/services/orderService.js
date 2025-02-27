@@ -7,38 +7,25 @@ const ProductRepository = require("../repositories/productRepository");
 
 const productRepository = require("../repositories/productRepository");
 const OrderService = {
-  async createOrder(customerId, payment_method, address, phone) {
+  async createOrder(customerId, payment_method, address, phone, totalAmount) {
     let cart = await CartRepository.getCartByCustomerId(customerId);
+    console.log("cart", cart);
     if (!cart) throw new Error("Cart not found");
 
     await ProductRepository.checkStockAvailability(cart.items);
 
-    const shipfee = await ShipFeeService.GetShipFeeByLocation(address);
-
     let newOrder = await OrderRepository.createOrder({
       customer_id: customerId,
       items: cart.items,
-      totalPrice: cart.totalPrice,
-      discount: cart.discount,
-      finalPrice: cart.finalPrice,
+      totalPay: totalAmount,
       payment_method: payment_method,
-      payment_status: "Pending Confirmation",
-      totalPay: cart.finalPrice + shipfee.shiping_price,
-      shipping_fee: shipfee.shiping_price,
-    });
-
-    let newShipping = await ShippingRepository.createShipping({
-      order_id: newOrder._id,
-      shippingdata: {
-        address: address,
-        phone: phone,
-        status: "Pending",
-      },
+      address: address,
+      phone: phone,
     });
 
     let checkoutUrl = null;
-    if (!newOrder._id || !newShipping._id) {
-      throw new Error("Missing order_id or shipping_id");
+    if (!newOrder._id) {
+      throw new Error("Missing order_id ");
     }
     if (payment_method === "PayPal") {
       try {
@@ -68,6 +55,11 @@ const OrderService = {
         });
 
         checkoutUrl = session.url; // Lưu URL thanh toán để gửi về FE
+
+        return {
+          checkoutUrl: checkoutUrl,
+          order: newOrder,
+        };
       } catch (error) {
         throw new Error(error.message);
       }
@@ -102,7 +94,7 @@ const OrderService = {
     //       },
     //     });
     await ProductRepository.updateStockAndPurchaseCount(newOrder.items);
-    await CustomerRepository.updatePoint(customerId, newOrder.finalPrice);
+    await CustomerRepository.updatePoint(customerId, newOrder.totalPay);
     // Xóa giỏ hàng và draft order
     await CartRepository.clearCart(customerId);
     // await DraftOrderService.deleteDraftOrder(customerId);

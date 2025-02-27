@@ -4,36 +4,20 @@ const OrderController = {
   async createOrder(req, res) {
     try {
       console.log("req", req.body);
-      const {
-        customerId,
-        payment_method,
-        address,
-        phone,
-        cart,
-        totalAmount,
-        status,
-      } = req.body;
+      const { customerId, payment_method, address, phone, totalAmount } =
+        req.body;
       if (!customerId || !payment_method || !address || !phone) {
         return res.status(400).json({ message: "Missing required fields" });
       }
 
-      const { newOrder, newShipping, checkoutUrl } =
-        await OrderService.createOrder(
-          customerId,
-          payment_method,
-          address,
-          phone,
-          cart,
-          totalAmount,
-          status
-        );
-
-      return res.status(201).json({
-        message: "Order created successfully",
-        order: newOrder,
-        shipping: newShipping,
-        checkoutUrl,
-      });
+      const newOrder = await OrderService.createOrder(
+        customerId,
+        payment_method,
+        address,
+        phone,
+        totalAmount
+      );
+      res.status(201).json(newOrder);
     } catch (error) {
       console.error("Error creating order:", error);
       return res

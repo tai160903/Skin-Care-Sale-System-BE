@@ -4,7 +4,6 @@ const CartController = {
   async addToCart(req, res) {
     try {
       const { customerId, productId, quantity } = req.body;
-   
 
       const updatedCart = await CartService.addToCart(
         customerId,
@@ -33,7 +32,6 @@ const CartController = {
 
   async getCart(req, res) {
     try {
-      
       const cart = await CartService.getCart(req.params.customerId);
       res.status(200).json(cart);
     } catch (error) {
@@ -53,11 +51,9 @@ const CartController = {
 
   async applyPromotion(req, res) {
     try {
-      const { customerId, promoCode } = req.body;
-      const updatedCart = await CartService.applyPromotion(
-        customerId,
-        promoCode
-      );
+      const { promoCode } = req.body;
+      console.log("req", req.body);
+      const updatedCart = await CartService.applyPromotion(promoCode);
       res.json(updatedCart);
     } catch (error) {
       res.status(500).json({ message: error.message });

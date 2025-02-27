@@ -29,34 +29,18 @@ const OrderSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    discount: {
-      type: Number,
-      default: 0,
-    },
-    descriptions: {
-      type: String,
-      default: "",
-    },
-    finalPrice: {
-      type: Number,
-      default: 0,
-    },
-    shipping_fee: {
-      type: Number,
-      required: true,
-    },
     totalPay: {
       type: Number,
       default: 0,
     },
     order_status: {
       type: String,
-      enum: ["Pending Confirmation", "Confirmed", "Completed", "Cancelled"],
-      default: "Pending Confirmation",
+      enum: ["pending", "confirmed", "completed", "cancelled"],
+      default: "pending",
     },
     payment_method: {
       type: String,
-      enum: ["PayPal", "Cash"],
+      enum: ["paypal", "cash"],
       required: true,
     },
   },
