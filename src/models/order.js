@@ -41,6 +41,14 @@ const OrderSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    shipping_fee: {
+      type: Number,
+      required: true,
+    },
+    totalPay: {
+      type: Number,
+      default: 0,
+    },
     order_status: {
       type: String,
       enum: ["Pending Confirmation", "Confirmed", "Completed", "Cancelled"],
@@ -51,10 +59,6 @@ const OrderSchema = new mongoose.Schema(
       enum: ["PayPal", "Cash"],
       required: true,
     },
-    // shipping_fee :{
-    //     type: Number,
-    //     required: true
-    // },
   },
   { timestamps: true }
 );
