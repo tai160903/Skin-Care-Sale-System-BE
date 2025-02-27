@@ -1042,6 +1042,7 @@ paths:
               - payment_method
               - address
               - phone
+              - totalPay
             properties:
               customerId:
                 type: string
@@ -1050,6 +1051,9 @@ paths:
                 type: string
                 enum: [Cash, PayPal, CreditCard]
                 example: "PayPal"
+              totalPay:
+                type: number
+                example: 250
               address:
                 type: string
                 example: "123 Đường ABC, Quận 1, Thành phố Hồ Chí Minh"

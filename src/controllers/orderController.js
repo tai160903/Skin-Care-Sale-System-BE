@@ -4,8 +4,9 @@ const OrderController = {
   async createOrder(req, res) {
     try {
       console.log("req", req.body);
-      const { customerId, payment_method, address, phone, totalAmount } =
+      const { customerId, payment_method, address, phone, totalPay } =
         req.body;
+        console.log("req", req.body);
       if (!customerId || !payment_method || !address || !phone) {
         return res.status(400).json({ message: "Missing required fields" });
       }
@@ -15,7 +16,7 @@ const OrderController = {
         payment_method,
         address,
         phone,
-        totalAmount
+        totalPay
       );
       res.status(201).json(newOrder);
     } catch (error) {
