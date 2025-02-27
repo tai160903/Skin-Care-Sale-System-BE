@@ -4,7 +4,8 @@ const productRepository = require("../repositories/productRepository")
 class ProductService {
 
     async getAllProducts(){
-        return await productRepository.getAllProducts();
+        const data = await productRepository.getAllProducts();
+        return {message: "Products fetched successfully", data :data };
     }
 
     async getProductById(productId){

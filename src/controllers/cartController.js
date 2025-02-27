@@ -56,7 +56,7 @@ const CartController = {
       const updatedCart = await CartService.applyPromotion(promoCode);
       res.json(updatedCart);
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      res.status(400).json({ message: error.message });
     }
   },
 
