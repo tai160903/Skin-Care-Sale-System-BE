@@ -94,16 +94,14 @@ class AuthController {
         role: req.user.role,
       });
 
-      console.log("id",req.user._id )
-      const existingUser = await userRepository.findById({
-        user: req.user._id,
-      });
-      const customer = await customerRepository.getCustomerIdByUserId({
-        user : req.user._id});
+      const userId = req.user._id;
+
+      const existingUser = await userRepository.findById(userId);
+
+      const customer = await customerRepository.getCustomerIdByUserId(userId);
 
       if (!existingUser) {
-        await userRepository.create({ user: req.user._id });
-        
+        await userRepository.create({ user: userId });
       }
 
       res.cookie("refreshToken", refreshToken, {
@@ -114,7 +112,7 @@ class AuthController {
         `${
           process.env.CLIENT_URL
         }?access_token=${accessToken}&user=${encodeURIComponent(
-          JSON.stringify(req.user, customer)
+          JSON.stringify({ ...req.user, customer })
         )}`
       );
     } catch (error) {
