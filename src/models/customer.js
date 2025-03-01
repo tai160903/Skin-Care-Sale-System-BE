@@ -11,6 +11,10 @@ const customerSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "SkinType",
     },
+    name: {
+      type: String,
+      default: "",
+    },
     address: {
       type: String,
       default: "",
