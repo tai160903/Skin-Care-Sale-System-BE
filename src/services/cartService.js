@@ -67,10 +67,7 @@ const CartService = {
   },
 
   async removeItem(customerId, productId) {
-    console.log("customerId", customerId);
-    console.log("productId", productId);
     const cart = await CartRepository.getCartByCustomerId(customerId);
-    console.log("cart", cart);
     if (!cart) throw new Error("Cart not found");
 
     cart.items = cart.items.filter(

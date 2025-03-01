@@ -48,7 +48,6 @@ class ProductService {
         product.discountPercentage = discountPercentage;
         product.discountedPrice = product.price * (1 - discountPercentage/100);
         
-        console.log(discountPercentage);
         return await productRepository.updateProduct(productId, product);
     }
 }

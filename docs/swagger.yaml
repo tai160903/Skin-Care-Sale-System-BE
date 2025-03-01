@@ -683,7 +683,7 @@ paths:
         500:
           description: Internal server error
 
-  /users:
+  /users/customer:
     get:
       tags:
         - Users
@@ -763,8 +763,67 @@ paths:
               message:
                 type: string
                 example: "Internal server error"
-  
-  /users/customerId/{userId}:
+  /users/customer/{customerId}:
+    put:
+      tags:
+        - Users
+      summary: Update customer by customerId
+      description: Update a customer's information associated with a specific userId.
+      operationId: updateCustomerByUserId
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          type: string
+          description: The ID of the customer whose customer details are to be updated.
+        - name: body
+          in: body
+          required: true
+          description: The updated customer information.
+          schema:
+            $ref: "#/definitions/CustomerUpdateRequest"
+      security:
+        - Bearer: []
+      responses:
+        200:
+          description: Customer updated successfully
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Customer updated successfully"
+              data:
+                $ref: "#/definitions/Customer"
+        400:
+          description: Bad request
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Invalid request data"
+        404:
+          description: Customer not found
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Customer not found"
+        500:
+          description: Internal server error
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Internal server error"
+  /users/customer/{userId}:
     get:
       tags:
         - Users
@@ -800,6 +859,8 @@ paths:
             properties:
               message:
                 type: string
+  
+
   /users/{id}:
     get:
       tags:
@@ -2299,3 +2360,36 @@ definitions:
               items:
                 type: string
                 description: Product ID
+  CustomerUpdateRequest:
+    type: object
+    properties:
+      name:
+        type: string
+      address:
+        type: string
+      phone:
+        type: string
+    required:
+      - name
+      - address
+      - phone
+
+  Customer:
+    type: object
+    properties:
+      _id:
+        type: string
+      user:
+        type: string
+      skinType:
+        type: string
+      name:
+        type: string
+      address:
+        type: string
+      phone:
+        type: string
+      point:
+        type: number
+   
+     
