@@ -1,4 +1,5 @@
 const customerRepository = require("../repositories/customerRepository");
+const userRepository = require("../repositories/userRepository");
 const userService = {
   getAllUsers: async () => {
     const data = await customerRepository.findAll();
@@ -58,6 +59,10 @@ const userService = {
     const customerID = await customerRepository.getCustomerIdByUserId(userId);
     return customerID
     ;
+  },
+  async getAllStaff(){
+    const data = await userRepository.findAllStaff();
+    return {message :"get staff successed", data};
   }
 };
 module.exports = userService;

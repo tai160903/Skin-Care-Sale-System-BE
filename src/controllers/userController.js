@@ -41,6 +41,16 @@ const userController = {
       return res.status(500).json({ message: error.message });
     }
   },
+  getAllStaff: async (req, res) => {
+    try{
+
+      const data   = await userService.getAllStaff();
+      console.log(data);
+      return res.status(200).json(data);
+    }catch{
+      return res.status(500).json({ message: error.message });
+    }
+  },
 
   deleteUserById: async (req, res) => {
     try {

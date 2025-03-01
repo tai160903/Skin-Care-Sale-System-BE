@@ -104,7 +104,11 @@ const CartService = {
   },
 
   async getCart(customerId) {
-    return await CartRepository.getCartByCustomerId(customerId);
+    const Cart = await CartRepository.getCartByCustomerId(customerId);
+    if(!Cart){
+      await CartRepository.createCart(customerId);
+    }
+    return Cart;
   },
 
   async clearCart(customerId) {

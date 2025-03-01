@@ -5,7 +5,7 @@ class ProductService {
 
     async getAllProducts(){
         const data = await productRepository.getAllProducts();
-        return {message: "Products fetched successfully", data :data };
+        return {message: "Products fetched successfully", data };
     }
 
     async getProductById(productId){
@@ -17,7 +17,7 @@ class ProductService {
     async getTopSellingProduct(){
         return await productRepository.getTopSellingProducts();
     }
-
+    
     async createProduct(productData){
         if (productData.discountPercentage < 0 || productData.discountPercentage > 100) {
             throw new Error("Discount percentage must be between 0 and 100.");

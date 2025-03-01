@@ -723,7 +723,47 @@ paths:
               message:
                 type: string
                 example: "Internal server error"
-
+  /users/staff:
+    get:
+      tags:
+        - Users
+      summary: Get all users
+      description: Retrieve a list of all users from the system.
+      operationId: getAllUsers
+      produces:
+        - application/json
+      security:
+        - Bearer: []
+      responses:
+        200:
+          description: Users retrieved successfully
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Get all users successfully"
+              data:
+                type: array
+                items:
+                  $ref: "#/definitions/User"
+        404:
+          description: No users found
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "No users found"
+        500:
+          description: Internal server error
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Internal server error"
+  
   /users/customerId/{userId}:
     get:
       tags:
