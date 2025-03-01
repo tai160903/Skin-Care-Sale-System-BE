@@ -1,9 +1,9 @@
 const userService = require("../services/userService");
 
 const userController = {
-  getAllUsers: async (req, res) => {
+  getAllCustomer: async (req, res) => {
     try {
-      const response = await userService.getAllUsers();
+      const response = await userService.getAllCustomer();
       return res.status(response?.status || 200).json({
         message: response?.message,
         data: response?.data,
@@ -41,6 +41,15 @@ const userController = {
       return res.status(500).json({ message: error.message });
     }
   },
+  getAllStaff: async (req, res) => {
+    try{
+
+      const data   = await userService.getAllStaff();
+      return res.status(200).json(data);
+    }catch{
+      return res.status(500).json({ message: error.message });
+    }
+  },
 
   deleteUserById: async (req, res) => {
     try {
@@ -66,7 +75,16 @@ const userController = {
     } catch (error) {
       return res.status(500).json({ message: error.message });
     }
+  },
+  async updateCustomer(req,res){
+    try{
+      const data = await userService.updateCustomer(req.params.customerId,req.body);
+      return res.status(200).json(data);
+    }catch(error){
+      return res.status(500).json({ message: error.message });
+    }
   }
+
 };
 
 

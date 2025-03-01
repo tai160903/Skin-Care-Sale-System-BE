@@ -10,12 +10,10 @@ const OrderService = {
   async createOrder(customerId, payment_method, address, phone, totalAmount) {
     try{
     let cart = await CartRepository.getCartByCustomerId(customerId);
-    console.log("cart", cart);
     if (!cart) throw new Error("Cart not found");
 
     await ProductRepository.checkStockAvailability(cart.items);
 
-    console.log("totalAmount", totalAmount);
     let newOrder = await OrderRepository.createOrder({
       customer_id: customerId,
       items: cart.items,
