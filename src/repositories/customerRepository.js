@@ -54,6 +54,7 @@ const customerRepository = {
   async getCustomerIdByUserId(userId) {
     try {
       const customer = await Customer.findOne({ user: userId });
+      console.log("customer", customer);
       return customer;
     } catch (error) {
       console.error("Error fetching customerId:", error);

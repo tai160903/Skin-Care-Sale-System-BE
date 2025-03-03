@@ -78,7 +78,6 @@ class AuthController {
       return res.status(400).json({ message: error.message });
     }
   };
-
   loginGoogleCallback = async (req, res) => {
     try {
       if (!req.user) {
@@ -98,10 +97,14 @@ class AuthController {
 
       const existingUser = await userRepository.findById(userId);
 
-      const customer = await customerRepository.getCustomerIdByUserId(userId);
+      let customer = await customerRepository.getCustomerIdByUserId(userId);
 
       if (!existingUser) {
         await userRepository.create({ user: userId });
+      }
+
+      if (!customer) {
+        customer = await customerRepository.create({ user: userId });
       }
 
       res.cookie("refreshToken", refreshToken, {
@@ -112,8 +115,8 @@ class AuthController {
         `${
           process.env.CLIENT_URL
         }?access_token=${accessToken}&user=${encodeURIComponent(
-          JSON.stringify({ ...req.user, customer })
-        )}`
+          JSON.stringify({ ...req.user })
+        )}&customer=${encodeURIComponent(JSON.stringify({ ...customer }))}`
       );
     } catch (error) {
       return res.status(400).json({ message: error.message });

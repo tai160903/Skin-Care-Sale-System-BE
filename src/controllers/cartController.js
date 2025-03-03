@@ -52,7 +52,6 @@ const CartController = {
   async applyPromotion(req, res) {
     try {
       const { promoCode } = req.body;
-      console.log("req", req.body);
       const updatedCart = await CartService.applyPromotion(promoCode);
       res.json(updatedCart);
     } catch (error) {
