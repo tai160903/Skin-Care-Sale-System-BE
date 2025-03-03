@@ -89,20 +89,24 @@ const CartService = {
   },
 
   async applyPromotion(promoCode) {
-    const promotion = await PromotionRepository.getByCode(promoCode);
-    if (!promotion) throw new Error("Invalid promotion code");
+    try {
+      const promotion = await PromotionRepository.getByCode(promoCode);
+      if (!promotion) throw new Error("Invalid promotion code");
 
-    const now = new Date();
-    if (promotion.start_date > now || promotion.end_date < now) {
-      throw new Error("Promotion is not valid at this time");
+      const now = new Date();
+      if (promotion.start_date > now || promotion.end_date < now) {
+        throw new Error("Promotion is not valid at this time");
+      }
+
+      return promotion;
+    } catch (error) {
+      throw new Error("Error applying promotion: " + error.message);
     }
-
-    return promotion;
   },
 
   async getCart(customerId) {
     const Cart = await CartRepository.getCartByCustomerId(customerId);
-    if(!Cart){
+    if (!Cart) {
       await CartRepository.createCart(customerId);
     }
     return Cart;
