@@ -15,6 +15,11 @@ const customerSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    gender: {
+      type: Boolean,
+      default: false,
+    }
+    ,
     address: {
       type: String,
       default: "",

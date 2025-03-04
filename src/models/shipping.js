@@ -6,6 +6,11 @@ const ShippingSchema = new mongoose.Schema({
         ref: 'Order',
         required: true,
     },
+     customer_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Customer",
+        required: true,
+    },
     shipping_address: {
         type: String,
         required: true,
