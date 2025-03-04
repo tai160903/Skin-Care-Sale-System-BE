@@ -15,6 +15,7 @@ router.post(
   "/verify-reset-password/:token/:userId",
   AuthController.verifyEmailResetPassword
 );
+
 router.get(
   "/google",
   passport.authenticate("google", {
@@ -25,10 +26,10 @@ router.get(
 router.get(
   "/google/callback",
   passport.authenticate("google", {
-    failureRedirect: "http://localhost:5173/signin", // Redirect to login page if authentication fails
-    scope: ["email", "profile"], // Define the requested scopes
+    failureRedirect: "http://localhost:5173/signin",
+    scope: ["email", "profile"],
   }),
-  AuthController.loginGoogleCallback // Once authenticated, handle the callback
+  AuthController.loginGoogleCallback
 );
 
 module.exports = router;

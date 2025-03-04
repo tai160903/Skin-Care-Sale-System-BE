@@ -8,10 +8,11 @@ const shipping_feeRepository = require("../repositories/shippFeeRepository");
 
 const productRepository = require("../repositories/productRepository");
 const OrderService = {
-  async createOrder(customerId, payment_method, address, phone, totalAmount) {
-    try{
-    let cart = await CartRepository.getCartByCustomerId(customerId);
-    if (!cart) throw new Error("Cart not found");
+  async createOrder(customerId, payment_method, address, phone, totalPay) {
+    try {
+      const location = `${address.street}, ${address.ward}, ${address.district}, ${address.province}`;
+      let cart = await CartRepository.getCartByCustomerId(customerId);
+      if (!cart) throw new Error("Cart not found");
 
     await ProductRepository.checkStockAvailability(cart.items);
     
@@ -28,7 +29,7 @@ const OrderService = {
       shipping_price: shipping_price.shiping_price
       });
 
-    let newShipping = await ShippingRepository.createShipping({
+      let newShipping = await ShippingRepository.createShipping({
         order_id: newOrder._id,
         shippingdata: {
           customer_id: customerId,
@@ -49,19 +50,16 @@ const OrderService = {
           line_items: [
             {
               price_data: {
-                product_data: {
-                  name: "Total Payment",
-                },
-                unit_amount: Math.round(newOrder.totalPay),
                 currency: "vnd",
+                product_data: { name: "Total Payment" },
+                unit_amount: totalPay, // Ensure totalAmount is in VND
               },
               quantity: 1,
             },
           ],
           mode: "payment",
-          success_url: `http://localhost:5173/success?orderId=${newOrder._id}`,
-          cancel_url: `http://localhost:5173/cancel?orderId=${newOrder._id}`,
-
+          success_url: `http://localhost:5173/success`,
+          cancel_url: `http://localhost:5173/cancel`,
           metadata: {
             order_id: newOrder._id.toString(),
             shipping_id: newShipping._id.toString(),
@@ -83,15 +81,15 @@ const OrderService = {
 }
   },
   async getOrderById(id) {
-    try{
-    const order = await OrderRepository.getOrderById(id);
-    if (!order) {
-      throw new Error("order not found");
+    try {
+      const order = await OrderRepository.getOrderById(id);
+      if (!order) {
+        throw new Error("order not found");
+      }
+      return { message: "get order success", data: order };
+    } catch (error) {
+      throw new Error(error.message);
     }
-    return {message : "get order success", data : order};
-}catch(error){
-    throw new Error(error.message);
-}
   },
   async deleteOrderById(id) {
     const order = await this.getOrderById(id);
