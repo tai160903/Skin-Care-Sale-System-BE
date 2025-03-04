@@ -10,6 +10,7 @@ const CartService = {
     }
 
     const product = await productRepository.getProductById(productId);
+   
     if (!product) throw new Error("Product not found");
     var priceAtTime = 0;
     if (product.discountPercentage > 0) {
@@ -35,8 +36,9 @@ const CartService = {
       (total, item) => total + item.quantity * item.priceAtTime,
       0
     );
-    cart.finalPrice = cart.totalPrice - cart.discount;
+    cart.finalPrice = cart.totalPrice - cart.discountpercent;
 
+   
     return await CartRepository.updateCart(cart);
   },
 

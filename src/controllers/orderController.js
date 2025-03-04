@@ -1,4 +1,6 @@
 const OrderService = require("../services/orderService");
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+const CartRepository = require("../repositories/cartRepository");
 
 const OrderController = {
   async createOrder(req, res) {
@@ -82,6 +84,19 @@ const OrderController = {
         .json({ message: "Internal server error", error: error.message });
     }
   },
+  async stripeWebhook(req, res) {
+    const event = req.body; // Không cần JSON.parse()
+    const session = event.data.object;
+    if (event.type === "checkout.session.completed") {
+      await CartRepository.clearCart(session.metadata.customer_id);
+    } else {
+      await OrderService.deleteOrderById(session.metadata.order_id);
+    }
+  
+    res.status(200).json({ received: true });
+  }
+  
+
 };
 
 module.exports = OrderController;

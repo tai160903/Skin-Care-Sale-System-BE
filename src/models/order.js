@@ -32,9 +32,13 @@ const OrderItemSchema = new mongoose.Schema({
         },
         payment_method: {
           type: String,
-          enum: ["paypal", "cash"],
+          enum: ["stripe", "cash"],
           required: true,
         },
+        shipping_price: {
+          type: Number,
+          required: true,
+        }
       }, { timestamps: true });
   
   module.exports = mongoose.model("Order", OrderSchema);

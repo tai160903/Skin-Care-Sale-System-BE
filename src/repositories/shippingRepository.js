@@ -5,6 +5,7 @@ const ShippingRepository = {
   async createShipping({ order_id, shippingdata }) {
     try {
       return await Shipping.create({
+        customer_id: shippingdata.customer_id,
         order_id: order_id,
         shipping_address: shippingdata.address,
         shipping_phone: shippingdata.phone,
@@ -20,6 +21,33 @@ const ShippingRepository = {
       return await Shipping.find();
     } catch (error) {
       console.error("Error fetching all shipping:", error);
+      throw error;
+    }
+  },
+  async getShippingByCustomerId(customerId) {
+    try {
+      return await Shipping.find({ customer_id: customerId.customer_id });
+    } catch (error) {
+      console.error("Error fetching shipping by customer_id:", error);
+      throw error;
+    }
+  },
+  async getShippingByStatus(status){
+    try {
+      return await Shipping.find({shipping_status: status});
+    } catch (error) {
+      console.error("Error fetching shipping by status:", error);
+      throw error;
+    }
+  },
+  async getShippingByCustomerAndStatus(customerId, status) {
+    try {
+      return await Shipping.find({
+        customer_id: customerId.customer_id,
+        shipping_status: status,
+      });
+    } catch (error) {
+      console.error("Error fetching shipping by customer_id:", error);
       throw error;
     }
   },

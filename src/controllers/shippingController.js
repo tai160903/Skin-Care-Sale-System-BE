@@ -1,3 +1,4 @@
+const { getShippingByCustomerId, getShippingByCustomerAndStatus, getShippingByStatus } = require("../repositories/shippingRepository");
 const ShippingService = require("../services/shippingService");
 
 const ShippingController = {
@@ -5,6 +6,40 @@ const ShippingController = {
     try {
       const shippings = await ShippingService.getAllShipping();
       res.status(200).json(shippings);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  },
+  async getShippingByStatus(req, res) {
+    try {
+      const shipping = await ShippingService.getShippingByStatus(req.params.status);
+      if (!shipping) {
+        return res.status(404).json({ message: "Shipping not found" });
+      }
+      res.status(200).json(shipping);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  },
+ async getShippingByCustomerAndStatus(req, res) {
+    try {
+      const shipping = await ShippingService.getShippingByCustomerAndStatus(req.params.customerId, req.params.status);
+      if (!shipping) {
+        return res.status(404).json({ message: "Shipping not found" });
+      }
+      res.status(200).json(shipping);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  },
+
+  async getShippingByCustomerId(req, res) {
+    try{
+      const shipping = await ShippingService.getShippingByCustomerId(req.params.customerId);
+      if (!shipping) {
+        return res.status(404).json({ message: "Shipping not found" });
+      }
+      res.status(200).json(shipping); 
     } catch (error) {
       res.status(500).json({ message: error.message });
     }

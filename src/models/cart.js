@@ -23,7 +23,7 @@ const CartSchema = new mongoose.Schema({
   totalPrice: { 
     type: Number, 
     default: 0 },
-  discount: { 
+  discountpercent: { 
     type: Number, 
     default: 0 },
   finalPrice: { 

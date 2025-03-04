@@ -20,6 +20,36 @@ const ShippingService = {
       throw error;
     }
   },
+  async getShippingByCustomerId(customerId) {
+    try {
+      const data = await ShippingRepository.getShippingByCustomerId(customerId);
+      return({message :" get shipping success", data});
+    } catch (error) {
+      console.error("Error fetching shipping by customer_id:", error);
+      throw error;
+    }
+  },
+  async getShippingByStatus(status) {
+    try {
+      const data = await ShippingRepository.getShippingByStatus(status);
+      return({message :" get shipping success", data});
+    } catch (error) {
+      console.error("Error fetching shipping by status:", error);
+      throw error;
+    }
+  },
+  async getShippingByCustomerAndStatus(customerId, status) {
+    try {
+      const data = await ShippingRepository.getShippingByCustomerAndStatus(
+        customerId,
+        status
+      );
+      return({message :" get shipping success", data});
+    } catch (error) {
+      console.error("Error fetching shipping by customer_id:", error);
+      throw error;
+    }
+  },
 
   async getShippingByOrderId(orderId) {
     try {

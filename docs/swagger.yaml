@@ -1519,6 +1519,84 @@ paths:
             $ref: "#/definitions/Shipping"
         404:
           description: "Shipping record not found."
+  /shippings/customer/{customerId}:
+    get:
+      tags:
+        - "Shipping"
+      summary: "Get shipping records by customer ID"
+      description: "Retrieve all shipping records associated with a specific customer."
+      security:
+        - Bearer: []
+      parameters:
+        - name: "customerId"
+          in: "path"
+          required: true
+          type: "string"
+          description: "Customer ID"
+      responses:
+        200:
+          description: "Shipping records retrieved successfully."
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Shipping"
+        404:
+          description: "No shipping records found."
+
+  /shippings/customer-status/{customerId}/{status}:
+    get:
+      tags:
+        - "Shipping"
+      summary: "Get shipping records by customer ID and status"
+      description: "Retrieve all shipping records associated with a specific customer and a given status."
+      security:
+        - Bearer: []
+      parameters:
+        - name: "customerId"
+          in: "path"
+          required: true
+          type: "string"
+          description: "Customer ID"
+        - name: "status"
+          in: "path"
+          required: true
+          type: "string"
+          enum: ["Pending", "Shipped", "Delivered", "Cancelled"]
+          description: "Shipping status"
+      responses:
+        200:
+          description: "Shipping records retrieved successfully."
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Shipping"
+        404:
+          description: "No shipping records found."
+
+  /shippings/status/{status}:
+    get:
+      tags:
+        - "Shipping"
+      summary: "Get shipping records by status"
+      description: "Retrieve all shipping records with a specific shipping status."
+      security:
+        - Bearer: []
+      parameters:
+        - name: "status"
+          in: "path"
+          required: true
+          type: "string"
+          enum: ["Pending", "Shipped", "Delivered", "Cancelled"]
+          description: "Shipping status"
+      responses:
+        200:
+          description: "Shipping records retrieved successfully."
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Shipping"
+        404:
+          description: "No shipping records found."
   /blogs:
     post:
       tags:
@@ -2226,6 +2304,8 @@ definitions:
       _id:
         type: "string"
       order_id:
+        type: "string"
+      customer_id :
         type: "string"
       shipping_address:
         type: "string"
