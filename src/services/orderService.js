@@ -104,9 +104,14 @@ const OrderService = {
   async getOrdersByCustomerId(customerId) {
     return await OrderRepository.getOrdersByCustomerId(customerId);
   },
+  async getOrdersbyCustomerAndStatus(customerId, status) {
+    const data = await OrderRepository.getOrdersbyCustomerAndStatus(customerId, status);  
+    return({message : "get order success", data});
+  },
 
   async getOrdersByStatus(status) {
-    return await OrderRepository.getOrdersByStatus(status);
+    const data = await OrderRepository.getOrdersByStatus(status);
+    return({message : "get order success", data});
   },
 
   async updateStatusOrder(id, status) {

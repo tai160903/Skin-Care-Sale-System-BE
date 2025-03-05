@@ -1322,6 +1322,59 @@ paths:
           description: No orders found for this customer
         500:
           description: Server error
+  /orders/status/{status}:
+    get:
+      tags:
+        - Orders
+      summary: Get orders by status
+      description: Retrieve a list of orders filtered by status
+      parameters:
+        - name: status
+          in: path
+          required: true
+          type: string
+          description: Order status (Pending Confirmation, Confirmed, Completed, Cancelled)
+      responses:
+        200:
+          description: Orders retrieved successfully
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Order"
+        404:
+          description: No orders found with this status
+        500:
+          description: Server error
+
+  /orders/customer-status/{customerId}/{status}:
+    get:
+      tags:
+        - Orders
+      summary: Get orders by customer ID and status
+      description: Retrieve a list of orders for a specific customer filtered by status
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          type: string
+          description: Customer ID
+        - name: status
+          in: path
+          required: true
+          type: string
+          description: Order status (Pending Confirmation, Confirmed, Completed, Cancelled)
+      responses:
+        200:
+          description: Orders retrieved successfully
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Order"
+        404:
+          description: No orders found for this customer with the specified status
+        500:
+          description: Server error
+
   /shipfees:
     get:
       tags:
@@ -2151,7 +2204,10 @@ definitions:
         example: "Skincare"
       discountPercentage:
         type: number
-        example: 0
+        example: 10
+      discountedPrice:
+        type: number
+        example: 17.99
       skinType:
         type: string
         example: "64e9f8c8b4d6c5a2f4d8e7f1"
@@ -2164,10 +2220,10 @@ definitions:
       rating:
         type: number
         format: float
-        example: 0
+        example: 4.5
       purchaseCount:
         type: integer
-        example: 0
+        example: 25
       description:
         type: string
         example: "A gentle cleanser for all skin types."
@@ -2177,6 +2233,13 @@ definitions:
       price:
         type: number
         example: 19.99
+      userManual:
+        type: string
+        example: "Apply to damp skin and rinse with warm water."
+      virtue:
+        type: string
+        example: "Moisturizing, Soothing"
+
 
   CustomerId:
     type: string
