@@ -11,20 +11,23 @@ const OrderService = {
   async createOrder(customerId, payment_method, address, phone, totalPay) {
     try {
       const location = `${address.street}, ${address.ward}, ${address.district}, ${address.province}`;
+      const locationShip = `${address.district}, ${address.province}`;
       let cart = await CartRepository.getCartByCustomerId(customerId);
       if (!cart) throw new Error("Cart not found");
 
     await ProductRepository.checkStockAvailability(cart.items);
     
 
-    const shipping_price = await shipping_feeRepository.GetShipFeeByLocation(address);
+      console.log("location", location);
+
+    const shipping_price = await shipping_feeRepository.GetShipFeeByLocation(locationShip);
 
     console.log("customerId:" ,customerId)
 
     let newOrder = await OrderRepository.createOrder({
       customer_id: customerId,
       items: cart.items,
-      totalPay: totalAmount,
+      totalPay: totalPay,
       payment_method: payment_method,
       shipping_price: shipping_price.shiping_price
       });
@@ -33,7 +36,7 @@ const OrderService = {
         order_id: newOrder._id,
         shippingdata: {
           customer_id: customerId,
-          address: address,
+          address: location,
           phone: phone,
           status: "Pending",
         },
@@ -52,7 +55,7 @@ const OrderService = {
               price_data: {
                 currency: "vnd",
                 product_data: { name: "Total Payment" },
-                unit_amount: totalPay, // Ensure totalAmount is in VND
+                unit_amount: totalPay, 
               },
               quantity: 1,
             },
@@ -78,6 +81,7 @@ const OrderService = {
     return { messase : "created Order succees",  data: {   order: newOrder, shipping : newShipping   } }; 
 }}  catch (error){
     throw new Error(error.message);
+    console.log(error);
 }
   },
   async getOrderById(id) {
