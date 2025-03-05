@@ -61,6 +61,14 @@ const productSchema = new mongoose.Schema(
       type: Boolean,
       default: false,  
     },
+    userManual: {
+      type: String,
+      required: false,
+    },
+    virtue :{
+      type: String,
+      required: false
+    }
   },
   {
     timestamps: true, 

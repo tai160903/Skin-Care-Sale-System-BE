@@ -69,6 +69,27 @@ const OrderController = {
         .json({ message: "Internal server error", error: error.message });
     }
   },
+  async getOrdersByStatus(req, res) {
+    try {
+      const orders = await OrderService.getOrdersByStatus(req.params.status);
+      res.status(200).json(orders);
+    } catch (error) {
+      return res
+        .status(500)
+        .json({ message: "Internal server error", error: error.message });
+    }
+  },  
+  async getOrdersbyCustomerAndStatus(req, res) {
+    try {
+      const orders = await OrderService.getOrdersbyCustomerAndStatus(req.params.customerId, req.params.status);
+      res.status(200).json(orders);  
+    } catch (error) {
+      return res
+        .status(500)
+        .json({ message: "Internal server error", error: error.message });  
+    }
+  }
+  ,  
 
   async updateOrderStatus(req, res) {
     try {
@@ -91,7 +112,6 @@ const OrderController = {
     } else {
       await OrderService.deleteOrderById(session.metadata.order_id);
     }
-  
     res.status(200).json({ received: true });
   }
   

@@ -53,9 +53,7 @@ const customerRepository = {
   },
   async getCustomerIdByUserId(customerId) {
     try {
-      console.log("userId", customerId);
-      const customer = await Customer.findOne({ _id : customerId }).populate("user");;
-      console.log("customer", customer);
+      const customer = await Customer.findOne({ _id : customerId }).populate("user");;   
       return customer;
     } catch (error) {
       console.error("Error fetching customerId:", error);
