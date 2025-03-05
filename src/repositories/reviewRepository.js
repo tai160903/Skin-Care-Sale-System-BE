@@ -9,6 +9,12 @@ class ReviewRepository{
             throw new Error('Error fetching reviewsreviews: ' + error.message);
         }
       }
+    
+    getReviewsByProductId(productId) {
+        return Review.find({ product_id: productId });
+    }
+
+
     async CreateReview ( reviewData){
         try {
             return await Review.create({
@@ -46,7 +52,12 @@ class ReviewRepository{
         }
     } 
     async getReviewsByProductId(productId) {
-        return await Review.find({ product_id: productId });
+        return await Review.find({ product_id: productId })
+        .populate('product_id')  // Lấy thông tin chi tiết của sản phẩm
+        .populate({
+            path: 'customer_id',
+            select: 'name' // Chỉ lấy trường name của khách hàng
+        }); // Lấy thêm thông tin khách hàng
     }
 }
 module.exports = new ReviewRepository(); 

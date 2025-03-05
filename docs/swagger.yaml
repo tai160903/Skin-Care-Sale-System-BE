@@ -1830,6 +1830,32 @@ paths:
             properties:
               message:
                 type: string
+  /reviews/product/{productId}:
+    get:
+      tags:
+        - Reviews
+      summary: Get reviews for a specific product
+      description: Retrieve all reviews for a given product ID
+      parameters:
+        - in: path
+          name: productId
+          required: true
+          type: string
+          description: ID of the product to retrieve reviews for
+      responses:
+        200:
+          description: Successfully retrieved reviews
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Review"
+        404:
+          description: No reviews found for this product
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
   /reviews/{id}:
     get:
       tags:

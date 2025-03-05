@@ -3,9 +3,9 @@ const ReviewRepository = require("../repositories/reviewRepository")
 const ProductService = require("../services/productService")
 const ReviewService = {
     async CreateReview(reviewData){
-        const review = await ReviewRepository.CreateReview(reviewData);
-        await this.updateProductRating(review.product_id);
-        return review;
+        const data = await ReviewRepository.CreateReview(reviewData);
+        await this.updateProductRating(data.product_id);
+        return ({message : " Create review successfully", data });
 
     }, 
     async updateProductRating(productId){
@@ -16,17 +16,26 @@ const ReviewService = {
     },
 
     async updateRating(Id,Ratingdata){
-        return await ReviewRepository.updateRating(Id,Ratingdata);
+        const data = await ReviewRepository.updateRating(Id,Ratingdata);
+        await this.updateProductRating(data.product_id);
+        return ({message : "Update rating successfully", data });
     },
     async deleteReview(id){
         return await ReviewRepository.deleteReview(id);
+      
     },
     async getAllReview(){
-        return await ReviewRepository.getAllReview();
+        const data = await ReviewRepository.getAllReview();
+        return ({message : "get review successfully", data });
     },
     async getReviewById(id){
-        return await ReviewRepository.getReviewById(id);
-    }
+        const data = await ReviewRepository.getReviewById(id);
+        return ({message : "get review successfully", data });
+    },
+    async getReviewsByProductId(productId){
+        const data = await ReviewRepository.getReviewsByProductId(productId);
+        return ({message : "get review successfully", data });
+    },
 
 }
 module.exports = ReviewService;
