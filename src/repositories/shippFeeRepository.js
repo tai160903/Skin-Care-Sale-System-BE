@@ -2,24 +2,9 @@ const shipFee = require("../models/shipFee");
 
 const ShipFeeRepositoy = {
   async GetShipFeeByLocation(location) {
-    try {
-      const lowerLocation = location.toLowerCase();
-
-      const importantKeywords = await this.getImportantKeywords();
-
-      const query = importantKeywords.filter((keyword) =>
-        lowerLocation.includes(keyword)
-      );
-
-      if (query.length === 0) {
-        throw new Error("location not found");
-      }
-
-      const queryConditions = query.map((keyword) => ({
-        location: { $regex: keyword, $options: "i" },
-      }));
-
-      const shipFees = await shipFee.findOne({ $or: queryConditions });
+    try {    
+      console.log(location);
+      const shipFees = await shipFee.findOne({ location : location });
       return shipFees;
     } catch (error) {
       console.error("Error fetching ship fees by location:", error);

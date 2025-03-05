@@ -9,6 +9,7 @@ const OrderRepository = {
         }
         return orders;  
     },
+
     async createOrder(orderData) {
         return await Order.create(orderData);
     },
@@ -24,9 +25,14 @@ const OrderRepository = {
         return await Order.findByIdAndDelete(orderId);
     },
     // get all order 
-    async getAllOrders(){
-        return await Order.find();
+    async getAllOrders(filter = {}) {
+        const query = {}; 
+        if (filter.status) {
+            query.order_status = { $in: filter.status }; 
+        }
+        return await Order.find(query).populate('items.product_id');
     },
+
     async updateStatusOrder(id,status){
         await this.getOrderById(id);
         return await Order.findByIdAndUpdate(id,{order_status : status.order_status},{new:true});
