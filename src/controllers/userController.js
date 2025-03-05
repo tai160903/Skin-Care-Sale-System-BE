@@ -16,7 +16,7 @@ const userController = {
 
   getCustomerById: async (req, res) => {
     try {
-      const id = req.params.userId;
+      const id = req.params.customerId;
       const response = await userService.getCustomerById(id);
       return res.status(response?.status || 200).json({
         message: response?.message,
@@ -70,7 +70,7 @@ const userController = {
   },
   async  GetCustomerIdByUserId(req, res) {
     try {
-      const customerId = await userService.getCustomerIdByUserId(req.params.userId);
+      const customerId = await userService.getCustomerIdByUserId(req.params.customerId);
       return res.json(customerId);
     } catch (error) {
       return res.status(500).json({ message: error.message });

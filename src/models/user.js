@@ -12,6 +12,7 @@ const userSchema = new mongoose.Schema(
       min: 6,
       max: 20,
       required: true,
+      select : false,
     },
     isVerify: {
       type: Boolean,

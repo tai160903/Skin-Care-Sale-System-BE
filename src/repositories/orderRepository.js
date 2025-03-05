@@ -30,7 +30,14 @@ const OrderRepository = {
     async updateStatusOrder(id,status){
         await this.getOrderById(id);
         return await Order.findByIdAndUpdate(id,{order_status : status.order_status},{new:true});
-    }
+    },
+    async getOrdersbyCustomerAndStatus(customerId,status){
+        return await Order.find({customer_id : customerId,order_status : status}).populate('items.product_id');
+    },
+
+    async getOrdersByStatus(status){
+        return await Order.find({order_status : status}).populate('items.product_id');
+    },
 
 }
 module.exports = OrderRepository;

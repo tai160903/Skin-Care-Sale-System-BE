@@ -104,6 +104,11 @@ const OrderService = {
   async getOrdersByCustomerId(customerId) {
     return await OrderRepository.getOrdersByCustomerId(customerId);
   },
+
+  async getOrdersByStatus(status) {
+    return await OrderRepository.getOrdersByStatus(status);
+  },
+
   async updateStatusOrder(id, status) {
     const order = await OrderRepository.getOrderById(id);
     if (status == "Cancelled") {

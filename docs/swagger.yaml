@@ -26,7 +26,6 @@ tags:
   - name: Promotions
   - name: Cart
   - name: Quiz
-  - name: Draft Order
   - name: Orders
   - name: Shipping
   - name: Blog
@@ -821,7 +820,6 @@ paths:
               message:
                 type: string
                 example: "Internal server error"
-  /users/customer/{userId}:
     get:
       tags:
         - Users
@@ -829,10 +827,10 @@ paths:
       description: Retrieve a user by their ID
       parameters:
         - in: path
-          name: userId
+          name: customerId
           required: true
           type: string
-          description: User ID
+          description: customer ID
       responses:
         200:
           description: Get user by ID successfully

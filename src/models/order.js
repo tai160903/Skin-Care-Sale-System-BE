@@ -17,7 +17,6 @@ const OrderItemSchema = new mongoose.Schema({
   },
 });
 
-<<<<<<< HEAD
     const OrderSchema = new mongoose.Schema({
         customer_id: {
           type: mongoose.Schema.Types.ObjectId,
@@ -46,32 +45,3 @@ const OrderItemSchema = new mongoose.Schema({
       }, { timestamps: true });
   
   module.exports = mongoose.model("Order", OrderSchema);
-=======
-const OrderSchema = new mongoose.Schema(
-  {
-    customer_id: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Customer",
-      required: true,
-    },
-    items: [OrderItemSchema],
-    totalPay: {
-      type: Number,
-      default: 0,
-    },
-    order_status: {
-      type: String,
-      enum: ["pending", "confirmed", "completed", "cancelled"],
-      default: "pending",
-    },
-    payment_method: {
-      type: String,
-      enum: ["stripe", "cash"],
-      required: true,
-    },
-  },
-  { timestamps: true }
-);
-
-module.exports = mongoose.model("Order", OrderSchema);
->>>>>>> dfa90c9d9c78f8f37921dfab6039730f97906375
