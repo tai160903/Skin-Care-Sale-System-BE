@@ -55,8 +55,8 @@ const userService = {
       status: 200,
     };
   },
-  async getCustomerIdByUserId(userId) {
-    const customerID = await customerRepository.getCustomerIdByUserId(userId);
+  async getCustomerIdByUserId(customerId) {
+    const customerID = await customerRepository.getCustomerIdByUserId(customerId);
     return customerID
     ;
   },
