@@ -1,3 +1,4 @@
+const { getReviewsByProductId } = require("../repositories/reviewRepository");
 const ReviewService = require("../services/reviewService");
 
 const ReviewController = {
@@ -46,5 +47,16 @@ const ReviewController = {
       res.status(500).json({ message: error.message });
     }
   },
+
+  async getReviewsByProductId(req, res) {
+    try {
+      console.log(req.params.productId);
+      const reviews = await ReviewService.getReviewsByProductId(req.params.productId);
+      res.status(200).json(reviews);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  },
+
 };
 module.exports = ReviewController;
