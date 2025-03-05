@@ -60,6 +60,7 @@ const userService = {
     return customerID
     ;
   },
+  
   async getAllStaff(){
     const data = await userRepository.findAllStaff();
     return {message :"get staff successed", data};

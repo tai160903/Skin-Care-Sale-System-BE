@@ -53,11 +53,11 @@ class ReviewRepository{
     } 
     async getReviewsByProductId(productId) {
         return await Review.find({ product_id: productId })
-        .populate('product_id')  // Lấy thông tin chi tiết của sản phẩm
+        .populate('product_id')  
         .populate({
             path: 'customer_id',
-            select: 'name' // Chỉ lấy trường name của khách hàng
-        }); // Lấy thêm thông tin khách hàng
+            select: 'name' 
+        }); 
     }
 }
 module.exports = new ReviewRepository(); 

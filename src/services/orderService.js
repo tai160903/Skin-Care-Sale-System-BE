@@ -98,9 +98,9 @@ const OrderService = {
 
     return await OrderRepository.deleteOrderById(id);
   },
-  async getAllOrder() {
-    return await OrderRepository.getAllOrders();
-  },
+  async getAllOrders(filter) {
+    return await OrderRepository.getAllOrders(filter);
+},
   async getOrdersByCustomerId(customerId) {
     return await OrderRepository.getOrdersByCustomerId(customerId);
   },
