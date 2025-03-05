@@ -3,6 +3,7 @@ const randomstring = require("randomstring");
 const sendEmail = require("../utils/sendEmail");
 const jwtService = require("../services/jwtService");
 const userRepository = require("../repositories/userRepository");
+const customerRepository = require("../repositories/customerRepository");
 const {
   registerSchema,
   loginSchema,
@@ -12,7 +13,6 @@ const {
   verifyResetPasswordSchema,
   changePasswordSchema,
 } = require("../validates/authValidate");
-const customerRepository = require("../repositories/customerRepository");
 
 const authService = {
   register: async ({ email, password, confirmPassword }) => {
@@ -63,7 +63,7 @@ const authService = {
 
     const { error } = loginSchema.validate({ email, password });
     if (error) return { message: error.details[0].message, status: 400 };
-    
+
     try {
       const user = await userRepository.findByEmail(email);
       console.log(user);
@@ -106,7 +106,6 @@ const authService = {
         customer,
       };
     } catch (error) {
-      
       return { message: error.message, status: 400 };
     }
   },
@@ -196,6 +195,8 @@ const authService = {
         tokenVerify: null,
         isVerify: true,
       });
+
+      await customerRepository.create({ user: user._id });
 
       return {
         message: "Email verified successfully",
