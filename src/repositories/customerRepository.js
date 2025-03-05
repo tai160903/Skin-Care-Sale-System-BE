@@ -31,7 +31,7 @@ const customerRepository = {
   findByCustomerId: async (customerId) => {
     try {
       const customer = await Customer.findOne({
-        customer_id : customerId,
+        customer_id: customerId,
       }).populate("user");
       return customer || null;
     } catch (error) {
@@ -51,9 +51,11 @@ const customerRepository = {
       throw new Error("Failed to update customer.");
     }
   },
-  async getCustomerIdByUserId(customerId) {
+  async getCustomerIdByUserId(userID) {
     try {
-      const customer = await Customer.findOne({ _id : customerId }).populate("user");;   
+      const customer = await Customer.findOne({ user: userID }).populate(
+        "user"
+      );
       return customer;
     } catch (error) {
       console.error("Error fetching customerId:", error);
