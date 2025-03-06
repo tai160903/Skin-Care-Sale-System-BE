@@ -18,11 +18,6 @@ const productSchema = new mongoose.Schema(
       default :0,
     },
 
-    discountedPrice: {
-      type: Number,
-      default : 0
-    },
-
     ingredient: {
       type: String, 
       required: false, 
