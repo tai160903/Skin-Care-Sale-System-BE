@@ -5,8 +5,8 @@ const CartRepository = require("../repositories/cartRepository");
 const OrderController = {
   async createOrder(req, res) {
     try {
-      const { customerId, payment_method, address, phone, totalPay } = req.body;
-      if (!customerId || !payment_method || !address || !phone) {
+      const { customerId, payment_method, address, phone, discount ,totalPay } = req.body;
+      if (!customerId || !payment_method || !address || !phone ) {
         return res.status(400).json({ message: "Missing required fields" });
       }
 
@@ -15,6 +15,7 @@ const OrderController = {
         payment_method,
         address,
         phone,
+        discount,
         totalPay
       );
       res.status(201).json(newOrder);
@@ -39,13 +40,17 @@ const OrderController = {
   },
   async getAllOrder(req, res) {
     try {
-      const orders = await OrderService.getAllOrder();
-      res.status(200).json(orders);
-    } catch (error) {
-      return res
-        .status(500)
-        .json({ message: "Internal server error", error: error.message });
-    }
+      const { status } = req.query; // Lấy status từ query params
+      let filter = {};
+
+      if (status) {
+          filter.status = Array.isArray(status) ? status : [status]; 
+      }
+      const orders = await OrderService.getAllOrders(filter);
+      return res.status(200).json(orders);
+  } catch (error) {
+      return res.status(500).json({ message: error.message });
+  }
   },
   async getOrderById(req, res) {
     try {
@@ -57,39 +62,6 @@ const OrderController = {
         .json({ message: "Internal server error", error: error.message });
     }
   },
-  async getOrdersByCustomerId(req, res) {
-    try {
-      const orders = await OrderService.getOrdersByCustomerId(
-        req.params.customerId
-      );
-      res.status(200).json(orders);
-    } catch (error) {
-      return res
-        .status(500)
-        .json({ message: "Internal server error", error: error.message });
-    }
-  },
-  async getOrdersByStatus(req, res) {
-    try {
-      const orders = await OrderService.getOrdersByStatus(req.params.status);
-      res.status(200).json(orders);
-    } catch (error) {
-      return res
-        .status(500)
-        .json({ message: "Internal server error", error: error.message });
-    }
-  },  
-  async getOrdersbyCustomerAndStatus(req, res) {
-    try {
-      const orders = await OrderService.getOrdersbyCustomerAndStatus(req.params.customerId, req.params.status);
-      res.status(200).json(orders);  
-    } catch (error) {
-      return res
-        .status(500)
-        .json({ message: "Internal server error", error: error.message });  
-    }
-  }
-  ,  
 
   async updateOrderStatus(req, res) {
     try {
