@@ -40,9 +40,13 @@ const OrderController = {
   },
   async getAllOrder(req, res) {
     try {
-      const { status } = req.query; // Lấy status từ query params
+      const { status, customer_id } = req.query; // Lấy status từ query params
       let filter = {};
 
+      if (customer_id) {
+          filter.customer_id = customer_id;
+      }
+      
       if (status) {
           filter.status = Array.isArray(status) ? status : [status]; 
       }
