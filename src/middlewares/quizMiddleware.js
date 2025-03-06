@@ -1,8 +1,8 @@
 const validateQuizSubmission = (req, res, next) => {
-  const { userId, answers } = req.body;
+  const { customerId, answers } = req.body;
 
-  if (!userId) {
-    return res.status(400).json({ error: "User ID is required" });
+  if (!customerId) {
+    return res.status(400).json({ error: "Customer ID is required" });
   }
 
   if (!Array.isArray(answers) || answers.length === 0) {

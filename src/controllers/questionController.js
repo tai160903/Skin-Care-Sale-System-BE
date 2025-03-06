@@ -22,8 +22,9 @@ class QuestionController {
 
   async submitQuestion(req, res) {
     try {
-      const { userId, answers } = req.body; // Expected: [{ questionId, answerId }]
-      const result = await questionService.submitQuiz(userId, answers);
+      const { customerId, answers } = req.body;
+
+      const result = await questionService.submitQuiz(customerId, answers);
       res.json({ message: "Answer submitted successfully", result });
     } catch (error) {
       res.status(500).json({ message: "Error submitting quiz" });
