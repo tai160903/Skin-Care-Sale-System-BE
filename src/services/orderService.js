@@ -8,7 +8,7 @@ const shipping_feeRepository = require("../repositories/shippFeeRepository");
 
 const productRepository = require("../repositories/productRepository");
 const OrderService = {
-  async createOrder(customerId, payment_method, address, phone, totalPay) {
+  async createOrder(customerId, payment_method, address, phone,disscount ,totalPay) {
     try {
       const location = `${address.street}, ${address.ward}, ${address.district}, ${address.province}`;
       const locationShip = `${address.district}, ${address.province}`;
@@ -17,17 +17,14 @@ const OrderService = {
 
     await ProductRepository.checkStockAvailability(cart.items);
     
-
-      console.log("location", location);
-
     const shipping_price = await shipping_feeRepository.GetShipFeeByLocation(locationShip);
 
-    console.log("customerId:" ,customerId)
 
     let newOrder = await OrderRepository.createOrder({
       customer_id: customerId,
       items: cart.items,
       totalPay: totalPay,
+      discount : disscount,
       payment_method: payment_method,
       shipping_price: shipping_price.shiping_price
       });
@@ -105,18 +102,6 @@ const OrderService = {
   async getAllOrders(filter) {
     return await OrderRepository.getAllOrders(filter);
 },
-  async getOrdersByCustomerId(customerId) {
-    return await OrderRepository.getOrdersByCustomerId(customerId);
-  },
-  async getOrdersbyCustomerAndStatus(customerId, status) {
-    const data = await OrderRepository.getOrdersbyCustomerAndStatus(customerId, status);  
-    return({message : "get order success", data});
-  },
-
-  async getOrdersByStatus(status) {
-    const data = await OrderRepository.getOrdersByStatus(status);
-    return({message : "get order success", data});
-  },
 
   async updateStatusOrder(id, status) {
     const order = await OrderRepository.getOrderById(id);

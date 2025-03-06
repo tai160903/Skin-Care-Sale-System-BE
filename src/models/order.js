@@ -38,6 +38,10 @@ const OrderItemSchema = new mongoose.Schema({
           enum: ["stripe", "cash"],
           required: true,
         },
+        discount : {
+          type: Number,
+          default: 0,
+        },
         shipping_price: {
           type: Number,
           required: true,
