@@ -16,9 +16,22 @@ const ShippingRepository = {
       throw error;
     }
   },
-  async getAllShipping() {
+  async getAllShipping(filter = {}) {
     try {
-      return await Shipping.find();
+      const query = {}; // Khởi tạo điều kiện truy vấn
+
+      if (filter.order_id) {
+        query.order_id = filter.order_id;
+    }
+
+    if(filter.customer_id) {
+      query.customer_id = filter.customer_id;
+    }
+     if (filter.status) {
+            query.status = filter.status;
+        }
+
+      return await Shipping.find(query).populate('order_id');
     } catch (error) {
       console.error("Error fetching all shipping:", error);
       throw error;

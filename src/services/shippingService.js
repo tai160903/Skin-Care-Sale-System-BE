@@ -12,9 +12,9 @@ const ShippingService = {
       throw error;
     }
   },
-  async getAllShipping() {
+  async getAllShipping(filter) {
     try {
-      return await ShippingRepository.getAllShipping();
+      return await ShippingRepository.getAllShipping(filter);
     } catch (error) {
       console.error("Error fetching all shipping:", error);
       throw error;

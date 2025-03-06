@@ -21,8 +21,11 @@ const OrderRepository = {
     async getAllOrders(filter = {}) {
         const query = {}; 
         if (filter.status) {
-            query.order_status = { $in: filter.status }; 
+            query.order_status =  filter.status; 
         }
+        if(filter.customer_id) {
+            query.customer_id = filter.customer_id;
+          }
         return await Order.find(query).populate('items.product_id');
     },
 
