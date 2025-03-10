@@ -53,8 +53,6 @@ class QuestionService {
       if (!skinTypeDoc) {
         throw new Error("SkinType not found");
       }
-      console.log("CustomerId", customerId);
-      console.log("skinTypeDoc", skinTypeDoc._id);
 
       const userQuizResult = {
         customerId,
@@ -66,7 +64,7 @@ class QuestionService {
       await customerRepository.updateById(customerId, {
         skinType: skinTypeDoc._id,
       });
-      return skinTypeDoc.name;
+      return skinTypeDoc;
     } catch (error) {
       console.error("Error submitting quiz:", error);
       throw new Error("Something went wrong while submitting the quiz");
