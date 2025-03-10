@@ -5,7 +5,8 @@ const RoutineService = {
     async getByskintype(skinTyypeId) {
         const skintype = await SkinTypeRepository.GetById(skinTyypeId);
 
-        return await RoutineRepository.getByskintype(skinTyypeId);
+        const data = await RoutineRepository.getByskintype(skinTyypeId);
+        return ({message : "Routine by skintype", data});
     },
     async createRoutine(routinedata){
         return await RoutineRepository.createRoutine(routinedata);
