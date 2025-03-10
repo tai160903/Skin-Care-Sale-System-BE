@@ -21,7 +21,7 @@ class QuestionService {
     }
   }
 
-  async submitQuiz(userId, answers) {
+  async submitQuiz(customerId, answers) {
     try {
       const skinTypeCounts = {
         Oily: 0,
@@ -55,16 +55,16 @@ class QuestionService {
       }
 
       const userQuizResult = {
-        userId,
+        customerId,
         answers,
         resultSkinType: skinTypeDoc._id,
       };
 
       await questionRepository.saveUserAnswers(userQuizResult);
-      await customerRepository.updateById(userId, {
+      await customerRepository.updateById(customerId, {
         skinType: skinTypeDoc._id,
       });
-      return skinTypeDoc.name;
+      return skinTypeDoc;
     } catch (error) {
       console.error("Error submitting quiz:", error);
       throw new Error("Something went wrong while submitting the quiz");

@@ -13,4 +13,5 @@ const SkinTypeSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
-module.exports = mongoose.models.SkinType || mongoose.model("SkinType", SkinTypeSchema);
+module.exports =
+  mongoose.models.SkinType || mongoose.model("SkinType", SkinTypeSchema);
