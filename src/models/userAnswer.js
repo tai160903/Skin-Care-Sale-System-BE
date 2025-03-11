@@ -1,7 +1,11 @@
 const mongoose = require("mongoose");
 
 const userAnswerSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  customerId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Customer",
+    required: true,
+  },
   answers: [
     {
       questionId: { type: mongoose.Schema.Types.ObjectId, ref: "Question" },

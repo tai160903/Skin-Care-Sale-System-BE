@@ -4,47 +4,24 @@ const ShippingService = require("../services/shippingService");
 const ShippingController = {
   async getAllShipping(req, res) {
     try {
-      const { order_id, status, customer_id } = req.query; // Lấy cả `order_id` và `status`
-      let filter = {};
+        const { order_id, status, customer_id, page = 1, limit = 10 } = req.query; 
+        let filter = {};
 
-      if (order_id) {
-          filter.order_id = order_id;
-      }
-      if(customer_id) {
-        filter.customer_id = customer_id;
-      }
+        if (order_id) filter.order_id = order_id;
+        if (customer_id) filter.customer_id = customer_id;
+        if (status) filter.status = status;
 
-      if (status) {
-          filter.status = status; 
-      }
-      const shippings = await ShippingService.getAllShipping(filter);
-      res.status(200).json(shippings);
+        const pagination = {
+            page: parseInt(page),
+            limit: parseInt(limit),
+        };
+
+        const result = await ShippingService.getAllShipping(filter, pagination);
+        res.status(200).json(result);
     } catch (error) {
-      res.status(500).json({ message: error.message });
+        res.status(500).json({ message: error.message });
     }
-  },
-//   async getShippingByStatus(req, res) {
-//     try {
-//       const shipping = await ShippingService.getShippingByStatus(req.params.status);
-//       if (!shipping) {
-//         return res.status(404).json({ message: "Shipping not found" });
-//       }
-//       res.status(200).json(shipping);
-//     } catch (error) {
-//       res.status(500).json({ message: error.message });
-//     }
-//   },
-//  async getShippingByCustomerAndStatus(req, res) {
-//     try {
-//       const shipping = await ShippingService.getShippingByCustomerAndStatus(req.params.customerId, req.params.status);
-//       if (!shipping) {
-//         return res.status(404).json({ message: "Shipping not found" });
-//       }
-//       res.status(200).json(shipping);
-//     } catch (error) {
-//       res.status(500).json({ message: error.message });
-//     }
-//   },
+},
 
   async getShippingByCustomerId(req, res) {
     try{

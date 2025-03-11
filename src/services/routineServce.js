@@ -2,8 +2,8 @@ const RoutineRepository = require("../repositories/routineRepository");
 const SkinTypeRepository = require("../repositories/skinTypeRepository");
 
 const RoutineService = {
-    async getByskintype(skinTyypeId) {
-        const skintype = await SkinTypeRepository.GetById(skinTyypeId);
+  async getByskintype(skinTyypeId) {
+    const skintype = await SkinTypeRepository.GetById(skinTyypeId);
 
         const data = await RoutineRepository.getByskintype(skinTyypeId);
         return ({message : "Routine by skintype", data});

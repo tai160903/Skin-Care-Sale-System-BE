@@ -6,7 +6,7 @@ const router = express.Router();
 
 //admin
 router.put("/customer/:customerId", userController.updateCustomer);
-router.get("/customer/:customerId", userController.GetCustomerIdByUserId);
+router.get("/customer/:customerId", userController.getCustomerById);
 router.get("/staff",userController.getAllStaff);
 router.get("/customer", userController.getAllCustomer);
 

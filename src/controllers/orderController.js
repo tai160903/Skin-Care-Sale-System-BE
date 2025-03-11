@@ -40,22 +40,29 @@ const OrderController = {
   },
   async getAllOrder(req, res) {
     try {
-      const { status, customer_id } = req.query; // Lấy status từ query params
-      let filter = {};
+        const { status, customer_id, page = 1, limit = 10 } = req.query;
+        let filter = {};
 
-      if (customer_id) {
-          filter.customer_id = customer_id;
-      }
-      
-      if (status) {
-          filter.status = Array.isArray(status) ? status : [status]; 
-      }
-      const orders = await OrderService.getAllOrders(filter);
-      return res.status(200).json(orders);
-  } catch (error) {
-      return res.status(500).json({ message: error.message });
-  }
-  },
+        if (customer_id) {
+            filter.customer_id = customer_id;
+        }
+
+        if (status) {
+            filter.status = Array.isArray(status) ? status : [status];
+        }
+
+        const pagination = {
+            page: parseInt(page),
+            limit: parseInt(limit),
+        };
+
+        const result = await OrderService.getAllOrders(filter, pagination);
+        return res.status(200).json(result);
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+}
+,
   async getOrderById(req, res) {
     try {
       const order = await OrderService.getOrderById(req.params.id);

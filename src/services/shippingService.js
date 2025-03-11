@@ -12,14 +12,16 @@ const ShippingService = {
       throw error;
     }
   },
-  async getAllShipping(filter) {
+  async getAllShipping(filter, pagination) {
     try {
-      return await ShippingRepository.getAllShipping(filter);
+       const data = await ShippingRepository.getAllShipping(filter, pagination);
+        return ({messgae : "get all shipping success", data});
     } catch (error) {
-      console.error("Error fetching all shipping:", error);
-      throw error;
+        console.error("Error fetching all shipping:", error);
+        throw error;
     }
-  },
+},
+
   async getShippingByCustomerId(customerId) {
     try {
       const data = await ShippingRepository.getShippingByCustomerId(customerId);

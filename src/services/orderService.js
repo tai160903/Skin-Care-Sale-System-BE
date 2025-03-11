@@ -99,9 +99,16 @@ const OrderService = {
 
     return await OrderRepository.deleteOrderById(id);
   },
-  async getAllOrders(filter) {
-    return await OrderRepository.getAllOrders(filter);
-},
+ async getAllOrders(filter, pagination) {
+    try {
+       const data = await OrderRepository.getAllOrders(filter, pagination);
+       return ({messgae : "get all order success", data});
+    } catch (error) {
+        console.error("Error fetching all orders:", error);
+        throw error;
+    }
+}
+,
 
   async updateStatusOrder(id, status) {
     const order = await OrderRepository.getOrderById(id);

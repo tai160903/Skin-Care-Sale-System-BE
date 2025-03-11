@@ -16,27 +16,31 @@ const ShippingRepository = {
       throw error;
     }
   },
-  async getAllShipping(filter = {}) {
+  async getAllShipping(filter = {}, { page, limit }) {
     try {
-      const query = {}; // Khởi tạo điều kiện truy vấn
+        const query = {};
 
-      if (filter.order_id) {
-        query.order_id = filter.order_id;
-    }
+        if (filter.order_id) query.order_id = filter.order_id;
+        if (filter.customer_id) query.customer_id = filter.customer_id;
+        if (filter.status) query.status = filter.status;
 
-    if(filter.customer_id) {
-      query.customer_id = filter.customer_id;
-    }
-     if (filter.status) {
-            query.status = filter.status;
-        }
+        const totalItems = await Shipping.countDocuments(query);
+        const shippings = await Shipping.find(query)
+            .populate('order_id')
+            .limit(limit)
+            .skip((page - 1) * limit);
 
-      return await Shipping.find(query).populate('order_id');
+        return {
+            totalItems,
+            totalPages: Math.ceil(totalItems / limit),
+            currentPage: page,
+            data: shippings
+        };
     } catch (error) {
-      console.error("Error fetching all shipping:", error);
-      throw error;
+        console.error("Error fetching all shipping:", error);
+        throw error;
     }
-  },
+},
   async getShippingByCustomerId(customerId) {
     try {
       return await Shipping.find({ customer_id: customerId.customer_id });
