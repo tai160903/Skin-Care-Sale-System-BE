@@ -11,16 +11,11 @@ const userService = {
   },
 
   getCustomerById: async (id) => {
-    const user = await customerRepository.findByCustomerId(id);
-    if (!user) {
-      return {
-        message: "User not found",
-        status: 404,
-      };
-    }
+    const customer = await customerRepository.findByCustomerId(id);
+
     return {
-      message: "Get user by id successfully",
-      data: user,
+      message: "Get customer by id successfully",
+      data: customer,
       status: 200,
     };
   },

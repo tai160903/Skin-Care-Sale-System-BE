@@ -16,6 +16,7 @@ const userController = {
 
   getCustomerById: async (req, res) => {
     try {
+      console.log(req.params.customerId);
       const id = req.params.customerId;
       const response = await userService.getCustomerById(id);
       return res.status(response?.status || 200).json({

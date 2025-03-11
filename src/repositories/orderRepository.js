@@ -18,16 +18,34 @@ const OrderRepository = {
         return await Order.findByIdAndDelete(orderId);
     },
     // get all order 
-    async getAllOrders(filter = {}) {
-        const query = {}; 
-        if (filter.status) {
-            query.order_status =  filter.status; 
+    async getAllOrders(filter = {}, { page, limit }) {
+        try {
+            const query = {};
+    
+            if (filter.status) {
+                query.order_status = { $in: filter.status }; 
+            }
+            if (filter.customer_id) {
+                query.customer_id = filter.customer_id;
+            }
+    
+            const totalItems = await Order.countDocuments(query);
+            const orders = await Order.find(query)
+                .populate('items.product_id')
+                .limit(limit)
+                .skip((page - 1) * limit);
+    
+            return {
+                totalItems,
+                totalPages: Math.ceil(totalItems / limit),
+                currentPage: page,
+                data: orders
+            };
+        } catch (error) {
+            console.error("Error fetching all orders:", error);
+            throw error;
         }
-        if(filter.customer_id) {
-            query.customer_id = filter.customer_id;
-          }
-        return await Order.find(query).populate('items.product_id');
-    },
+    },    
 
     async updateStatusOrder(id,status){
         await this.getOrderById(id);

@@ -31,8 +31,8 @@ const customerRepository = {
   findByCustomerId: async (customerId) => {
     try {
       const customer = await Customer.findOne({
-        customer_id: customerId,
-      }).populate("user");
+        _id: customerId,
+      }).populate("user", "email");
       return customer || null;
     } catch (error) {
       console.error("Error fetching customer by userId:", error.message);
