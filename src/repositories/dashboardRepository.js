@@ -54,6 +54,12 @@ class DashboardRepository {
  *
  * This function aggregates order data to calculate the total amount spent by each customer
  * and returns the top customers sorted by total spending in descending order. The customer
+ * information is also included in the result.
+ *
+ * @param {number} limit - The maximum number of top customers to retrieve. Defaults to 5.
+ * @returns {Promise<Array>} A promise that resolves to an array of objects containing
+ *                           the customer ID, total amount spent, and customer name.
+ */
 
 /******  c6759550-4827-4d54-b7e0-14734833b777  *******/
       async getTopCustomers(limit = 5) {
