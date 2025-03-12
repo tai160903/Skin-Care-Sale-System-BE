@@ -18,7 +18,7 @@ router.put("/update/:id", userController.updateUserById);
 
 //admin
 
-router.post("/create-employee", checkAdmin, userController.createEmployee);
+router.post("/create-employee",  userController.createEmployee);
 router.put("/delete/:id", checkAdmin, userController.deleteUserById);
 
 
