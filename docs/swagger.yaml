@@ -2422,6 +2422,20 @@ definitions:
         type: string
         description: URL of the blog image
         example: "https://example.com/image.jpg"
+      detail:
+        type: array
+        description: List of additional details with images and text
+        items:
+          type: object
+          properties:
+            image:
+              type: string
+              description: URL of the detail image
+              example: "https://example.com/detail1.jpg"
+            text:
+              type: string
+              description: Additional descriptive text
+              example: "This is the first detail section."
   Routine:
     type: object
     required:
