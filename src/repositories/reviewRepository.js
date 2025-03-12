@@ -4,24 +4,32 @@ class ReviewRepository{
 
     async getAllReview(){
         try{
-            return await Review.find();
+            return await Review.find().populate("customer_id", "name email") 
+            .populate("product_id", "name price image"); ;
         } catch(error){
             throw new Error('Error fetching reviewsreviews: ' + error.message);
         }
       }
     
     getReviewsByProductId(productId) {
-        return Review.find({ product_id: productId });
+        return Review.find({ product_id: productId }).populate("customer_id", "name email") 
+        .populate("product_id", "name price image"); 
+        ;
     }
 
 
     async CreateReview ( reviewData){
         try {
-            return await Review.create({
+            const newReview = await Review.create({
                 customer_id :reviewData.customer_id,
                 product_id: reviewData.product_id,
                 rating : reviewData.rating,
-                comment : reviewData.comment })
+                comment : reviewData.comment });
+            const populatedReview = await Review.findById(newReview._id)
+                .populate("customer_id", "name email") 
+                .populate("product_id", "name price image"); 
+    
+            return populatedReview;
         } catch(error) {
             throw new Error('Error fetching reviews' + error.message);
         }
@@ -32,14 +40,16 @@ class ReviewRepository{
                 {_id : id},
                 {rating : Ratingdata.rating,
                 comment : Ratingdata.comment},
-                {new : true})
+                {new : true}).populate("customer_id", "name email") 
+                .populate("product_id", "name price image"); 
         } catch(error) {
             throw new Error('Error fetching reviews' + error.message);
         }
     }
     async getReviewById(id){
         try{
-            return Review.findById(id);
+            return Review.findById(id).populate("customer_id", "name email") 
+            .populate("product_id", "name price image"); ;
         }catch(error){
             throw new Error('Error fetching reviews' + error.message);
         }
@@ -53,11 +63,8 @@ class ReviewRepository{
     } 
     async getReviewsByProductId(productId) {
         return await Review.find({ product_id: productId })
-        .populate('product_id')  
-        .populate({
-            path: 'customer_id',
-            select: 'name' 
-        }); 
+        .populate("customer_id", "name email") 
+        .populate("product_id", "name price image"); 
     }
 }
 module.exports = new ReviewRepository(); 
