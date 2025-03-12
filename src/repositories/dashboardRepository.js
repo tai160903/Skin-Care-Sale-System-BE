@@ -9,12 +9,33 @@ class DashboardRepository {
       }
       async getBestSellingProducts(limit = 5) {
         return await Order.aggregate([
-          { $unwind: "$items" },
-          { $group: { _id: "$items.product_id", totalSold: { $sum: "$items.quantity" } } },
-          { $sort: { totalSold: -1 } },
-          { $limit: limit },
+            { $unwind: "$items" }, 
+            { 
+                $group: { 
+                    _id: "$items.product_id", 
+                    totalSold: { $sum: "$items.quantity" }
+                } 
+            },
+            { 
+                $lookup: {
+                    from: "products", 
+                    localField: "_id",
+                    foreignField: "_id",
+                    as: "productInfo"
+                } 
+            },
+            { $unwind: "$productInfo" },
+            { $sort: { totalSold: -1 } },
+            { $limit: limit },
+            { 
+                $project: { 
+                    _id: 1, 
+                    totalSold: 1,
+                    "productInfo.name": 1 
+                } 
+            }
         ]);
-      }
+    }
     
       async getTotalProductsSold() {
         return await Order.aggregate([
@@ -27,13 +48,42 @@ class DashboardRepository {
         return await Order.countDocuments();
       }
     
+/*************  ✨ Codeium Command ⭐  *************/
+/**
+ * Retrieves the top customers based on their total spending.
+ *
+ * This function aggregates order data to calculate the total amount spent by each customer
+ * and returns the top customers sorted by total spending in descending order. The customer
+
+/******  c6759550-4827-4d54-b7e0-14734833b777  *******/
       async getTopCustomers(limit = 5) {
         return await Order.aggregate([
-          { $group: { _id: "$customer_id", totalSpent: { $sum: "$totalPay" } } },
-          { $sort: { totalSpent: -1 } },
-          { $limit: limit },
+            {
+                $group: {
+                    _id: "$customer_id",
+                    totalSpent: { $sum: "$totalPay" }
+                }
+            },
+            {
+                $lookup: {
+                    from: "customers",
+                    localField: "_id",
+                    foreignField: "_id",
+                    as: "customerInfo"
+                }
+            },
+            { $unwind: "$customerInfo" }, 
+            { $sort: { totalSpent: -1 } },
+            { $limit: limit },
+            {
+                $project: {
+                    _id: 1,
+                    totalSpent: 1,
+                    "customerInfo.name": 1 
+                }
+            }
         ]);
-      }
     }
+  }
     
     module.exports = new DashboardRepository();

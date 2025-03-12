@@ -50,9 +50,9 @@ const OrderService = {
           line_items: [
             {
               price_data: {
-                currency: "vnd",
                 product_data: { name: "Total Payment" },
                 unit_amount: totalPay, 
+                currency: "vnd",
               },
               quantity: 1,
             },
