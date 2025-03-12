@@ -55,6 +55,11 @@ const userService = {
     return customerID
     ;
   },
+  async createEmployee(data){
+    
+    const user = await userRepository.createEmployee(data);
+    return user;
+  },
   
   async getAllStaff(){
     const data = await userRepository.findAllStaff();

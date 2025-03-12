@@ -1,4 +1,5 @@
 const User = require("../models/user");
+const bcrypt = require("bcrypt");
 
 const userRepository = {
   findAll: async () => {
@@ -24,6 +25,23 @@ const userRepository = {
     }
 },
 
+createEmployee: async (data) => {
+    try {
+       const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(data.password, salt);
+      data.password = hashedPassword;
+      const newUser = await User.create({
+        email: data.email,
+        password: data.password,
+        role: "staff",
+        isVerify : true , 
+    });
+    return newUser;
+    } catch (error) {
+        console.error("Error creating employee:", error.message);
+        throw error;
+    }
+  },
 
   create: async (userData) => {
     return await User.create(userData);
