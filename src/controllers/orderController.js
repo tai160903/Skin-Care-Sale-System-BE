@@ -76,11 +76,12 @@ const OrderController = {
 
   async updateOrderStatus(req, res) {
     try {
-      const status = await OrderService.updateStatusOrder(
-        req.params.id,
-        req.body
-      );
-      res.status(200).json(status);
+      const id = req.params.id;
+      
+      const { order_status} = req.body
+       const data = await OrderService.updateStatusOrder(id,order_status
+    );
+      res.status(200).json(data);
     } catch (error) {
       return res
         .status(500)

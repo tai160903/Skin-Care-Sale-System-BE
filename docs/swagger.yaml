@@ -29,6 +29,7 @@ tags:
   - name: Orders
   - name: Shipping
   - name: Blog
+  - name: Dashboard
 
 paths:
   /auth/register:
@@ -90,6 +91,7 @@ paths:
                       type: string
                     msg:
                       type: string
+  
 
   /auth/login:
     post:
@@ -1420,6 +1422,30 @@ paths:
             type: "array"
             items:
               $ref: "#/definitions/Shipping"
+  /shipping/{id}:
+    get:
+      tags:
+        - "Shipping"
+      summary: "Get shipping record by ID"
+      description: "Retrieve a shipping record by its ID."
+      security:
+        - Bearer: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: "Shipping ID"
+          type: string
+      responses:
+        200:
+          description: "Shipping record found."
+          schema:
+            $ref: "#/definitions/Shipping"
+        404:
+          description: "Shipping not found."
+        500:
+          description: "Internal Server Error."
+
   /shippings/update-status/{id}:
     put:
       tags:
@@ -1498,6 +1524,7 @@ paths:
               $ref: "#/definitions/Shipping"
         404:
           description: "No shipping records found."
+  
   /blogs:
     post:
       tags:
@@ -1682,6 +1709,51 @@ paths:
             properties:
               message:
                 type: string
+ 
+  /dashboard:
+    get:
+      tags:
+        - Dashboard
+      summary: Get dashboard statistics
+      description: Retrieve various statistics for the dashboard, including revenue, best-selling products, total orders, and top customers.
+      responses:
+        200:
+          description: Successfully retrieved dashboard data
+          schema:
+            type: object
+            properties:
+              dailyRevenue:
+                type: number
+                description: Revenue for the current day
+              monthlyRevenue:
+                type: number
+                description: Revenue for the current month
+              yearlyRevenue:
+                type: number
+                description: Revenue for the current year
+              bestSellingProducts:
+                type: array
+                items:
+                  $ref: "#/definitions/BestSellingProduct"
+              totalProductsSold:
+                type: number
+                description: Total number of products sold
+              totalOrders:
+                type: number
+                description: Total number of orders
+              topCustomers:
+                type: array
+                items:
+                  $ref: "#/definitions/TopCustomer"
+        500:
+          description: Server error
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+
+ 
   /reviews/product/{productId}:
     get:
       tags:
@@ -2018,6 +2090,7 @@ paths:
                 type: string
 
 definitions:
+  
   Order:
     type: object
     properties:
@@ -2411,3 +2484,23 @@ definitions:
         type: string
       point:
         type: number
+  BestSellingProduct:
+    type: object
+    properties:
+      jewelry:
+        type: object
+        description: Product details
+      totalQuantity:
+        type: number
+        description: Total quantity sold
+
+  TopCustomer:
+    type: object
+    properties:
+      customerId:
+        type: string
+        description: ID of the customer
+      totalSpent:
+        type: number
+        description: Total amount spent by the customer
+

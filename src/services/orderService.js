@@ -111,6 +111,7 @@ const OrderService = {
 ,
 
   async updateStatusOrder(id, status) {
+    console.log(id)
     const order = await OrderRepository.getOrderById(id);
     if (status == "Cancelled") {
       await productRepository.restoreStockAndPurchaseCount(order.items);

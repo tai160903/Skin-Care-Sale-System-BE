@@ -12,9 +12,11 @@ const blog = require("./blog");
 const routine = require("./routine");
 const shipFee = require("./shipFee");
 const address = require("./address");
+const dashboard = require("./dashboard");
 const router = express.Router();
 
 router.use("/auth", auth);
+router.use("/dashboard", dashboard);
 router.use("/products", product);
 router.use("/users", user);
 router.use("/questions", question);
