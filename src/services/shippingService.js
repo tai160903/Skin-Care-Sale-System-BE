@@ -1,4 +1,5 @@
 const ShippingRepository = require("../repositories/shippingRepository");
+const OrderRepository = require("../repositories/orderRepository");
 
 const ShippingService = {
   async createShipping({ order_id, shippingdata }) {
@@ -73,7 +74,23 @@ const ShippingService = {
 
   async updateStatusShipping(id, status) {
     try {
-      return await ShippingRepository.updateStatusShipping(id, status);
+      const shipping = await ShippingRepository.getShippingById(id);
+      if (!shipping) {
+        return ({message : "shipping not found"});
+      }
+      const data = await ShippingRepository.updateStatusShipping(id, status);
+      if(!data){
+        return ({message : "update status shipping failed"});
+      }
+      if(status === "Delivered"){
+      const order_status = "completed";
+      const order = await OrderRepository.updateStatusOrder(shipping.order_id,order_status);
+      if(!order){
+        return ({message : "update status order fail"});
+      }
+    }
+      return ({message : "update status shipping success", data});
+    
     } catch (error) {
       console.error("Error updating shipping status:", error);
       throw error;

@@ -48,8 +48,9 @@ const OrderRepository = {
     },    
 
     async updateStatusOrder(id,status){
+         
         await this.getOrderById(id);
-        return await Order.findByIdAndUpdate(id,{order_status : status.order_status},{new:true});
+        return await Order.findByIdAndUpdate(id,{order_status : status},{new:true});
     },
 
 }

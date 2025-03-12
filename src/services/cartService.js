@@ -14,7 +14,7 @@ const CartService = {
     if (!product) throw new Error("Product not found");
     var priceAtTime = 0;
     if (product.discountPercentage > 0) {
-      priceAtTime = product.discountedPrice;
+      priceAtTime = product.price - (product.price * product.discountPercentage) / 100;
     } else {
       priceAtTime = product.price;
     }

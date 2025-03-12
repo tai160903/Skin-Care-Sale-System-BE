@@ -21,7 +21,7 @@ const ShippingSchema = new mongoose.Schema({
     },
     shipping_status: { 
         type: String, 
-        enum: ["Pending", "Shipped", "Delivered", "Cancelled"], 
+        enum: ["Pending", "Shipping", "Delivered", "Cancelled"], 
         default: "Pending" 
     },
     reason : {

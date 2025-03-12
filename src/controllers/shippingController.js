@@ -61,19 +61,22 @@ const ShippingController = {
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
-  },
-  // async getShippingByOrderId(req, res) {
-  //   try {
-  //     const orderId = req.params;
-  //     const shipping = await ShippingService.getShippingByOrderId(req.params);
+    },
 
-  //     if (!shipping) {
-  //       return res.status(404).json({ message: "Shipping not found" });
-  //     }
-  //     res.status(200).json(shipping);
-  //   } catch (error) {
-  //     res.status(500).json({ message: error.message });
-  //   }
-  // },
+    async getShippingById(req, res) {
+      try {
+        const { id } = req.params;
+        const shipping = await ShippingService.getShippingById(id);
+        
+        if (!shipping) {
+          return res.status(404).json({ message: "Shipping not found" });
+        }
+    
+        return res.status(200).json(shipping);
+      } catch (error) {
+        console.error("Error in getShippingId:", error); // Ghi log lỗi
+        return res.status(500).json({ message: "Internal Server Error" });
+      }
+    }    
 };
 module.exports = ShippingController;
