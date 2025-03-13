@@ -22,7 +22,7 @@ const ShippingRepository = {
 
         if (filter.order_id) query.order_id = filter.order_id;
         if (filter.customer_id) query.customer_id = filter.customer_id;
-        if (filter.status) query.status = filter.status;
+        if (filter.shipping_status) query.shipping_status = filter.shipping_status;
 
         const totalItems = await Shipping.countDocuments(query);
         const shippings = await Shipping.find(query)

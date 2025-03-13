@@ -22,8 +22,8 @@ const OrderRepository = {
         try {
             const query = {};
     
-            if (filter.status) {
-                query.order_status = { $in: filter.status }; 
+            if (filter.order_status) {
+                query.order_status = { $in: filter.order_status }; 
             }
             if (filter.customer_id) {
                 query.customer_id = filter.customer_id;
