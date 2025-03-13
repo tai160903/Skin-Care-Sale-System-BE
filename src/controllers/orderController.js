@@ -40,15 +40,15 @@ const OrderController = {
   },
   async getAllOrder(req, res) {
     try {
-        const { status, customer_id, page = 1, limit = 10 } = req.query;
+        const { order_status, customer_id, page = 1, limit = 15 } = req.query;
         let filter = {};
 
         if (customer_id) {
             filter.customer_id = customer_id;
         }
 
-        if (status) {
-            filter.status = Array.isArray(status) ? status : [status];
+        if (order_status) {
+            filter.order_status = Array.isArray(order_status) ? order_status : [order_status];
         }
 
         const pagination = {

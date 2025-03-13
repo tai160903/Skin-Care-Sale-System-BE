@@ -4,12 +4,12 @@ const ShippingService = require("../services/shippingService");
 const ShippingController = {
   async getAllShipping(req, res) {
     try {
-        const { order_id, status, customer_id, page = 1, limit = 10 } = req.query; 
+        const { order_id, shipping_status, customer_id, page = 1, limit = 10 } = req.query; 
         let filter = {};
 
         if (order_id) filter.order_id = order_id;
         if (customer_id) filter.customer_id = customer_id;
-        if (status) filter.status = status;
+        if (shipping_status) filter.shipping_status = shipping_status;
 
         const pagination = {
             page: parseInt(page),
@@ -74,9 +74,19 @@ const ShippingController = {
     
         return res.status(200).json(shipping);
       } catch (error) {
-        console.error("Error in getShippingId:", error); // Ghi log lỗi
+        console.error("Error in getShippingId:", error); 
         return res.status(500).json({ message: "Internal Server Error" });
       }
-    }    
+    },    
+    async getShippingPrice(req, res) {
+      try {
+        const { lat, lng } = req.body;
+        const shippingPrice = await ShippingService.calculateShipping(lat,lng);
+        return res.status(200).json(shippingPrice); 
+      } catch (error) {
+        console.error("Error in getShippingPrice:", error); 
+        return res.status(500).json({ message: "Internal Server Error" });
+      }
+    },
 };
 module.exports = ShippingController;

@@ -1,5 +1,6 @@
 const ShippingRepository = require("../repositories/shippingRepository");
 const OrderRepository = require("../repositories/orderRepository");
+const WAREHOUSE_LOCATION = { lat: 10.84144, lng: 106.80986 };
 
 const ShippingService = {
   async createShipping({ order_id, shippingdata }) {
@@ -105,5 +106,15 @@ const ShippingService = {
       throw error;
     }
   },
-};
+  async calculateShipping(lat,lng){
+          const distance = geolib.getDistance(
+      { latitude: parseFloat(lat), longitude: parseFloat(lng) },
+      { latitude: WAREHOUSE_LOCATION.lat, longitude: WAREHOUSE_LOCATION.lng }
+    );
+
+    const price = (distance / 1000) * 10000;
+
+    return ({message : "calculate shipping success", data : price});
+  }
+}
 module.exports = ShippingService;
