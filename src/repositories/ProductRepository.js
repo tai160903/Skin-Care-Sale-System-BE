@@ -107,6 +107,10 @@ class ProductRepository {
     }
     return products;
   }
+
+  async countDocuments() {
+    return await Product.countDocuments();
+  }
 }
 
 module.exports = new ProductRepository();
