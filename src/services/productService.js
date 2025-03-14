@@ -3,21 +3,35 @@ const productRepository = require("../repositories/productRepository");
 class ProductService {
   async getAllProducts(query) {
     try {
-      const { q, category, minPrice, maxPrice, sortBy, page, limit } = query;
+      const {
+        q = "",
+        category,
+        minPrice,
+        maxPrice,
+        sortBy,
+        page = "1",
+        limit = "10",
+      } = query;
 
       const filter = {};
-      if (q) filter.name = { $regex: q, $options: "i" };
+      if (q.trim()) filter.name = { $regex: q, $options: "i" };
       if (category) filter.category = category;
-      if (minPrice || maxPrice) {
+      if (!isNaN(minPrice) || !isNaN(maxPrice)) {
         filter.price = {};
-        if (minPrice) filter.price.$gte = parseFloat(minPrice);
-        if (maxPrice) filter.price.$lte = parseFloat(maxPrice);
+        if (!isNaN(minPrice)) filter.price.$gte = parseFloat(minPrice);
+        if (!isNaN(maxPrice)) filter.price.$lte = parseFloat(maxPrice);
       }
 
-      const sortOptions = sortBy ? { [sortBy]: -1 } : { createdAt: -1 };
+      const validSortFields = ["name", "price", "createdAt"];
+      const sortOptions = validSortFields.includes(sortBy)
+        ? { [sortBy]: -1 }
+        : { createdAt: -1 };
 
-      const pageNum = page ? parseInt(page) : 1;
-      const limitNum = limit ? parseInt(limit) : 10;
+      const pageNum = Number(page) || 1;
+      const limitNum = Number(limit) || 10;
+
+      const totalProducts = await productRepository.countDocuments(filter);
+      const totalPages = Math.ceil(totalProducts / limitNum);
 
       const data = await productRepository.getAllProducts(
         filter,
@@ -26,9 +40,16 @@ class ProductService {
         limitNum
       );
 
-      return { message: "Products fetched successfully", data };
+      return {
+        message: "Products fetched successfully",
+        data,
+        page: pageNum,
+        limit: limitNum,
+        totalPages,
+      };
     } catch (error) {
-      throw new Error("Error fetching products: " + error.message);
+      console.error("Error fetching products:", error);
+      throw new Error(`Error fetching products: ${error.message}`);
     }
   }
 
