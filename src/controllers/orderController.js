@@ -5,7 +5,7 @@ const CartRepository = require("../repositories/cartRepository");
 const OrderController = {
   async createOrder(req, res) {
     try {
-      const { customerId, payment_method, address, phone, discount ,totalPay } = req.body;
+      const { customerId, payment_method, address, phone, discount ,totalPay,lat,lng } = req.body;
       if (!customerId || !payment_method || !address || !phone ) {
         return res.status(400).json({ message: "Missing required fields" });
       }
@@ -16,7 +16,9 @@ const OrderController = {
         address,
         phone,
         discount,
-        totalPay
+        totalPay,
+        lat,
+        lng
       );
       res.status(201).json(newOrder);
     } catch (error) {

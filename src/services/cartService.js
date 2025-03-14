@@ -95,10 +95,10 @@ const CartService = {
       const promotion = await PromotionRepository.getByCode(promoCode);
       if (!promotion) throw new Error("Invalid promotion code");
 
-      const now = new Date();
-      if (promotion.start_date > now || promotion.end_date < now) {
-        throw new Error("Promotion is not valid at this time");
-      }
+  //    const now = new Date();
+   //   if (promotion.start_date > now || promotion.end_date < now) {
+    //    throw new Error("Promotion is not valid at this time");
+   //   }
 
       return promotion;
     } catch (error) {

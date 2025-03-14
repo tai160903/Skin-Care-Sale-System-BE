@@ -1208,6 +1208,12 @@ paths:
                   status:
                     type: string
                     example: "Pending"
+                  lat:
+                    type: number
+                    example: 10.123456
+                  lng: 
+                    type: number
+                    example: 10.123456
               checkoutUrl:
                 type: string
                 example: "https://checkout.stripe.com/pay/123abc456def"
@@ -1410,6 +1416,37 @@ paths:
           description: Ship fee not found
         500:
           description: Server error
+
+  /shippings/shipping-price:
+    post:
+      tags:
+        - Shipping
+      summary: Get shipping price
+      description: Calculate the shipping price based on the customer's location
+      parameters:
+        - in: body
+          name: shipping
+          required: true
+          schema:
+            type: object
+            properties:
+              lat:
+                type: number
+                example: 10.123456
+              lng:
+                type: number
+                example: 10.123456
+      responses:
+        200:
+          description: Shipping price calculated successfully
+          schema:
+            type: object
+            properties:
+              price:
+                type: number
+                description: Shipping price
+        400:
+          description: Invalid request 
 
   /shippings:
     get:

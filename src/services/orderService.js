@@ -4,29 +4,31 @@ const ShippingRepository = require("../repositories/shippingRepository");
 const stripe = require("../config/stripe");
 const CustomerRepository = require("../repositories/customerRepository");
 const ProductRepository = require("../repositories/productRepository");
-const shipping_feeRepository = require("../repositories/shippFeeRepository");
-
+const ShippingService = require("../services/shippingService");
 const productRepository = require("../repositories/productRepository");
+
 const OrderService = {
-  async createOrder(customerId, payment_method, address, phone,disscount ,totalPay) {
+  async createOrder(customerId, payment_method, address, phone,disscount ,totalPay,lat,lng) {
     try {
-      const location = `${address.street}, ${address.ward}, ${address.district}, ${address.province}`;
-      const locationShip = `${address.district}, ${address.province}`;
+      const location = `${address.street}, ${address.ward}, ${address.district}, ${address.province}`;  
       let cart = await CartRepository.getCartByCustomerId(customerId);
       if (!cart) throw new Error("Cart not found");
 
     await ProductRepository.checkStockAvailability(cart.items);
     
-    const shipping_price = await shipping_feeRepository.GetShipFeeByLocation(locationShip);
+  
+    
+      
+      const shipping_price = await ShippingService.calculateShipping(lat,lng);
 
-
+      
     let newOrder = await OrderRepository.createOrder({
       customer_id: customerId,
       items: cart.items,
       totalPay: totalPay,
       discount : disscount,
       payment_method: payment_method,
-      shipping_price: shipping_price.shiping_price
+      shipping_price: shipping_price
       });
 
       let newShipping = await ShippingRepository.createShipping({
