@@ -80,7 +80,6 @@ const OrderService = {
     return { messase : "created Order succees",  data: {   order: newOrder, shipping : newShipping   } }; 
 }}  catch (error){
     throw new Error(error.message);
-    console.log(error);
 }
   },
   async getOrderById(id) {
@@ -113,13 +112,30 @@ const OrderService = {
 ,
 
   async updateStatusOrder(id, status) {
-    console.log(id)
+    
     const order = await OrderRepository.getOrderById(id);
+    const ship = await ShippingRepository.getShippingByOrderId(id);
+
+
+    if (!ship) {
+      throw new Error("Shipping not found");
+    }
+
+    if(order.order_status == "confirmed " && status == "pending"){
+      throw new Error("đơn hàng đã được xác nhận, không thể chuyển về trạng thái chờ xác nhận");
+    }
+    if(order.order_status == "completed" && ship.shipping_status == "Delivered"){
+      throw new Error("đơn hàng đã được giao, không thể chuyển về trạng thái ");
+    }
+
     if (status == "Cancelled") {
+      await ShippingService.updateStatusShipping(ship._id,status);
       await productRepository.restoreStockAndPurchaseCount(order.items);
     }
+
+
     if (order.order_status == "Cancelled") {
-      throw new Error("this Order cancelled, it can't not update status ");
+      throw new Error("đơn hàng này đã được hủy, nên không thể chỉnh sửa trạng thái");
     }
     return await OrderRepository.updateStatusOrder(id, status);
   },

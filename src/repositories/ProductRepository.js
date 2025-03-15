@@ -107,6 +107,18 @@ class ProductRepository {
     }
     return products;
   }
+  async updateDisable(productId) {
+    const product = await Product.findById(productId);
+    if (!product) throw new Error("Product not found");
+  
+    const updatedProduct = await Product.findByIdAndUpdate(
+      productId,
+      { isDisabled: !product.isDisabled }, 
+      { new: true }
+    );
+  
+    return updatedProduct;
+  }
 
   async countDocuments() {
     return await Product.countDocuments();

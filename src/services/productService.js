@@ -52,6 +52,9 @@ class ProductService {
       throw new Error(`Error fetching products: ${error.message}`);
     }
   }
+  async updateDisable(productId) {
+    return await productRepository.updateDisable(productId);
+  }
 
   async getProductById(productId) {
     return await productRepository.getProductById(productId);

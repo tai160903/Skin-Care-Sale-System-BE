@@ -13,6 +13,7 @@ const routine = require("./routine");
 const shipFee = require("./shipFee");
 const address = require("./address");
 const dashboard = require("./dashboard");
+const skinType = require("./skintype");
 const router = express.Router();
 
 router.use("/auth", auth);
@@ -29,5 +30,6 @@ router.use("/blogs", blog);
 router.use("/routines", routine);
 router.use("/shipfees", shipFee);
 router.use("/address", address);
+router.use("/skintypes", skinType);
 
 module.exports = router;

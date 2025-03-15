@@ -7,7 +7,9 @@ const OrderRepository = {
         return await Order.create(orderData);
     },
     async getOrderById(orderId) {
-        const order = await Order.findById(orderId).populate('items.product_id');
+        const order = await Order.findById(orderId)
+        .populate('items.product_id');
+        
         if(!order){
             throw new Error("Order not found");
         }
@@ -32,6 +34,7 @@ const OrderRepository = {
             const totalItems = await Order.countDocuments(query);
             const orders = await Order.find(query)
                 .populate('items.product_id')
+                .sort({ createdAt: -1 })
                 .limit(limit)
                 .skip((page - 1) * limit);
     
@@ -48,7 +51,6 @@ const OrderRepository = {
     },    
 
     async updateStatusOrder(id,status){
-         
         await this.getOrderById(id);
         return await Order.findByIdAndUpdate(id,{order_status : status},{new:true});
     },

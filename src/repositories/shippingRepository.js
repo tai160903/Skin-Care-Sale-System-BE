@@ -27,6 +27,7 @@ const ShippingRepository = {
         const totalItems = await Shipping.countDocuments(query);
         const shippings = await Shipping.find(query)
             .populate('order_id')
+            .sort({ createdAt: -1 })
             .limit(limit)
             .skip((page - 1) * limit);
 
@@ -71,7 +72,9 @@ const ShippingRepository = {
 
   async getShippingByOrderId(orderId) {
     try {
-      return await Shipping.findOne({ order_id: orderId.order_id });
+     
+      const ship = await Shipping.findOne({ order_id : orderId });
+      return ship;
     } catch (error) {
       console.error("Error fetching shipping by order_id:", error);
       throw error;

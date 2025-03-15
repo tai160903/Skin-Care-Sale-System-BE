@@ -2176,10 +2176,10 @@ definitions:
   ShipFee:
     type: object
     properties:
-      location:
+      name :
         type: string
-        example: "New York"
-      price:
+        example: "fee"
+      shiping_price:
         type: number
         example: 5.99
   Product:

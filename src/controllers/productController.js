@@ -65,6 +65,19 @@ class ProductController {
       res.status(500).json({ message: error.message });
     }
   }
+  async updateDisableProduct(req, res) {
+    try {    
+      const updateProduct = await productService.updateDisable(
+        req.params.id,
+      );
+      if (!updateProduct) {
+        return res.status(404).json({ message: "Product not found" });
+      }
+      res.status(200).json(updateProduct);    
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  }   
 
   async deleteProduct(req, res) {
     try {

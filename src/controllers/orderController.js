@@ -54,9 +54,9 @@ const OrderController = {
         }
 
         const pagination = {
-            page: parseInt(page),
-            limit: parseInt(limit),
-        };
+          page: parseInt(page) || 1,
+          limit: parseInt(limit) || 10 
+      };
 
         const result = await OrderService.getAllOrders(filter, pagination);
         return res.status(200).json(result);
