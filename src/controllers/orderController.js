@@ -5,8 +5,16 @@ const CartRepository = require("../repositories/cartRepository");
 const OrderController = {
   async createOrder(req, res) {
     try {
-      const { customerId, payment_method, address, phone, discount ,totalPay,lat,lng } = req.body;
-      if (!customerId || !payment_method || !address || !phone ) {
+      const {
+        customerId,
+        payment_method,
+        address,
+        phone,
+        discount,
+        totalPay,
+        shipping_price,
+      } = req.body;
+      if (!customerId || !payment_method || !address || !phone) {
         return res.status(400).json({ message: "Missing required fields" });
       }
 
@@ -17,8 +25,7 @@ const OrderController = {
         phone,
         discount,
         totalPay,
-        lat,
-        lng
+        shipping_price
       );
       res.status(201).json(newOrder);
     } catch (error) {
@@ -42,29 +49,30 @@ const OrderController = {
   },
   async getAllOrder(req, res) {
     try {
-        const { order_status, customer_id, page = 1, limit = 15 } = req.query;
-        let filter = {};
+      const { order_status, customer_id, page = 1, limit = 15 } = req.query;
+      let filter = {};
 
-        if (customer_id) {
-            filter.customer_id = customer_id;
-        }
+      if (customer_id) {
+        filter.customer_id = customer_id;
+      }
 
-        if (order_status) {
-            filter.order_status = Array.isArray(order_status) ? order_status : [order_status];
-        }
+      if (order_status) {
+        filter.order_status = Array.isArray(order_status)
+          ? order_status
+          : [order_status];
+      }
 
-        const pagination = {
-            page: parseInt(page),
-            limit: parseInt(limit),
-        };
+      const pagination = {
+        page: parseInt(page),
+        limit: parseInt(limit),
+      };
 
-        const result = await OrderService.getAllOrders(filter, pagination);
-        return res.status(200).json(result);
+      const result = await OrderService.getAllOrders(filter, pagination);
+      return res.status(200).json(result);
     } catch (error) {
-        return res.status(500).json({ message: error.message });
+      return res.status(500).json({ message: error.message });
     }
-}
-,
+  },
   async getOrderById(req, res) {
     try {
       const order = await OrderService.getOrderById(req.params.id);
@@ -79,10 +87,9 @@ const OrderController = {
   async updateOrderStatus(req, res) {
     try {
       const id = req.params.id;
-      
-      const { order_status} = req.body
-       const data = await OrderService.updateStatusOrder(id,order_status
-    );
+
+      const { order_status } = req.body;
+      const data = await OrderService.updateStatusOrder(id, order_status);
       res.status(200).json(data);
     } catch (error) {
       return res
@@ -99,9 +106,7 @@ const OrderController = {
       await OrderService.deleteOrderById(session.metadata.order_id);
     }
     res.status(200).json({ received: true });
-  }
-  
-
+  },
 };
 
 module.exports = OrderController;
