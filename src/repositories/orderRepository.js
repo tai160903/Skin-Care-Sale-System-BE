@@ -22,8 +22,12 @@ const OrderRepository = {
     return await Order.findByIdAndDelete(orderId);
   },
   // get all order
-  async getAllOrders(filter, options) {
-    return await Order.paginate(filter, options);
+  async getAllOrders(filter = {}, options = {}) {
+    return await Order.find(filter)
+      .skip(options.page * options.limit - options.limit)
+      .limit(options.limit)
+      .sort(options.sortBy)
+      .populate(options.populate);
   },
 
   async updateStatusOrder(id, status) {
