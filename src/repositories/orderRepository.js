@@ -21,6 +21,13 @@ const OrderRepository = {
   async getAllOrders(filter, options) {
     return await Order.paginate(filter, options);
   },
+  async getOrdersByCustomerId(customerId) {
+    const orders = await Order.find({ customer_id: customerId }).populate('items.product_id');
+    if(!orders){
+        throw new Error("Orders not found");
+    }
+    return orders;  
+},
 
   async updateStatusOrder(id, status) {
     await this.getOrderById(id);

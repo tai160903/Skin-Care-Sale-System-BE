@@ -101,6 +101,7 @@ const OrderService = {
       throw new Error(error.message);
     }
   },
+
   async deleteOrderById(id) {
     const order = await this.getOrderById(id);
 
@@ -167,6 +168,9 @@ const OrderService = {
     }
     return await OrderRepository.updateStatusOrder(id, status);
   },
+  async getOrdersByCustomerId(customerId){
+    return await OrderRepository.getOrdersByCustomerId(customerId);
+},
 };
 
 module.exports = OrderService;
