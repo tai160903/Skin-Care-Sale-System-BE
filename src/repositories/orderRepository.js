@@ -3,6 +3,10 @@ const Order = require("../models/order");
 const OrderRepository = {
   // get all order of customer
 
+  async countDocuments() {
+    return await Order.countDocuments();
+  },
+
   async createOrder(orderData) {
     return await Order.create(orderData);
   },
