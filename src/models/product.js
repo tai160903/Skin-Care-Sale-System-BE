@@ -23,8 +23,8 @@ const productSchema = new mongoose.Schema(
       required: false, 
     },
     category: {
-      type: String,
-      required: false,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Category",  
     },
     skinType : {
       type: mongoose.Schema.Types.ObjectId,
@@ -36,6 +36,10 @@ const productSchema = new mongoose.Schema(
       required: true,
       default: 0,  
     },
+    weight: {
+      type: Number,
+      required: false,  
+    },
     image: {
       type: String,
       required: true,  
@@ -43,6 +47,7 @@ const productSchema = new mongoose.Schema(
     rating: {
       type: Number, 
       required: false,
+      default: 0,
     },
     purchaseCount: {
       type: Number,

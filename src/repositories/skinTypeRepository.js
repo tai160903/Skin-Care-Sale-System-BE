@@ -11,6 +11,10 @@ const SkinTypeRepository = {
     async CreateSkinType(data){
         const skintype = SkinType.create(...data);
         return skintype;
+    },
+    async GetAll(){
+        const skintype = await SkinType.find();
+        return skintype;
     }
 }
 

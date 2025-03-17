@@ -2,6 +2,7 @@ const ShippingRepository = require("../repositories/shippingRepository");
 const OrderRepository = require("../repositories/orderRepository");
 const WAREHOUSE_LOCATION = { lat: 10.84144, lng: 106.80986 };
 const geolib = require("geolib");
+const ShipFeeService = require("../services/shipFeeService");
 
 const ShippingService = {
   async createShipping({ order_id, shippingdata }) {
@@ -81,10 +82,23 @@ const ShippingService = {
       if (!shipping) {
         return ({message : "shipping not found"});
       }
+
+      if (shipping.shipping_status === "Delivered") {
+        return ({message : "shipping already delivered"});
+      }
       const data = await ShippingRepository.updateStatusShipping(id, status);
       if(!data){
         return ({message : "update status shipping failed"});
       }
+      if(status === "Cancelled"){
+        const order_status = "Cancelled";
+        const order = await OrderRepository.updateStatusOrder(shipping.order_id,order_status);
+        if(!order){
+          return ({message : "update status order fail"});
+        }
+      }
+
+
       if(status === "Delivered"){
       const order_status = "completed";
       const order = await OrderRepository.updateStatusOrder(shipping.order_id,order_status);
@@ -102,6 +116,20 @@ const ShippingService = {
 
   async updateReasonShipping(id, reason) {
     try {
+
+
+      const shipping = await ShippingRepository.getShippingById(id);
+      if (!shipping) {
+        return ({message : "không tìm thấy đơn hàng"});
+      }
+      if (shipping.shipping_status === "Delivered") {
+        return ({message : "đơn hàng đã được giao, không thể cập nhật lý do"});
+      }
+      if(reason !== ""){ 
+        const status = "Cancelled";
+        await this.updateStatusShipping(shipping._id, status);
+      }
+
       return await ShippingRepository.updateReasonShipping(id, reason);
     } catch (error) {
       console.error("Error updating shipping reason:", error);
@@ -113,8 +141,9 @@ const ShippingService = {
       { latitude: parseFloat(lat), longitude: parseFloat(lng) },
       { latitude: WAREHOUSE_LOCATION.lat, longitude: WAREHOUSE_LOCATION.lng }
     );
+    const shippFee = await ShipFeeService.getShipFeeById("67d46df8b620e792c151f0fc")
 
-    const price = ((distance / 1000) * 10000).toFixed(2);
+    const price = ((distance / 1000) * shippFee.shiping_price).toFixed(2);
 
     return price;
   }

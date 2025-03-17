@@ -12,9 +12,9 @@ const ShippingController = {
         if (shipping_status) filter.shipping_status = shipping_status;
 
         const pagination = {
-            page: parseInt(page),
-            limit: parseInt(limit),
-        };
+          page: parseInt(page) || 1,
+          limit: parseInt(limit) || 10 
+      };
 
         const result = await ShippingService.getAllShipping(filter, pagination);
         res.status(200).json(result);

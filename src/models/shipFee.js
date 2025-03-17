@@ -2,7 +2,7 @@
 const mongoose = require("mongoose");
 
 const ShipFeeSchema = new mongoose.Schema({
-    location : {
+    name : {
         type : String,
         required: true
     },

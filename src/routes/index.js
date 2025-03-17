@@ -13,6 +13,8 @@ const routine = require("./routine");
 const shipFee = require("./shipFee");
 const address = require("./address");
 const dashboard = require("./dashboard");
+const skinType = require("./skintype");
+const category  = require("./category");
 const router = express.Router();
 
 router.use("/auth", auth);
@@ -21,6 +23,7 @@ router.use("/products", product);
 router.use("/users", user);
 router.use("/questions", question);
 router.use("/cart", cart);
+router.use("/categories", category);
 router.use("/promotions", promotion);
 router.use("/orders", order);
 router.use("/shippings", shipping);
@@ -29,5 +32,6 @@ router.use("/blogs", blog);
 router.use("/routines", routine);
 router.use("/shipfees", shipFee);
 router.use("/address", address);
+router.use("/skintypes", skinType);
 
 module.exports = router;

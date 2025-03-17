@@ -1,16 +1,7 @@
 const ShipFeeService = require("../services/shipFeeService");
 
 const ShipFeeController = {
-  async GetShipFeeByLocation(req, res) {
-    try {
-      const { province, district } = req.body;
-      const location = `${district}, ${province}`;
-      const shipFee = await ShipFeeService.GetShipFeeByLocation(location);
-      res.status(200).json(shipFee);
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-    }
-  },
+
   async GetAll(req, res) {
     try {
       const ShipFees = await ShipFeeService.getAllShipfee();

@@ -1,11 +1,11 @@
 const ShipFeeRepositoy = require("../repositories/shippFeeRepository");
 
 const ShipFeeService = {
-  async GetShipFeeByLocation(location) {
-    return await ShipFeeRepositoy.GetShipFeeByLocation(location);
-  },
   async createShipFee(data) {
     return await ShipFeeRepositoy.create(data);
+  },
+  async getShipFeeById(id) {
+    return await ShipFeeRepositoy.getById(id);
   },
   async updateShipFee(id, data) {
     return await ShipFeeRepositoy.update(id, data);
