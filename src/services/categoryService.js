@@ -17,3 +17,4 @@ const CategoryService = {
         return await CategoryRepository.deleteCategory(id);    
     },
     }
+module.exports = CategoryService
