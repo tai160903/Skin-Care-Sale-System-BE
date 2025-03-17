@@ -108,9 +108,25 @@ const OrderService = {
 
     return await OrderRepository.deleteOrderById(id);
   },
-  async getAllOrders(filter, pagination) {
+  async getAllOrders(query) {
+    const { customer_id, order_status, page, limit } = query;
+    let filter = {};
     try {
-      const data = await OrderRepository.getAllOrders(filter, pagination);
+      if (customer_id) {
+        filter.customer_id = customer_id;
+      }
+
+      if (order_status) {
+        filter.order_status = order_status;
+      }
+
+      const options = {
+        sortBy: "createdAt",
+        limit: limit ? parseInt(limit) : 5,
+        page: page ? parseInt(page) : 1,
+      };
+
+      const data = await OrderRepository.getAllOrders(filter, options);
       return { messgae: "get all order success", data };
     } catch (error) {
       console.error("Error fetching all orders:", error);
