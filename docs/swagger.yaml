@@ -1248,14 +1248,37 @@ paths:
               $ref: "#/definitions/Order"
         500:
           description: Server error
-  /orders/{id}:
+  /orders/customer/{customerId}:
+    get:
+      tags:
+        - Orders
+      summary: Get orders by customer ID
+      description: Retrieve orders for a specific customer
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          type: string
+          description: Customer ID
+      responses:
+        200:
+          description: Orders retrieved successfully
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Order"
+        404:
+          description: No orders found for this customer
+        500:
+          description: Server error
+  /orders/{orderId}:
     get:
       tags:
         - Orders
       summary: Get order by ID
       description: Retrieve order details by its ID
       parameters:
-        - name: id
+        - name: orderId
           in: path
           required: true
           type: string

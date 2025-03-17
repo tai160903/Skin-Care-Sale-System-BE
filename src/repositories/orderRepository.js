@@ -29,6 +29,13 @@ const OrderRepository = {
       .sort(options.sortBy)
       .populate(options.populate);
   },
+  async getOrdersByCustomerId(customerId) {
+    const orders = await Order.find({ customer_id: customerId }).populate('items.product_id');
+    if(!orders){
+        throw new Error("Orders not found");
+    }
+    return orders;  
+},
 
   async updateStatusOrder(id, status) {
     await this.getOrderById(id);

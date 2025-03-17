@@ -42,14 +42,22 @@ const ShippingRepository = {
         throw error;
     }
 },
-  async getShippingByCustomerId(customerId) {
-    try {
-      return await Shipping.find({ customer_id: customerId.customer_id });
-    } catch (error) {
+async getShippingByCustomerId(customerId) {
+  try {
+      const shippingData = await Shipping.find({ customer_id: customerId.customer_id })
+          .populate({
+              path: 'order_id',
+              populate: {
+                  path: 'items.product_id' 
+              }
+          });
+
+      return shippingData;
+  } catch (error) {
       console.error("Error fetching shipping by customer_id:", error);
       throw error;
-    }
-  },
+  }
+},
   async getShippingByStatus(status){
     try {
       return await Shipping.find({shipping_status: status});
