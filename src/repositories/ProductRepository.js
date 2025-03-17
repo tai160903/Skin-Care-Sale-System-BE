@@ -1,11 +1,12 @@
 const Product = require("../models/product");
 
 class ProductRepository {
-  async getAllProducts(filter, sortOptions, page, limit) {
+  async getAllProducts(filter = {}, options = {}) {
     return await Product.find(filter)
-      .sort(sortOptions)
-      .skip((page - 1) * limit)
-      .limit(limit);
+      .skip(options?.page * options?.limit - options?.limit)
+      .sort(options?.sort)
+      .limit(options?.limit)
+      .populate(options?.populate);
   }
 
   async getTopSellingProducts() {

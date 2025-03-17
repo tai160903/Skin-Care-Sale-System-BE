@@ -23,6 +23,7 @@ const OrderRepository = {
   },
   // get all order
   async getAllOrders(filter = {}, options = {}) {
+    console.log(options);
     return await Order.find(filter)
       .skip(options.page * options.limit - options.limit)
       .limit(options.limit)

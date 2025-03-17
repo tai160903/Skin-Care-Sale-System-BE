@@ -110,7 +110,7 @@ const OrderService = {
     return await OrderRepository.deleteOrderById(id);
   },
   async getAllOrders(query) {
-    const { order_status, page, limit, sortBy } = query;
+    const { order_status, page, limit, sortBy, sortOrder } = query;
     let filter = {};
     try {
       if (order_status) {
@@ -121,7 +121,7 @@ const OrderService = {
         sortBy:
           sortBy && typeof sortBy === "string"
             ? { [sortBy]: sortOrder === "desc" ? -1 : 1 }
-            : { createdAt: 1 },
+            : { createdAt: -1 },
         populate: "items.product_id",
         limit: limit ? parseInt(limit) : 5,
         page: page ? parseInt(page) : 1,

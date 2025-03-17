@@ -13,39 +13,43 @@ class ProductService {
         limit = "10",
       } = query;
 
+      // Tạo đối tượng `filter` để lọc dữ liệu
       const filter = {};
-      if (q.trim()) filter.name = { $regex: q, $options: "i" };
-      if (category) filter.category = category;
-      if (!isNaN(minPrice) || !isNaN(maxPrice)) {
-        filter.price = {};
-        if (!isNaN(minPrice)) filter.price.$gte = parseFloat(minPrice);
-        if (!isNaN(maxPrice)) filter.price.$lte = parseFloat(maxPrice);
+
+      if (q) {
+        filter.name = { $regex: q, $options: "i" }; // Tìm kiếm theo tên (không phân biệt hoa thường)
       }
 
-      const validSortFields = ["name", "price", "createdAt"];
-      const sortOptions = validSortFields.includes(sortBy)
-        ? { [sortBy]: -1 }
-        : { createdAt: -1 };
+      if (category) {
+        filter.category = category;
+      }
 
-      const pageNum = Number(page) || 1;
-      const limitNum = Number(limit) || 10;
+      if (minPrice || maxPrice) {
+        filter.price = {};
+        if (minPrice) filter.price.$gte = Number(minPrice);
+        if (maxPrice) filter.price.$lte = Number(maxPrice);
+      }
+
+      const options = {
+        sort: sortBy
+          ? { [sortBy.replace("-", "")]: sortBy.startsWith("-") ? -1 : 1 }
+          : { createdAt: -1 },
+        page: Number(page) || 1,
+        limit: Number(limit) || 10,
+        populate: "category",
+      };
 
       const totalProducts = await productRepository.countDocuments(filter);
-      const totalPages = Math.ceil(totalProducts / limitNum);
+      const totalPages = Math.ceil(totalProducts / options.limit);
 
-      const data = await productRepository.getAllProducts(
-        filter,
-        sortOptions,
-        pageNum,
-        limitNum
-      );
+      const data = await productRepository.getAllProducts(filter, options);
 
       return {
         message: "Products fetched successfully",
-        data,
-        page: pageNum,
-        limit: limitNum,
+        page: options.page,
+        limit: options.limit,
         totalPages,
+        data: data,
       };
     } catch (error) {
       console.error("Error fetching products:", error);
