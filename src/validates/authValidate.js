@@ -63,6 +63,13 @@ const verifyResetPasswordSchema = Joi.object({
     }),
 });
 
+changePasswordByOldPasswordSchema = Joi.object({
+  userId: Joi.string().required(),
+  oldPassword: Joi.string().min(6).max(20).required(),
+  newPassword: Joi.string().min(6).max(20).required(),
+  confirmNewPassword: Joi.string().valid(Joi.ref("newPassword")).required(),
+});
+
 module.exports = {
   registerSchema,
   loginSchema,
