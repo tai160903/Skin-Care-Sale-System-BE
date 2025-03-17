@@ -49,25 +49,7 @@ const OrderController = {
   },
   async getAllOrder(req, res) {
     try {
-      const { order_status, customer_id, page = 1, limit = 15 } = req.query;
-      let filter = {};
-
-      if (customer_id) {
-        filter.customer_id = customer_id;
-      }
-
-      if (order_status) {
-        filter.order_status = Array.isArray(order_status)
-          ? order_status
-          : [order_status];
-      }
-
-      const pagination = {
-        page: parseInt(page),
-        limit: parseInt(limit),
-      };
-
-      const result = await OrderService.getAllOrders(filter, pagination);
+      const result = await OrderService.getAllOrders(req.query);
       return res.status(200).json(result);
     } catch (error) {
       return res.status(500).json({ message: error.message });
