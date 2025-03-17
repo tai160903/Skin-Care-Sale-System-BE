@@ -117,7 +117,10 @@ const OrderService = {
       }
 
       const options = {
-        sortBy: sortBy || "createdAt",
+        sortBy:
+          sortBy && typeof sortBy === "string"
+            ? { [sortBy]: sortOrder === "desc" ? -1 : 1 }
+            : { createdAt: 1 },
         populate: "items.product_id",
         limit: limit ? parseInt(limit) : 5,
         page: page ? parseInt(page) : 1,
