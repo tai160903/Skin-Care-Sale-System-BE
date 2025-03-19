@@ -3,6 +3,7 @@ const productService = require("../services/productService");
 class ProductController {
   async getAllProduct(req, res) {
     try {
+      console.log(req.query);
       const products = await productService.getAllProducts(req.query);
       res.status(200).json(products);
     } catch (error) {
@@ -65,18 +66,16 @@ class ProductController {
     }
   }
   async updateDisableProduct(req, res) {
-    try {    
-      const updateProduct = await productService.updateDisable(
-        req.params.id,
-      );
+    try {
+      const updateProduct = await productService.updateDisable(req.params.id);
       if (!updateProduct) {
         return res.status(404).json({ message: "Product not found" });
       }
-      res.status(200).json(updateProduct);    
+      res.status(200).json(updateProduct);
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
-  }   
+  }
 
   async deleteProduct(req, res) {
     try {

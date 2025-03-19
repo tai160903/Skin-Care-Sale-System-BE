@@ -2,6 +2,7 @@ const Product = require("../models/product");
 
 class ProductRepository {
   async getAllProducts(filter = {}, options = {}) {
+    console.log(options);
     return await Product.find(filter)
       .skip(options?.page * options?.limit - options?.limit)
       .sort(options?.sort)
@@ -111,13 +112,13 @@ class ProductRepository {
   async updateDisable(productId) {
     const product = await Product.findById(productId);
     if (!product) throw new Error("Product not found");
-  
+
     const updatedProduct = await Product.findByIdAndUpdate(
       productId,
-      { isDisabled: !product.isDisabled }, 
+      { isDisabled: !product.isDisabled },
       { new: true }
     );
-  
+
     return updatedProduct;
   }
 
