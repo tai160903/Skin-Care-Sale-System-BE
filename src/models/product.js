@@ -24,12 +24,12 @@ const productSchema = new mongoose.Schema(
     },
     category: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Category",  
+      ref: "Category",
     },
     skinType: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: [mongoose.Schema.Types.ObjectId],
       ref: "SkinType",
-      require: true,
+      required: true,
     },
     stock: {
       type: Number,
@@ -38,7 +38,7 @@ const productSchema = new mongoose.Schema(
     },
     weight: {
       type: Number,
-      required: false,  
+      required: false,
     },
     image: {
       type: String,

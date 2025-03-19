@@ -43,6 +43,8 @@ class ProductService {
 
       const data = await productRepository.getAllProducts(filter, options);
 
+      console.log(data);
+
       return {
         message: "Products fetched successfully",
         page: options.page,
