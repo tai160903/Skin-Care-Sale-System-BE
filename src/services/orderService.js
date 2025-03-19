@@ -3,9 +3,9 @@ const CartRepository = require("../repositories/cartRepository");
 const ShippingRepository = require("../repositories/shippingRepository");
 const stripe = require("../config/stripe");
 const CustomerRepository = require("../repositories/customerRepository");
-const ProductRepository = require("../repositories/productRepository");
+const ProductRepository = require("../repositories/ProductRepository");
 const ShippingService = require("../services/shippingService");
-const productRepository = require("../repositories/productRepository");
+
 
 const OrderService = {
   async createOrder(

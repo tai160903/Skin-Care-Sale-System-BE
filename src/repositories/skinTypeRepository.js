@@ -1,4 +1,4 @@
-const SkinType = require("../models/skinType")
+const SkinType =    require("../models/skinType");
 
 const SkinTypeRepository = {
     async GetById(id){

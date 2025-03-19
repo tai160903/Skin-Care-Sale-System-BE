@@ -3,6 +3,7 @@ const Answer = require("../models/answer");
 const UserAnswer = require("../models/userAnswer");
 
 class QuestionRepository {
+
   async getAllQuestions() {
     return await Question.find();
   }

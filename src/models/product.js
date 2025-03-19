@@ -26,11 +26,13 @@ const productSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Category",  
     },
-    skinType : {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "SkinType",
-      require : true
-    },
+    skinType: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "SkinType",
+        required: true,
+      }
+    ],
     stock: {
       type: Number,
       required: true,

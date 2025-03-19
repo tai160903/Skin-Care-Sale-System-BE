@@ -30,10 +30,13 @@ class ReviewRepository{
                 .populate("product_id", "name price image"); 
     
             return populatedReview;
-        } catch(error) {
-            throw new Error('Error fetching reviews' + error.message);
+        } catch (error) {
+            if (error.code === 11000) {  // Duplicate key error
+              throw new Error("Bạn đã đánh giá sản phẩm này!");
+            }
+            throw error;
+          }
         }
-    }
     async updateRating(id, Ratingdata){
         try {
             return await Review.findByIdAndUpdate(

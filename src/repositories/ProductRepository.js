@@ -3,6 +3,8 @@ const Product = require("../models/product");
 class ProductRepository {
   async getAllProducts(filter, sortOptions, page, limit) {
     return await Product.find(filter)
+      .populate("skinType")  
+      .populate("category")
       .sort(sortOptions)
       .skip((page - 1) * limit)
       .limit(limit);
@@ -52,8 +54,12 @@ class ProductRepository {
   }
   async createProduct(productData) {
     try {
-      const newProduct = new Product(productData);
-      return await newProduct.save();
+      const newProduct = await Product.create(productData);
+      await newProduct.save();
+      const populatedProduct = await Product.findById(newProduct._id)
+    .populate("skinType", "name")
+    .populate("category", "name");
+      return populatedProduct;
     } catch (error) {
       throw new Error("Error create product: " + error.message);
     }
@@ -62,7 +68,9 @@ class ProductRepository {
 
   async getProductById(productId) {
     try {
-      return await Product.findById(productId);
+      return await Product.findById(productId)
+        .populate("skinType")
+        .populate("category");
     } catch (error) {
       throw new Error("Error fetching product by Id: " + error.message);
     }

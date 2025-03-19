@@ -7,6 +7,10 @@ const SkinTypeSchema = new mongoose.Schema(
       required: true,
       enum: ["Oily", "Dry", "Combination", "Normal", "Sensitive"], // Only allows these values
     },
+    VNname: {
+      type: String,
+      required: true,
+    },
     description: { type: String },
   },
   {

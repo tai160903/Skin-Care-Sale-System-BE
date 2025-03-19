@@ -19,8 +19,18 @@ const OrderRepository = {
   },
   // get all order
   async getAllOrders(filter, options) {
-    return await Order.paginate(filter, options);
-  },
+    options.sort = { createdAt: -1 };
+
+    const result = await Order.paginate(filter, options);
+
+    
+    result.docs = await Order.populate(result.docs, {
+        path: "items.product_id",
+        populate: { path: "category" }
+    });
+
+    return result;
+},
   async getOrdersByCustomerId(customerId) {
     const orders = await Order.find({ customer_id: customerId }).populate('items.product_id');
     if(!orders){
@@ -28,6 +38,7 @@ const OrderRepository = {
     }
     return orders;  
 },
+
 
   async updateStatusOrder(id, status) {
     await this.getOrderById(id);
@@ -37,5 +48,8 @@ const OrderRepository = {
       { new: true }
     );
   },
+  async countDocuments(filter) {
+    return await Order.countDocuments(filter);
+  }
 };
 module.exports = OrderRepository;
