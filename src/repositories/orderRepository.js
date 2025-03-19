@@ -3,6 +3,10 @@ const Order = require("../models/order");
 const OrderRepository = {
   // get all order of customer
 
+  async countDocuments() {
+    return await Order.countDocuments();
+  },
+
   async createOrder(orderData) {
     return await Order.create(orderData);
   },
@@ -18,19 +22,14 @@ const OrderRepository = {
     return await Order.findByIdAndDelete(orderId);
   },
   // get all order
-  async getAllOrders(filter, options) {
-    options.sort = { createdAt: -1 };
-
-    const result = await Order.paginate(filter, options);
-
-    
-    result.docs = await Order.populate(result.docs, {
-        path: "items.product_id",
-        populate: { path: "category" }
-    });
-
-    return result;
-},
+  async getAllOrders(filter = {}, options = {}) {
+    console.log(options);
+    return await Order.find(filter)
+      .skip(options.page * options.limit - options.limit)
+      .limit(options.limit)
+      .sort(options.sortBy)
+      .populate(options.populate);
+  },
   async getOrdersByCustomerId(customerId) {
     const orders = await Order.find({ customer_id: customerId }).populate('items.product_id');
     if(!orders){

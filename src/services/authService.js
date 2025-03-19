@@ -275,6 +275,48 @@ const authService = {
       return { message: error.message, status: 400 };
     }
   },
+
+  changePasswordByOldPassword: async (
+    userId,
+    oldPassword,
+    newPassword,
+    confirmNewPassword
+  ) => {
+    const { error } = changePasswordByOldPasswordSchema.validate({
+      userId,
+      oldPassword,
+      newPassword,
+      confirmNewPassword,
+    });
+    if (error) return { message: error.details[0].message, status: 400 };
+
+    try {
+      const user = await userRepository.findById(userId);
+      if (!user) {
+        return { message: "User not found", status: 404 };
+      }
+
+      const isMatch = await bcrypt.compare(oldPassword, user.password);
+      if (!isMatch) {
+        return { message: "Incorrect old password", status: 400 };
+      }
+
+      const isSamePassword = await bcrypt.compare(newPassword, user.password);
+      if (isSamePassword) {
+        return {
+          message: "New password must be different from the old password",
+          status: 400,
+        };
+      }
+
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      await userRepository.updateById(userId, { password: hashedPassword });
+
+      return { message: "Password updated successfully", status: 200 };
+    } catch (error) {
+      return { message: error.message, status: 500 };
+    }
+  },
 };
 
 module.exports = authService;

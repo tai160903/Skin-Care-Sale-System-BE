@@ -1,7 +1,7 @@
 const Product = require("../models/product");
 
 class ProductRepository {
-  async getAllProducts(filter, sortOptions, page, limit) {
+  async getAllProducts(filter = {}, options = {}) {
     return await Product.find(filter)
       .populate("skinType")  
       .populate("category")

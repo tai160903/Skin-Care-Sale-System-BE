@@ -133,6 +133,15 @@ class AuthController {
       return res.status(400).json({ message: error.message });
     }
   };
+
+  changePasswordByOldPassword = async (req, res) => {
+    try {
+      const response = await authService.changePasswordByOldPassword(req.body);
+      return res.json(response);
+    } catch (error) {
+      return res.status(400).json({ message: error.message });
+    }
+  };
 }
 
 module.exports = new AuthController();

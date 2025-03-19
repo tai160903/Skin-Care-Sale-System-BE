@@ -15,12 +15,12 @@ const productSchema = new mongoose.Schema(
 
     discountPercentage: {
       type: Number,
-      default :0,
+      default: 0,
     },
 
     ingredient: {
-      type: String, 
-      required: false, 
+      type: String,
+      required: false,
     },
     category: {
       type: mongoose.Schema.Types.ObjectId,
@@ -36,7 +36,7 @@ const productSchema = new mongoose.Schema(
     stock: {
       type: Number,
       required: true,
-      default: 0,  
+      default: 0,
     },
     weight: {
       type: Number,
@@ -44,40 +44,39 @@ const productSchema = new mongoose.Schema(
     },
     image: {
       type: String,
-      required: true,  
+      required: true,
     },
     rating: {
-      type: Number, 
+      type: Number,
       required: false,
       default: 0,
     },
     purchaseCount: {
       type: Number,
-      default: 0, 
+      default: 0,
     },
     description: {
       type: String,
-      required: false,  
+      required: false,
     },
     isDisabled: {
       type: Boolean,
-      default: false,  
+      default: false,
     },
     userManual: {
       type: String,
       required: false,
     },
-    virtue :{
+    virtue: {
       type: String,
-      required: false
-    }
+      required: false,
+    },
   },
   {
-    timestamps: true, 
-    collection: "products"
+    timestamps: true,
+    collection: "products",
   }
 );
-
 
 const Product = mongoose.model("Product", productSchema);
 
