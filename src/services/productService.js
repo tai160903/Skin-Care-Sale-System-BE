@@ -13,11 +13,10 @@ class ProductService {
         limit = "10",
       } = query;
 
-      // Tạo đối tượng `filter` để lọc dữ liệu
       const filter = {};
 
       if (q) {
-        filter.name = { $regex: q, $options: "i" }; // Tìm kiếm theo tên (không phân biệt hoa thường)
+        filter.name = { $regex: q, $options: "i" };
       }
 
       if (category) {
@@ -36,13 +35,15 @@ class ProductService {
           : { createdAt: -1 },
         page: Number(page) || 1,
         limit: Number(limit) || 10,
-        populate: "category",
+        populate: ["category", "skinType"],
       };
 
       const totalProducts = await productRepository.countDocuments(filter);
       const totalPages = Math.ceil(totalProducts / options.limit);
 
       const data = await productRepository.getAllProducts(filter, options);
+
+      console.log(data);
 
       return {
         message: "Products fetched successfully",

@@ -276,12 +276,12 @@ const authService = {
     }
   },
 
-  changePasswordByOldPassword: async (
+  changePasswordByOldPassword: async ({
     userId,
     oldPassword,
     newPassword,
-    confirmNewPassword
-  ) => {
+    confirmNewPassword,
+  }) => {
     const { error } = changePasswordByOldPasswordSchema.validate({
       userId,
       oldPassword,

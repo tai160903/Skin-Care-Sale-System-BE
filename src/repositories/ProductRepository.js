@@ -118,13 +118,13 @@ class ProductRepository {
   async updateDisable(productId) {
     const product = await Product.findById(productId);
     if (!product) throw new Error("Product not found");
-  
+
     const updatedProduct = await Product.findByIdAndUpdate(
       productId,
-      { isDisabled: !product.isDisabled }, 
+      { isDisabled: !product.isDisabled },
       { new: true }
     );
-  
+
     return updatedProduct;
   }
 
