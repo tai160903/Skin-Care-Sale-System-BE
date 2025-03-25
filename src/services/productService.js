@@ -31,8 +31,12 @@ class ProductService {
 
       const options = {
         sort: sortBy
-          ? { [sortBy.replace("-", "")]: sortBy.startsWith("-") ? -1 : 1 }
+          ? {
+              [sortBy.replace("-desc", "").replace("-asc", "")]:
+                sortBy.includes("-desc") ? -1 : 1,
+            }
           : { createdAt: -1 },
+
         page: Number(page) || 1,
         limit: Number(limit) || 10,
         populate: ["category", "skinType"],
@@ -42,8 +46,6 @@ class ProductService {
       const totalPages = Math.ceil(totalProducts / options.limit);
 
       const data = await productRepository.getAllProducts(filter, options);
-
-      console.log(data);
 
       return {
         message: "Products fetched successfully",
