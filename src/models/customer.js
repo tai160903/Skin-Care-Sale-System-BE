@@ -16,10 +16,9 @@ const customerSchema = new mongoose.Schema(
       default: "",
     },
     gender: {
-      type: String,
-      default: "Nam",
-    }
-    ,
+      type: Boolean,
+      default: false,
+    },
     address: {
       type: String,
       default: "",
