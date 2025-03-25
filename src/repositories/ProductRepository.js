@@ -67,8 +67,10 @@ class ProductRepository {
   async getProductById(productId) {
     try {
       return await Product.findById(productId)
-        .populate("skinType")
-        .populate("category");
+      .populate([
+        "skinType",
+        "category"
+      ]);
     } catch (error) {
       throw new Error("Error fetching product by Id: " + error.message);
     }
