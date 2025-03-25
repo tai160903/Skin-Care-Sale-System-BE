@@ -303,6 +303,7 @@ paths:
             type: array
             items:
               $ref: "#/definitions/Promotion"
+  
     post:
       tags:
         - Promotions
@@ -382,6 +383,43 @@ paths:
           description: Promotion deleted successfully
         404:
           description: Promotion not found
+  
+  /promotions/customer:
+    post:
+      tags:
+        - Promotions
+      summary: Get promotions for a customer
+      description: Retrieve a list of promotions based on the customer's ID and points.
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: Customer ID and points to filter promotions
+          required: true
+          schema:
+            type: object
+            properties:
+              customer_id:
+                type: string
+                example: "67c15e200cf9dea044aff8a4"
+              point:
+                type: integer
+                example: 10000
+      responses:
+        200:
+          description: Successful operation
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Promotion"
+        400:
+          description: Bad request (missing or invalid parameters)
+        500:
+          description: Internal server error
+
 
   /cart/{customerId}:
     get:
@@ -1780,6 +1818,19 @@ paths:
         - Dashboard
       summary: Get dashboard statistics
       description: Retrieve various statistics for the dashboard, including revenue, best-selling products, total orders, and top customers.
+      parameters:
+        - in: query
+          name: startDate
+          type: string
+          format: date
+          required: false
+          description: The start date for filtering statistics (YYYY-MM-DD)
+        - in: query
+          name: endDate
+          type: string
+          format: date
+          required: false
+          description: The end date for filtering statistics (YYYY-MM-DD)
       responses:
         200:
           description: Successfully retrieved dashboard data
@@ -1809,6 +1860,13 @@ paths:
                 type: array
                 items:
                   $ref: "#/definitions/TopCustomer"
+        400:
+          description: Invalid date format
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
         500:
           description: Server error
           schema:
