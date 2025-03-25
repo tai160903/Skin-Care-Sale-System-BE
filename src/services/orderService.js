@@ -17,18 +17,6 @@ const OrderService = {
     shipping_price
   ) {
     try {
-      const { error } = createOrderSchema.validate({
-        customerId,
-        payment_method,
-        address,
-        phone,
-        disscount,
-        totalPay,
-        shipping_price,
-      });
-      if (error) {
-        throw new Error(error.details[0].message);
-      }
       let cart = await CartRepository.getCartByCustomerId(customerId);
       if (!cart) throw new Error("Cart not found");
 
@@ -106,10 +94,6 @@ const OrderService = {
   },
   async getOrderById(id) {
     try {
-      const { error } = idSchema.validate(id);
-      if (error) {
-        throw new Error(error.details[0].message);
-      }
       const order = await OrderRepository.getOrderById(id);
       if (!order) {
         throw new Error("order not found");
@@ -121,11 +105,6 @@ const OrderService = {
   },
 
   async deleteOrderById(id) {
-    const { error } = idSchema.validate(id);
-    if (error) {
-      throw new Error(error.details[0].message);
-    }
-
     const order = await this.getOrderById(id);
 
     await productRepository.restoreStockAndPurchaseCount(order.items);
@@ -167,10 +146,6 @@ const OrderService = {
     }
   },
   async updateStatusOrder(id, status) {
-    const { error } = idSchema.validate(id);
-    if (error) {
-      throw new Error(error.details[0].message);
-    }
     const order = await OrderRepository.getOrderById(id);
     const ship = await ShippingRepository.getShippingByOrderId(id);
 
@@ -203,10 +178,6 @@ const OrderService = {
     return await OrderRepository.updateStatusOrder(id, status);
   },
   async getOrdersByCustomerId(customerId) {
-    const { error } = idSchema.validate(customerId);
-    if (error) {
-      throw new Error(error.details[0].message);
-    }
     return await OrderRepository.getOrdersByCustomerId(customerId);
   },
 };

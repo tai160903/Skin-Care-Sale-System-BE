@@ -12,8 +12,6 @@ const PromotionService = {
   },
 
   createPromotion: async (data) => {
-    const { error } = promotionSchema.validate(data);
-    if (error) throw new Error(error.details[0].message);
     const startDate = new Date(data.start_date);
     const endDate = new Date(data.end_date);
     const now = new Date();
@@ -30,12 +28,6 @@ const PromotionService = {
   },
 
   promotionOfCustomer: async (customer_id, point) => {
-    const { error: idError } = customerIdSchema.validate(customer_id);
-    if (idError) throw new Error(idError.details[0].message);
-
-    const { error: pointError } = pointSchema.validate(point);
-    if (pointError) throw new Error(pointError.details[0].message);
-
     const now = new Date();
     const startDate = now;
     let discount = 0;
@@ -74,8 +66,6 @@ const PromotionService = {
   },
 
   updatePromotion: async (id, data) => {
-    const { error } = updatePromotionSchema.validate(data);
-    if (error) throw new Error(error.details[0].message);
     const startDate = new Date(data.start_date);
     const endDate = new Date(data.end_date);
     const now = new Date();

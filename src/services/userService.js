@@ -12,10 +12,6 @@ const userService = {
   },
 
   getCustomerById: async (id) => {
-    const { error } = objectIdSchema.validate(id);
-    if (error) {
-      return { message: error.details[0].message, status: 400 };
-    }
     const customer = await customerRepository.findByCustomerId(id);
 
     return {
@@ -26,10 +22,6 @@ const userService = {
   },
 
   updateUserById: async (id, data) => {
-    const { error } = updateUserSchema.validate(data);
-    if (error) {
-      return { message: error.details[0].message, status: 400 };
-    }
     const user = await customerRepository.findByUserId(id);
     if (!user) {
       return {
@@ -46,10 +38,6 @@ const userService = {
   },
 
   deleteUserById: async (id) => {
-    const { error } = objectIdSchema.validate(id);
-    if (error) {
-      return { message: error.details[0].message, status: 400 };
-    }
     const user = await customerRepository.findByUserId(id);
     if (!user) {
       return {
@@ -64,18 +52,12 @@ const userService = {
     };
   },
   async getCustomerIdByUserId(customerId) {
-    const { error } = objectIdSchema.validate(customerId);
-    if (error) {
-      throw new Error(error.details[0].message);
-    }
     const customerID = await customerRepository.getCustomerIdByUserId(
       customerId
     );
     return customerID;
   },
   async createEmployee(data) {
-    const { error } = createEmployeeSchema.validate(data);
-    if (error) throw new Error(error.details[0].message);
     const user = await userRepository.createEmployee(data);
     return user;
   },
@@ -85,11 +67,6 @@ const userService = {
     return { message: "get staff successed", data };
   },
   async updateCustomer(customer_id, updatedata) {
-    const { error: idError } = objectIdSchema.validate(customer_id);
-    if (idError) throw new Error("Invalid customer ID");
-
-    const { error: dataError } = updateUserSchema.validate(updatedata);
-    if (dataError) throw new Error(dataError.details[0].message);
     const data = await customerRepository.updateById(customer_id, updatedata);
     return { message: "update customer successed", data };
   },
