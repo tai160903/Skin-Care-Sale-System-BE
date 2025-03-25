@@ -6,6 +6,9 @@ const RoutineRepository = {
       "steps.recommendProducts"
     );
   },
+  async getAllRoutines() {
+    return await Routine.find().populate("steps.recommendProducts");
+  },
   async createRoutine(routineData) {
     return await Routine.create(routineData);
   },
@@ -20,7 +23,7 @@ const RoutineRepository = {
     );
   },
   async getById(id) {
-    const routin = await Routine.findById(id);
+    const routin = await Routine.findById(id).populate("steps.recommendProducts");;
     if (!routin) {
       throw new Error("routine not found");
     }

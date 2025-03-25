@@ -1,3 +1,4 @@
+const { getAllRoutines } = require("../repositories/routineRepository");
 const RoutineService = require("../services/routineServce");
 
 const RoutineController = {
@@ -5,6 +6,14 @@ const RoutineController = {
         try{
             
             const routine = await RoutineService.getByskintype(req.params.skintypeId);
+            res.status(200).json(routine);
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    },
+    async getAllRoutines(req,res){
+        try{
+            const routine = await RoutineService.getAllRoutines();
             res.status(200).json(routine);
         } catch (error) {
             res.status(500).json({ message: error.message });
