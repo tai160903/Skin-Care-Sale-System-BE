@@ -1,5 +1,11 @@
 const customerRepository = require("../repositories/customerRepository");
 const userRepository = require("../repositories/userRepository");
+const {
+  objectIdSchema,
+  updateUserSchema,
+  createEmployeeSchema,
+} = require("../validators/userValidator");
+
 const userService = {
   getAllCustomer: async () => {
     const data = await customerRepository.findAll();
@@ -11,6 +17,10 @@ const userService = {
   },
 
   getCustomerById: async (id) => {
+    const { error } = objectIdSchema.validate(id);
+    if (error) {
+      return { message: error.details[0].message, status: 400 };
+    }
     const customer = await customerRepository.findByCustomerId(id);
 
     return {
@@ -21,6 +31,10 @@ const userService = {
   },
 
   updateUserById: async (id, data) => {
+    const { error } = updateUserSchema.validate(data);
+    if (error) {
+      return { message: error.details[0].message, status: 400 };
+    }
     const user = await customerRepository.findByUserId(id);
     if (!user) {
       return {
@@ -37,6 +51,10 @@ const userService = {
   },
 
   deleteUserById: async (id) => {
+    const { error } = objectIdSchema.validate(id);
+    if (error) {
+      return { message: error.details[0].message, status: 400 };
+    }
     const user = await customerRepository.findByUserId(id);
     if (!user) {
       return {
@@ -51,23 +69,34 @@ const userService = {
     };
   },
   async getCustomerIdByUserId(customerId) {
-    const customerID = await customerRepository.getCustomerIdByUserId(customerId);
-    return customerID
-    ;
+    const { error } = objectIdSchema.validate(customerId);
+    if (error) {
+      throw new Error(error.details[0].message);
+    }
+    const customerID = await customerRepository.getCustomerIdByUserId(
+      customerId
+    );
+    return customerID;
   },
-  async createEmployee(data){
-    
+  async createEmployee(data) {
+    const { error } = createEmployeeSchema.validate(data);
+    if (error) throw new Error(error.details[0].message);
     const user = await userRepository.createEmployee(data);
     return user;
   },
-  
-  async getAllStaff(){
+
+  async getAllStaff() {
     const data = await userRepository.findAllStaff();
-    return {message :"get staff successed", data};
+    return { message: "get staff successed", data };
   },
-  async updateCustomer(customer_id, updatedata){
+  async updateCustomer(customer_id, updatedata) {
+    const { error: idError } = objectIdSchema.validate(customer_id);
+    if (idError) throw new Error("Invalid customer ID");
+
+    const { error: dataError } = updateUserSchema.validate(updatedata);
+    if (dataError) throw new Error(dataError.details[0].message);
     const data = await customerRepository.updateById(customer_id, updatedata);
-    return {message :"update customer successed", data};
-  }
-}
+    return { message: "update customer successed", data };
+  },
+};
 module.exports = userService;
