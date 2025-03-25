@@ -1,8 +1,19 @@
 const productRepository = require("../repositories/productRepository");
+const {
+  productSchema,
+  updateProductSchema,
+  productIdSchema,
+  ratingSchema,
+  querySchema,
+} = require("../validators/productValidator");
 
 class ProductService {
   async getAllProducts(query) {
     try {
+      const { error } = querySchema.validate(query);
+      if (error) {
+        throw new Error(error.details[0].message);
+      }
       const {
         q = "",
         category,
@@ -60,10 +71,18 @@ class ProductService {
     }
   }
   async updateDisable(productId) {
+    const { error } = productIdSchema.validate(productId);
+    if (error) {
+      throw new Error(error.details[0].message);
+    }
     return await productRepository.updateDisable(productId);
   }
 
   async getProductById(productId) {
+    const { error } = productIdSchema.validate(productId);
+    if (error) {
+      throw new Error(error.details[0].message);
+    }
     return await productRepository.getProductById(productId);
   }
   async getProductsByCategory(category) {
@@ -74,15 +93,27 @@ class ProductService {
   }
 
   async createProduct(productData) {
+    const { error } = productSchema.validate(productData);
+    if (error) {
+      throw new Error(error.details[0].message);
+    }
     return await productRepository.createProduct(productData);
   }
   async updateProductRating(productId, Rating) {
     return await productRepository.updateProductRating(productId, Rating);
   }
   async updateProduct(productId, productData) {
+    const { error } = updateProductSchema.validate(productData);
+    if (error) {
+      throw new Error(error.details[0].message);
+    }
     return await productRepository.updateProduct(productId, productData);
   }
   async deleteProduct(productId) {
+    const { error } = productIdSchema.validate(productId);
+    if (error) {
+      throw new Error(error.details[0].message);
+    }
     return await productRepository.deleteProduct(productId);
   }
   // async updateDiscount(productId,discountPercentage){

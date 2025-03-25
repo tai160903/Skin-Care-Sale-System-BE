@@ -5,7 +5,7 @@ const stripe = require("../config/stripe");
 const CustomerRepository = require("../repositories/customerRepository");
 const ProductRepository = require("../repositories/productRepository");
 const ShippingService = require("../services/shippingService");
-
+const { createOrderSchema, idSchema } = require("../validates/orderValidate");
 
 const OrderService = {
   async createOrder(
@@ -18,6 +18,18 @@ const OrderService = {
     shipping_price
   ) {
     try {
+      const { error } = createOrderSchema.validate({
+        customerId,
+        payment_method,
+        address,
+        phone,
+        disscount,
+        totalPay,
+        shipping_price,
+      });
+      if (error) {
+        throw new Error(error.details[0].message);
+      }
       let cart = await CartRepository.getCartByCustomerId(customerId);
       if (!cart) throw new Error("Cart not found");
 
@@ -78,7 +90,10 @@ const OrderService = {
         };
       } else {
         await ProductRepository.updateStockAndPurchaseCount(newOrder.items);
-        await CustomerRepository.updatePoint(customerId, (newOrder.totalPay - newOrder.shipping_price));
+        await CustomerRepository.updatePoint(
+          customerId,
+          newOrder.totalPay - newOrder.shipping_price
+        );
         await CartRepository.clearCart(customerId);
         return {
           messase: "created Order succees",
@@ -92,6 +107,10 @@ const OrderService = {
   },
   async getOrderById(id) {
     try {
+      const { error } = idSchema.validate(id);
+      if (error) {
+        throw new Error(error.details[0].message);
+      }
       const order = await OrderRepository.getOrderById(id);
       if (!order) {
         throw new Error("order not found");
@@ -103,6 +122,11 @@ const OrderService = {
   },
 
   async deleteOrderById(id) {
+    const { error } = idSchema.validate(id);
+    if (error) {
+      throw new Error(error.details[0].message);
+    }
+
     const order = await this.getOrderById(id);
 
     await productRepository.restoreStockAndPurchaseCount(order.items);
@@ -144,36 +168,48 @@ const OrderService = {
     }
   },
   async updateStatusOrder(id, status) {
-    console.log(id);
+    const { error } = idSchema.validate(id);
+    if (error) {
+      throw new Error(error.details[0].message);
+    }
     const order = await OrderRepository.getOrderById(id);
     const ship = await ShippingRepository.getShippingByOrderId(id);
-
 
     if (!ship) {
       throw new Error("Shipping not found");
     }
 
-    if(order.order_status == "confirmed " && status == "pending"){
-      throw new Error("đơn hàng đã được xác nhận, không thể chuyển về trạng thái chờ xác nhận");
+    if (order.order_status == "confirmed " && status == "pending") {
+      throw new Error(
+        "đơn hàng đã được xác nhận, không thể chuyển về trạng thái chờ xác nhận"
+      );
     }
-    if(order.order_status == "completed" && ship.shipping_status == "Delivered"){
+    if (
+      order.order_status == "completed" &&
+      ship.shipping_status == "Delivered"
+    ) {
       throw new Error("đơn hàng đã được giao, không thể chuyển về trạng thái ");
     }
 
     if (status == "Cancelled") {
-      await ShippingService.updateStatusShipping(ship._id,status);
+      await ShippingService.updateStatusShipping(ship._id, status);
       await productRepository.restoreStockAndPurchaseCount(order.items);
     }
 
-
     if (order.order_status == "Cancelled") {
-      throw new Error("đơn hàng này đã được hủy, nên không thể chỉnh sửa trạng thái");
+      throw new Error(
+        "đơn hàng này đã được hủy, nên không thể chỉnh sửa trạng thái"
+      );
     }
     return await OrderRepository.updateStatusOrder(id, status);
   },
-  async getOrdersByCustomerId(customerId){
+  async getOrdersByCustomerId(customerId) {
+    const { error } = idSchema.validate(customerId);
+    if (error) {
+      throw new Error(error.details[0].message);
+    }
     return await OrderRepository.getOrdersByCustomerId(customerId);
-},
+  },
 };
 
 module.exports = OrderService;
