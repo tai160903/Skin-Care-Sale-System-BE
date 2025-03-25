@@ -5,7 +5,7 @@ const {
   productIdSchema,
   ratingSchema,
   querySchema,
-} = require("../validators/productValidator");
+} = require("../validator/productValidator");
 
 class ProductService {
   async getAllProducts(query) {

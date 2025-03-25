@@ -4,7 +4,7 @@ const {
   objectIdSchema,
   updateUserSchema,
   createEmployeeSchema,
-} = require("../validators/userValidator");
+} = require("../validator/userValidator");
 
 const userService = {
   getAllCustomer: async () => {

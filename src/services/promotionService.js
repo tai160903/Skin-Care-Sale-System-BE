@@ -6,7 +6,7 @@ const {
   updatePromotionSchema,
   customerIdSchema,
   pointSchema,
-} = require("../validators/promotionValidator");
+} = require("../validator/promotionValidator");
 
 const PromotionService = {
   getAllPromotions: async () => await PromotionRepository.getAll(),
