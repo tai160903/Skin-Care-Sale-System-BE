@@ -1,12 +1,6 @@
 const PromotionRepository = require("../repositories/promotionRepository");
 const CustomerRepository = require("../repositories/customerRepository");
 const crypto = require("crypto");
-const {
-  promotionSchema,
-  updatePromotionSchema,
-  customerIdSchema,
-  pointSchema,
-} = require("../validates/promotionValidate");
 
 const PromotionService = {
   getAllPromotions: async () => await PromotionRepository.getAll(),

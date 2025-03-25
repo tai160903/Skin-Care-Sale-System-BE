@@ -1,8 +1,4 @@
 const BlogRepository = require("../repositories/blogRepository");
-const {
-  createBlogSchema,
-  updateBlogSchema,
-} = require("../validates/blogValidate");
 
 const BlogService = {
   async createBlog(blogdata) {
