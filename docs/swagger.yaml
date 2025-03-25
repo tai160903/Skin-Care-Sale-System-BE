@@ -1998,6 +1998,22 @@ paths:
           description: Invalid request
         500:
           description: Server error
+    get : 
+      tags:
+        - Routine
+      summary: Create a new routine
+      description: Create a new routine in the system
+      consumes:
+        - application/json
+      responses:
+        201:
+          description: Routine created successfully
+          schema:
+            $ref: "#/definitions/Routine"
+        400:
+          description: Invalid request
+        500:
+          description: Server error
   /routines/{id}:
     put:
       tags:
