@@ -1,11 +1,4 @@
 const productRepository = require("../repositories/productRepository");
-const {
-  productSchema,
-  updateProductSchema,
-  productIdSchema,
-  ratingSchema,
-  querySchema,
-} = require("../validates/productValidate");
 
 class ProductService {
   async getAllProducts(query) {

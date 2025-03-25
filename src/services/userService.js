@@ -1,10 +1,5 @@
 const customerRepository = require("../repositories/customerRepository");
 const userRepository = require("../repositories/userRepository");
-const {
-  objectIdSchema,
-  updateUserSchema,
-  createEmployeeSchema,
-} = require("../validates/userValidate");
 
 const userService = {
   getAllCustomer: async () => {

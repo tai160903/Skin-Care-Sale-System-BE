@@ -1,10 +1,4 @@
 const CategoryRepository = require("../repositories/categoryRepository");
-const {
-  createCategorySchema,
-  updateCategorySchema,
-  getByIdCategorySchema,
-  deleteCategorySchema,
-} = require("../validates/categoryValidate");
 
 const CategoryService = {
   getAllCategories: async () => {

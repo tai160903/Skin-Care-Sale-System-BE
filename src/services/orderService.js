@@ -5,7 +5,6 @@ const stripe = require("../config/stripe");
 const CustomerRepository = require("../repositories/customerRepository");
 const ProductRepository = require("../repositories/productRepository");
 const ShippingService = require("../services/shippingService");
-const { createOrderSchema, idSchema } = require("../validates/orderValidate");
 
 const OrderService = {
   async createOrder(
