@@ -26,7 +26,7 @@ const querySchema = Joi.object({
   q: Joi.string().allow(""),
   category: Joi.string().allow(""),
   minPrice: Joi.number().min(0),
-  maxPrice: Joi.number().greater(Joi.ref("minPrice")),
+  maxPrice: Joi.greater(Joi.ref("minPrice")),
   sortBy: Joi.string().allow(""),
   page: Joi.number().integer().min(1).default(1),
   limit: Joi.number().integer().min(1).default(10),
