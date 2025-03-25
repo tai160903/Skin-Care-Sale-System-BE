@@ -3,7 +3,7 @@ const CartRepository = require("../repositories/cartRepository");
 const ShippingRepository = require("../repositories/shippingRepository");
 const stripe = require("../config/stripe");
 const CustomerRepository = require("../repositories/customerRepository");
-const ProductRepository = require("../repositories/ProductRepository");
+const ProductRepository = require("../repositories/productRepository");
 const ShippingService = require("../services/shippingService");
 
 
@@ -78,7 +78,7 @@ const OrderService = {
         };
       } else {
         await ProductRepository.updateStockAndPurchaseCount(newOrder.items);
-        await CustomerRepository.updatePoint(customerId, newOrder.totalPay);
+        await CustomerRepository.updatePoint(customerId, (newOrder.totalPay - newOrder.shipping_price));
         await CartRepository.clearCart(customerId);
         return {
           messase: "created Order succees",
