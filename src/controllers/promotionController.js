@@ -27,6 +27,14 @@ const PromotionController = {
       res.status(400).json({ message: error.message });
     }
   },
+  createPromotionOfCustomer : async (req, res) => {
+    try {
+      const promotion = await PromotionService.promotionOfCustomer(req.body.customer_id, req.body.point);
+      res.status(201).json(promotion);
+    } catch (error) {
+      res.status(404).json({ message: error.message });
+    }
+  },
 
   updatePromotion: async (req, res) => {
     try {

@@ -7,9 +7,13 @@ const ReviewController = {
       const newReview = await ReviewService.CreateReview(req.body);
       res.status(201).json(newReview);
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      if (error.message === "Bạn đã đánh giá sản phẩm này!") {
+        return res.status(400).json({ message: error.message });
+      }
+      res.status(500).json({ message: "Something went wrong!", error });
     }
   },
+
   async getAllReview(req, res) {
     try {
       const reviews = await ReviewService.getAllReview();

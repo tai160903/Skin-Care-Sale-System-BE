@@ -5,7 +5,7 @@ const stripe = require("../config/stripe");
 const CustomerRepository = require("../repositories/customerRepository");
 const ProductRepository = require("../repositories/productRepository");
 const ShippingService = require("../services/shippingService");
-const productRepository = require("../repositories/productRepository");
+
 
 const OrderService = {
   async createOrder(
@@ -78,7 +78,7 @@ const OrderService = {
         };
       } else {
         await ProductRepository.updateStockAndPurchaseCount(newOrder.items);
-        await CustomerRepository.updatePoint(customerId, newOrder.totalPay);
+        await CustomerRepository.updatePoint(customerId, (newOrder.totalPay - newOrder.shipping_price));
         await CartRepository.clearCart(customerId);
         return {
           messase: "created Order succees",

@@ -1,4 +1,4 @@
-const { updateProductRating } = require("../repositories/ProductRepository");
+const { updateProductRating } = require("../repositories/productRepository");
 const ReviewRepository = require("../repositories/reviewRepository")
 const ProductService = require("../services/productService")
 const ReviewService = {

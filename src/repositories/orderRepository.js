@@ -38,6 +38,7 @@ const OrderRepository = {
     return orders;  
 },
 
+
   async updateStatusOrder(id, status) {
     await this.getOrderById(id);
     return await Order.findByIdAndUpdate(
@@ -46,5 +47,8 @@ const OrderRepository = {
       { new: true }
     );
   },
+  async countDocuments(filter) {
+    return await Order.countDocuments(filter);
+  }
 };
 module.exports = OrderRepository;

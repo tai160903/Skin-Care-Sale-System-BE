@@ -18,7 +18,7 @@ const CategoryRepository = {
         return updatedCategory;
     },    
     async deleteCategory(id) {
-        const deletedCategory = await Category.findByIdAndRemove(id);
+        const deletedCategory = await Category.findByIdAndDelete(id);
         return deletedCategory;
     }   
     }

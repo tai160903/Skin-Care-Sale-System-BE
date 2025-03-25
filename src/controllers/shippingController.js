@@ -36,6 +36,7 @@ const ShippingController = {
   },
   async updateStatusShipping(req, res) {
     try {
+      console.log(req.params.id);
       const updatedShipping = await ShippingService.updateStatusShipping(
         req.params.id,
         req.body.shipping_status
@@ -54,9 +55,6 @@ const ShippingController = {
         req.params.id,
         req.body.reason
       );
-      if (!updatedShipping) {
-        return res.status(404).json({ message: "Shipping not found" });
-      }
       res.status(200).json(updatedShipping);
     } catch (error) {
       res.status(500).json({ message: error.message });
