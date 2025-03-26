@@ -33,11 +33,11 @@ class ProductRepository {
     for (const item of orderItems) {
       const product = await Product.findById(item.product_id);
       if (!product) {
-        throw new Error(`Product ${item.product_id} not found`);
+        throw new Error(`không tìm ${item.product_id} `);
       }
       if (product.stock < item.quantity) {
         throw new Error(
-          `Product "${product.name}" is out of stock or insufficient quantity available`
+          `sản phẩm "${product.name}" đã tạm thời hết hàng`
         );
       }
     }
@@ -59,7 +59,7 @@ class ProductRepository {
     .populate("category", "name");
       return populatedProduct;
     } catch (error) {
-      throw new Error("Error create product: " + error.message);
+      throw new Error("lỗi khi tạo sản phẩm : " + error.message);
     }
   }
   //async Getby
@@ -72,7 +72,7 @@ class ProductRepository {
         "category"
       ]);
     } catch (error) {
-      throw new Error("Error fetching product by Id: " + error.message);
+      throw new Error("lỗi lấy sản phẩm: " + error.message);
     }
   }
 
@@ -82,7 +82,7 @@ class ProductRepository {
         new: true,
       });
     } catch (error) {
-      throw new Error("Error update product: " + error.message);
+      throw new Error("cập nhật sản phẩm thất bại " + error.message);
     }
   }
 
@@ -90,7 +90,7 @@ class ProductRepository {
     try {
       return await Product.findByIdAndDelete(productId);
     } catch (error) {
-      throw new Error("Error delete product: " + error.message);
+      throw new Error("lỗi khi xóa sản phẩm : " + error.message);
     }
   }
   async restoreStockAndPurchaseCount(items) {
@@ -111,13 +111,13 @@ class ProductRepository {
       category: { $regex: new RegExp(category, "i") },
     });
     if (!products || products.length == 0) {
-      throw new Error(`not found product with ${category}`);
+      throw new Error(`không tìm thấy sản phẩm của ${category}`);
     }
     return products;
   }
   async updateDisable(productId) {
     const product = await Product.findById(productId);
-    if (!product) throw new Error("Product not found");
+    if (!product) throw new Error("không tìm thấy sản phẩm");
 
     const updatedProduct = await Product.findByIdAndUpdate(
       productId,

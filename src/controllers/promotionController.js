@@ -48,7 +48,7 @@ const PromotionController = {
   deletePromotion: async (req, res) => {
     try {
       await PromotionService.deletePromotion(req.params.id);
-      res.json({ message: "Promotion deleted successfully" });
+      res.json({ message: "Đã xóa ưu đãi thành công" });
     } catch (error) {
       res.status(404).json({ message: error.message });
     }

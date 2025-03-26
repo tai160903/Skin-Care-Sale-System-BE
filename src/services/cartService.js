@@ -44,12 +44,12 @@ const CartService = {
 
   async updateQuantity(customerId, productId, quantity) {
     let cart = await CartRepository.getCartByCustomerId(customerId);
-    if (!cart) throw new Error("Cart not found");
+    if (!cart) throw new Error("không tim thấy giỏ hàng");
 
     const itemIndex = cart.items.findIndex((item) =>
       item.product_id.equals(productId)
     );
-    if (itemIndex < 0) throw new Error("Product not found in cart");
+    if (itemIndex < 0) throw new Error("Không tìm thấy sản phẩm trong giỏ hàng");
 
     if (cart.items[itemIndex].quantity > 1) {
       cart.items[itemIndex].quantity -= 1;
@@ -70,7 +70,7 @@ const CartService = {
 
   async removeItem(customerId, productId) {
     const cart = await CartRepository.getCartByCustomerId(customerId);
-    if (!cart) throw new Error("Cart not found");
+    if (!cart) throw new Error("không tìm thấy giỏ hàng");
 
     cart.items = cart.items.filter(
       (item) => item.product_id._id.toString() !== productId.toString()
@@ -86,14 +86,14 @@ const CartService = {
 
     return {
       cart: updatedCart,
-      message: "Product removed from cart succe xssfully",
+      message: "đã xóa sản phẩm khỏi giỏ hàng"
     };
   },
 
   async applyPromotion(promoCode) {
     try {
       const promotion = await PromotionRepository.getByCode(promoCode);
-      if (!promotion) throw new Error("Invalid promotion code");
+      if (!promotion) throw new Error("mã giảm giá không hợp lệ");
 
   //    const now = new Date();
    //   if (promotion.start_date > now || promotion.end_date < now) {

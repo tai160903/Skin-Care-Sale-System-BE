@@ -25,7 +25,7 @@ const RoutineRepository = {
   async getById(id) {
     const routin = await Routine.findById(id).populate("steps.recommendProducts");;
     if (!routin) {
-      throw new Error("routine not found");
+      throw new Error("không tìm thấy lộ trình");
     }
     return routin;
   },

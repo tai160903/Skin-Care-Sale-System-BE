@@ -7,7 +7,7 @@ class ReviewRepository{
             return await Review.find().populate("customer_id", "name email") 
             .populate("product_id", "name price image"); ;
         } catch(error){
-            throw new Error('Error fetching reviewsreviews: ' + error.message);
+            throw new Error('lỗi khi lấy danh sách đánh giá: ' + error.message);
         }
       }
     
@@ -46,7 +46,7 @@ class ReviewRepository{
                 {new : true}).populate("customer_id", "name email") 
                 .populate("product_id", "name price image"); 
         } catch(error) {
-            throw new Error('Error fetching reviews' + error.message);
+            throw new Error('Lỗi khi lấy danh sách đánh giá' + error.message);
         }
     }
     async getReviewById(id){
@@ -54,14 +54,14 @@ class ReviewRepository{
             return Review.findById(id).populate("customer_id", "name email") 
             .populate("product_id", "name price image"); ;
         }catch(error){
-            throw new Error('Error fetching reviews' + error.message);
+            throw new Error('Lỗi khi lấy danh sách đánh giá' + error.message);
         }
     }
     async deleteReview(id){
         try {
             return await Review.findByIdAndDelete(id);
         } catch(error) {
-            throw new Error('Error fetching reviews' + error.message);
+            throw new Error('Lỗi khi lấy danh sách đánh giá' + error.message);
         }
     } 
     async getReviewsByProductId(productId) {

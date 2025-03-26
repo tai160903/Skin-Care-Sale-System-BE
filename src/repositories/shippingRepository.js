@@ -12,7 +12,7 @@ const ShippingRepository = {
         shipping_status: shippingdata.status,
       });
     } catch (error) {
-      console.error("Error creating shipping:", error);
+      console.error("lỗi khi lấy danh sách giao hàng:", error);
       throw error;
     }
   },
@@ -38,7 +38,7 @@ const ShippingRepository = {
             data: shippings
         };
     } catch (error) {
-        console.error("Error fetching all shipping:", error);
+        console.error("lỗi khi lấy danh sách giao hàng:", error);
         throw error;
     }
 },
@@ -54,7 +54,7 @@ async getShippingByCustomerId(customerId) {
 
       return shippingData;
   } catch (error) {
-      console.error("Error fetching shipping by customer_id:", error);
+      console.error("lỗi khi lấy danh sách giao hàng by customer_id:", error);
       throw error;
   }
 },
@@ -62,7 +62,7 @@ async getShippingByCustomerId(customerId) {
     try {
       return await Shipping.find({shipping_status: status});
     } catch (error) {
-      console.error("Error fetching shipping by status:", error);
+      console.error("lỗi khi lấy danh sách giao hàng by status:", error);
       throw error;
     }
   },
@@ -73,7 +73,7 @@ async getShippingByCustomerId(customerId) {
         shipping_status: status,
       });
     } catch (error) {
-      console.error("Error fetching shipping by customer_id:", error);
+      console.error("lỗi khi lấy danh sách giao hàng by customer_id:", error);
       throw error;
     }
   },
@@ -84,7 +84,7 @@ async getShippingByCustomerId(customerId) {
       const ship = await Shipping.findOne({ order_id : orderId });
       return ship;
     } catch (error) {
-      console.error("Error fetching shipping by order_id:", error);
+      console.error("lỗi khi lấy danh sách giao hàng order_id:", error);
       throw error;
     }
   },
@@ -93,7 +93,7 @@ async getShippingByCustomerId(customerId) {
     try {
       return await Shipping.findById(id);
     } catch (error) {
-      console.error("Error fetching shipping by id:", error);
+      console.error("lỗi khi lấy danh sách giao hàng by id:", error);
       throw error;
     }
   },
@@ -106,7 +106,7 @@ async getShippingByCustomerId(customerId) {
         { new: true }
       );
     } catch (error) {
-      console.error("Error updating shipping status:", error);
+      console.error("lỗi khi cập nhật trang thái giao hàng:", error);
       throw error;
     }
   },
@@ -115,7 +115,7 @@ async getShippingByCustomerId(customerId) {
     try {
       return await Shipping.findByIdAndUpdate(id, { reason }, { new: true });
     } catch (error) {
-      console.error("Error updating shipping reason:", error);
+      console.error("lỗi khi cập nhật lí do :", error);
       throw error;
     }
   },

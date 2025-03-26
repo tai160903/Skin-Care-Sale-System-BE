@@ -82,9 +82,12 @@ const ShippingService = {
       if (!shipping) {
         return ({message : "shipping not found"});
       }
+      if(shipping.order_id.order_status === "Pending" && status === "Shipping"){
+        return ({message : "đơn hàng chưa được xác nhận, không thể chuyển về trạng thái giao hàng"});
+      }
 
       if (shipping.shipping_status === "Delivered") {
-        return ({message : "shipping already delivered"});
+        return ({message : "đơn hàng đã được giao"});
       }
       const data = await ShippingRepository.updateStatusShipping(id, status);
       if(!data){
@@ -94,7 +97,7 @@ const ShippingService = {
         const order_status = "Cancelled";
         const order = await OrderRepository.updateStatusOrder(shipping.order_id,order_status);
         if(!order){
-          return ({message : "update status order fail"});
+          return ({message : "không tìm thấy đơn hàng"});
         }
       }
 

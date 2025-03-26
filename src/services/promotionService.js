@@ -73,11 +73,11 @@ const PromotionService = {
       const now = new Date();
       
       if (startDate >= endDate) 
-          throw new Error("Start date must be before end date");
+          throw new Error("ngày bắt đầu phải trước ngày kết thúc");
       if (data.discount_percentage < 0 || data.discount_percentage > 100)
-          throw new Error("Discount percentage must be between 0 and 100.");
+          throw new Error("Phần trăm giảm giá phải từ 0 cho đến 100");
       if (startDate < now || endDate < now)
-          throw new Error("Start date and end date must be in the future.");
+          throw new Error("ngày bắt đầu và ngày kết thúc phải ở tương lai");
       const updatedPromotion = await PromotionRepository.update(id, data);
       return {message : "Promotion updated successfully", data : updatedPromotion};
     },
