@@ -1,5 +1,6 @@
 const customerRepository = require("../repositories/customerRepository");
 const userRepository = require("../repositories/userRepository");
+
 const userService = {
   getAllCustomer: async () => {
     const data = await customerRepository.findAll();
@@ -51,23 +52,23 @@ const userService = {
     };
   },
   async getCustomerIdByUserId(customerId) {
-    const customerID = await customerRepository.getCustomerIdByUserId(customerId);
-    return customerID
-    ;
+    const customerID = await customerRepository.getCustomerIdByUserId(
+      customerId
+    );
+    return customerID;
   },
-  async createEmployee(data){
-    
+  async createEmployee(data) {
     const user = await userRepository.createEmployee(data);
     return user;
   },
-  
-  async getAllStaff(){
+
+  async getAllStaff() {
     const data = await userRepository.findAllStaff();
-    return {message :"get staff successed", data};
+    return { message: "get staff successed", data };
   },
-  async updateCustomer(customer_id, updatedata){
+  async updateCustomer(customer_id, updatedata) {
     const data = await customerRepository.updateById(customer_id, updatedata);
-    return {message :"update customer successed", data};
-  }
-}
+    return { message: "update customer successed", data };
+  },
+};
 module.exports = userService;

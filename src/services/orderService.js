@@ -6,7 +6,6 @@ const CustomerRepository = require("../repositories/customerRepository");
 const ProductRepository = require("../repositories/productRepository");
 const ShippingService = require("../services/shippingService");
 
-
 const OrderService = {
   async createOrder(
     customerId,
@@ -78,7 +77,10 @@ const OrderService = {
         };
       } else {
         await ProductRepository.updateStockAndPurchaseCount(newOrder.items);
-        await CustomerRepository.updatePoint(customerId, (newOrder.totalPay - newOrder.shipping_price));
+        await CustomerRepository.updatePoint(
+          customerId,
+          newOrder.totalPay - newOrder.shipping_price
+        );
         await CartRepository.clearCart(customerId);
         return {
           messase: "created Order succees",
@@ -144,36 +146,40 @@ const OrderService = {
     }
   },
   async updateStatusOrder(id, status) {
-    console.log(id);
     const order = await OrderRepository.getOrderById(id);
     const ship = await ShippingRepository.getShippingByOrderId(id);
-
 
     if (!ship) {
       throw new Error("không tìm thấy giao hàng");
     }
 
-    if(order.order_status == "confirmed " && status == "pending"){
-      throw new Error("đơn hàng đã được xác nhận, không thể chuyển về trạng thái chờ xác nhận");
+    if (order.order_status == "confirmed " && status == "pending") {
+      throw new Error(
+        "đơn hàng đã được xác nhận, không thể chuyển về trạng thái chờ xác nhận"
+      );
     }
-    if(order.order_status == "completed" && ship.shipping_status == "Delivered"){
+    if (
+      order.order_status == "completed" &&
+      ship.shipping_status == "Delivered"
+    ) {
       throw new Error("đơn hàng đã được giao, không thể chuyển về trạng thái ");
     }
 
     if (status == "Cancelled") {
-      await ShippingService.updateStatusShipping(ship._id,status);
+      await ShippingService.updateStatusShipping(ship._id, status);
       await productRepository.restoreStockAndPurchaseCount(order.items);
     }
 
-
     if (order.order_status == "Cancelled") {
-      throw new Error("đơn hàng này đã được hủy, nên không thể chỉnh sửa trạng thái");
+      throw new Error(
+        "đơn hàng này đã được hủy, nên không thể chỉnh sửa trạng thái"
+      );
     }
     return await OrderRepository.updateStatusOrder(id, status);
   },
-  async getOrdersByCustomerId(customerId){
+  async getOrdersByCustomerId(customerId) {
     return await OrderRepository.getOrdersByCustomerId(customerId);
-},
+  },
 };
 
 module.exports = OrderService;
