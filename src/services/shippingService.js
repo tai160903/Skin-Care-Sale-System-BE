@@ -75,15 +75,19 @@ const ShippingService = {
       throw error;
     }
   },
-
   async updateStatusShipping(id, status) {
     try {
       const shipping = await ShippingRepository.getShippingById(id);
       if (!shipping) {
         return ({message : "shipping not found"});
       }
-      if(shipping.order_id.order_status === "Pending" && status === "Shipping"){
+      const order = await OrderRepository.getOrderById(shipping.order_id);
+      console.log(order);
+      if(order.order_status === "pending" && ["Shipping", "Delivered", "Cancelled"].includes(status)){
         return ({message : "đơn hàng chưa được xác nhận, không thể chuyển về trạng thái giao hàng"});
+      }
+      if(shipping.shipping_status === "Cancelled"){
+        return ({message : "đơn hàng đã được hủy, không thể chuyển về trạng thái giao hàng"});
       }
 
       if (shipping.shipping_status === "Delivered") {

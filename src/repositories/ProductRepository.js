@@ -16,17 +16,27 @@ class ProductRepository {
     }
   }
   async updateStockAndPurchaseCount(orderItems) {
-    for (const item of orderItems) {
-      await Product.findByIdAndUpdate(
-        item.product_id,
-        {
-          $inc: {
-            purchaseCount: item.quantity,
-            stock: -item.quantity,
-          },
-        },
-        { new: true }
-      );
+    const session = await mongoose.startSession();
+    session.startTransaction();
+  
+    try {
+      for (const item of orderItems) {
+        const product = await Product.findOneAndUpdate(
+          { _id: item.product_id, stock: { $gte: item.quantity } }, // Kiểm tra tồn kho
+          { $inc: { stock: -item.quantity, purchaseCount: item.quantity } },
+          { session, new: true }
+        );
+  
+        if (!product) {
+          throw new Error(`Sản phẩm ${item.product_id} không đủ hàng!`);
+        }
+      }
+      await session.commitTransaction();
+      session.endSession();
+    } catch (error) {
+      await session.abortTransaction();
+      session.endSession();
+      throw new Error(error.message);
     }
   }
   async checkStockAvailability(orderItems) {
