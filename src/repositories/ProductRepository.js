@@ -19,7 +19,6 @@ class ProductRepository {
   async updateStockAndPurchaseCount(orderItems) {
     const session = await mongoose.startSession();
     session.startTransaction();
-
     try {
       for (const item of orderItems) {
         const product = await Product.findOneAndUpdate(

@@ -11,7 +11,7 @@ const restoreSchema = new mongoose.Schema({
         ref: "Product",
         required: true,
     },
-    quanity: {
+    quantity: {
         type: Number,
         required: true,
         min: 1
@@ -28,10 +28,11 @@ const restoreSchema = new mongoose.Schema({
     staff_respone:{
         type: String,
         require: true,
+        default: "",
     },
     restore_status: {
         type: String,
-        enum: ["Pending", "Accept", "Reject"],
+        enum: ["Pending", "Accepted", "Reject"],
           default: "Pending",
         },
     image: {

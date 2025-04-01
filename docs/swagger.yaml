@@ -30,6 +30,7 @@ tags:
   - name: Shipping
   - name: Blog
   - name: Dashboard
+  - name: Restore
 
 paths:
   /auth/register:
@@ -1477,7 +1478,93 @@ paths:
           description: Ship fee not found
         500:
           description: Server error
-
+  /restore:
+    post:
+      tags:
+        - Restore
+      summary: Create a new restore request
+      description: Create a new return request in the system
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: "#/definitions/Restore"
+      responses:
+        201:
+          description: Restore request created successfully
+          schema:
+            $ref: "#/definitions/Restore"
+        400:
+          description: Invalid request
+        500:
+          description: Server error
+    get:
+      tags:
+        - Restore
+      summary: Get all restore requests
+      description: Retrieve a list of all return requests
+      responses:
+        200:
+          description: A list of restore requests
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Restore"
+        500:
+          description: Server error
+  /restore/{id}:
+    get:
+      tags:
+        - Restore
+      summary: Get a restore request by ID
+      description: Retrieve details of a specific return request
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: string
+          description: Restore request ID
+      responses:
+        200:
+          description: Restore request details
+          schema:
+            $ref: "#/definitions/Restore"
+        404:
+          description: Restore request not found
+        500:
+          description: Server error
+    put:
+      tags:
+        - Restore
+      summary: Update a restore request
+      description: Modify the status or response of a return request
+      parameters:
+        - in: path
+          name: id
+          required: true
+          type: string
+          description: Restore request ID
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                enum: [Pending, Accept, Reject]
+              response:
+                type: string
+      responses:
+        200:
+          description: Restore request updated successfully
+          schema:
+            $ref: "#/definitions/Restore"
+        404:
+          description: Restore request not found
+        500:
+          description: Server error
   /shippings/shipping-price:
     post:
       tags:
@@ -2228,7 +2315,49 @@ paths:
                 type: string
 
 definitions:
-  
+  Restore:
+    type: object
+    required:
+    - customer_id
+    - product_id
+    - quantity
+    - order_id
+    - reason
+    - staff_response
+    - restore_status
+    - image
+    properties:
+      id:
+        type: string
+        description: Unique identifier for the restore request
+        readOnly: true
+      customer_id:
+        type: string
+        description: ID of the customer making the return
+      product_id:
+        type: string
+        description: ID of the returned product
+      quantity:
+        type: integer
+        minimum: 1
+        description: Quantity of the product being returned
+      order_id:
+        type: string
+        description: ID of the associated order
+      reason:
+        type: string
+        description: Reason for the return
+      staff_response:
+        type: string
+        description: Response from the staff
+      restore_status:
+        type: string
+        enum: [Pending, Accepted, Reject]
+        default: Pending
+        description: Status of the return request
+      image:
+        type: string
+        description: Image evidence for the return
   Order:
     type: object
     properties:

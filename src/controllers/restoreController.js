@@ -4,7 +4,7 @@ const RestoreController = {
     async getAllRestore(req,res)  {
         try {
          const restores = await RestoreService.getAllRestore();
-         res.status(200).Json(restores);
+         res.status(200).json(restores);
         } catch(error){
             res.status(500).json({ message: "lỗi khi lấy danh sách trả hàng" });
         }
@@ -12,30 +12,34 @@ const RestoreController = {
     async getRestoreById(req,res){
     try{
         const restore = await RestoreService.getRestoreById(req.parans._id);
-        req.status(200).Json(restore);
+        req.status(200).json(restore);
     } catch(error) {
         res.status(500).json({ message: "lỗi khi lấy danh sách trả hàng" }); 
     }
 },
     async updateRestore(req, res){
         try{
+        console.log(req.body);
         const status = req.body.status 
-        const respone = req.body.respone
-        const restore = await RestoreService.updateRestore(req.params.id, status,respone)
+        const response = req.body.response
+        const restore = await RestoreService.updateRestore(req.params.id, status,response)
         if(!restore) {
             return messgae({message : "không tìm thấy restore"})
         }
-        res.status(200).Json(restore);
+        res.status(200).json(restore);
         }catch (error){
         res.status(500).json({ message: "lỗi khi lấy cập nhật trả hàng" }); 
         }
     },
-    async createRestore(res,req){
+    async createRestore(req,res){
         try{
-        const restore = await RestoreController.createRestore(req.body);
-        res.status(201).Json(restore)
+        console.log(req.body);
+        const restore = await RestoreService.createRestore(req.body);
+        res.status(201).json(restore)
     } catch (error){
+        console.log(error);
         res.status(500).json({ message: "lỗi khi tạo trả hàng" });
+        
     }
     }
 }

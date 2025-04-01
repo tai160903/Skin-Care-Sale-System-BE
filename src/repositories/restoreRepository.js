@@ -13,8 +13,8 @@ const RestoreRepository = {
     async getRestoreById(id){
         return await Restore.findById(id);    
     },
-    async updateRestore(id, status, respone){
-        return await Restore.findByIdAndUpdate(id,{restore_status : status}, {staff_respone : respone}, {new: true});
+    async updateRestore(id, status, response){
+        return await Restore.findByIdAndUpdate(id,{restore_status : status, staff_respone : response }, {new: true});
     },
     async deleteRestore(id){
         return await Restore.findByIdAndDelete(id);
