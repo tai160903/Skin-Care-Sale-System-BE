@@ -3,24 +3,29 @@ const Answer = require("../models/answer");
 const UserAnswer = require("../models/userAnswer");
 
 class QuestionRepository {
-
   async getAllQuestions() {
     return await Question.find();
   }
 
   async getAnswersByQuestionId(questionId) {
-    return await Answer.find({ question_id: questionId });
+    const answers = await Answer.find({ question_id: questionId }).populate(
+      "skinType"
+    );
+    return answers;
   }
 
   async getAnswersByQuestionIds(questionIds) {
-    return await Answer.find({ question_id: { $in: questionIds } });
+    return await Answer.find({ question_id: { $in: questionIds } }).populate(
+      "skinType"
+    );
   }
 
   async saveUserAnswers(userAnswers) {
     return await UserAnswer.create(userAnswers);
   }
 
-  async createQuiz(question) {
+  async createQuestion(question) {
+    console.log(question);
     return await Question.create(question);
   }
 
@@ -31,11 +36,7 @@ class QuestionRepository {
   }
 
   async deleteQuestion(questionId) {
-    return await Question.findByIdAndUpdate(
-      questionId,
-      { $set: { isDeleted: true } },
-      { new: true }
-    );
+    return await Question.findByIdAndDelete(questionId);
   }
 }
 

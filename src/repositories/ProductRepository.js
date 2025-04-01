@@ -4,10 +4,10 @@ const mongoose = require('mongoose');
 class ProductRepository {
   async getAllProducts(filter = {}, options = {}) {
     return await Product.find(filter)
-    .skip(options?.page * options?.limit - options?.limit)
-    .sort(options?.sort)
-    .limit(options?.limit)
-    .populate(options?.populate);
+      .skip(options?.page * options?.limit - options?.limit)
+      .sort(options?.sort)
+      .limit(options?.limit)
+      .populate(options?.populate);
   }
   async getTopSellingProducts() {
     try {
@@ -19,7 +19,7 @@ class ProductRepository {
   async updateStockAndPurchaseCount(orderItems) {
     const session = await mongoose.startSession();
     session.startTransaction();
-  
+
     try {
       for (const item of orderItems) {
         const product = await Product.findOneAndUpdate(
@@ -27,7 +27,7 @@ class ProductRepository {
           { $inc: { stock: -item.quantity, purchaseCount: item.quantity } },
           { session, new: true }
         );
-  
+
         if (!product) {
           throw new Error(`Sản phẩm ${item.product_id} không đủ hàng!`);
         }
@@ -47,9 +47,7 @@ class ProductRepository {
         throw new Error(`không tìm ${item.product_id} `);
       }
       if (product.stock < item.quantity) {
-        throw new Error(
-          `sản phẩm "${product.name}" đã tạm thời hết hàng`
-        );
+        throw new Error(`sản phẩm "${product.name}" đã tạm thời hết hàng`);
       }
     }
   }
@@ -66,8 +64,8 @@ class ProductRepository {
       const newProduct = await Product.create(productData);
       await newProduct.save();
       const populatedProduct = await Product.findById(newProduct._id)
-    .populate("skinType", "name")
-    .populate("category", "name");
+        .populate("skinType", "name")
+        .populate("category", "name");
       return populatedProduct;
     } catch (error) {
       throw new Error("lỗi khi tạo sản phẩm : " + error.message);
@@ -77,10 +75,9 @@ class ProductRepository {
 
   async getProductById(productId) {
     try {
-      return await Product.findById(productId)
-      .populate([
+      return await Product.findById(productId).populate([
         "skinType",
-        "category"
+        "category",
       ]);
     } catch (error) {
       throw new Error("lỗi lấy sản phẩm: " + error.message);

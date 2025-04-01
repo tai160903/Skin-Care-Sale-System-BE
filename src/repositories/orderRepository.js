@@ -23,7 +23,6 @@ const OrderRepository = {
   },
   // get all order
   async getAllOrders(filter = {}, options = {}) {
-    console.log(options);
     return await Order.find(filter)
       .skip(options.page * options.limit - options.limit)
       .limit(options.limit)
@@ -31,13 +30,13 @@ const OrderRepository = {
       .populate(options.populate);
   },
   async getOrdersByCustomerId(customerId) {
+
     const orders = await Order.find({ customer_id: customerId }).populate('items.product_id');
     if(!orders){
         throw new Error("không tìm thấy đơn hàng");
     }
-    return orders;  
-},
-
+    return orders;
+  },
 
   async updateStatusOrder(id, status) {
     await this.getOrderById(id);
@@ -49,6 +48,6 @@ const OrderRepository = {
   },
   async countDocuments(filter) {
     return await Order.countDocuments(filter);
-  }
+  },
 };
 module.exports = OrderRepository;

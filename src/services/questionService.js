@@ -1,6 +1,8 @@
 const questionRepository = require("../repositories/questionRepository");
 const SkinType = require("../models/SkinType");
 const customerRepository = require("../repositories/customerRepository");
+const Answer = require("../models/answer");
+const Question = require("../models/question");
 
 class QuestionService {
   async getQuestions() {
@@ -35,11 +37,10 @@ class QuestionService {
         questionIds
       );
       const answerMap = new Map(allAnswers.map((a) => [a._id.toString(), a]));
-
       answers.forEach((answer) => {
         const selectedAnswer = answerMap.get(answer.answerId);
         if (selectedAnswer) {
-          skinTypeCounts[selectedAnswer.skinType] += 1;
+          skinTypeCounts[selectedAnswer.skinType.name] += 1;
         }
       });
 
@@ -80,12 +81,34 @@ class QuestionService {
     }
   }
 
-  async createQuiz(questions) {
+  async createQuiz(questionData) {
+    const session = await Question.startSession();
+    session.startTransaction();
+
     try {
-      return await questionRepository.createQuiz(questions);
+      const newQuestion = await Question.create(
+        {
+          question: questionData.question,
+        },
+        { session }
+      );
+
+      const answers = questionData.answers.map((answer) => ({
+        text: answer.text,
+        skinType: answer.skinType,
+        questionId: newQuestion._id,
+      }));
+
+      await Answer.insertMany(answers, { session });
+
+      await session.commitTransaction();
+      return { question: newQuestion, answers };
     } catch (error) {
+      await session.abortTransaction();
       console.error("Error creating quiz:", error);
       throw new Error("Something went wrong while creating the quiz");
+    } finally {
+      session.endSession();
     }
   }
 
@@ -107,15 +130,36 @@ class QuestionService {
     }
   }
 
-  async createQuestion(question) {
+  async createQuestion(questionData) {
     try {
-      return await questionRepository.createQuestion(question);
+      const { question, answers } = questionData;
+
+      if (!question || !Array.isArray(answers) || answers.length === 0) {
+        throw new Error("Question and answers cannot be empty!");
+      }
+
+      const newQuestion = await questionRepository.createQuestion({ question });
+      const questionId = newQuestion._id;
+
+      const skinTypeSet = new Set(answers.map((answer) => answer.skinType));
+      if (skinTypeSet.size !== answers.length) {
+        throw new Error("Answers cannot have duplicate skin types!");
+      }
+
+      const answersWithQuestionId = answers.map((answer) => ({
+        text: answer.text,
+        skinType: answer.skinType,
+        question_id: questionId,
+      }));
+
+      await Answer.insertMany(answersWithQuestionId);
+
+      return { message: "Successfully created question!", questionId };
     } catch (error) {
       console.error("Error creating question:", error);
       throw new Error("Something went wrong while creating the question");
     }
   }
-
   async updateQuestion(questionId, question) {
     try {
       return await questionRepository.updateQuestion(questionId, question);
@@ -126,8 +170,19 @@ class QuestionService {
   }
 
   async deleteQuestion(questionId) {
+    console.log(questionId);
+
     try {
-      return await questionRepository.deleteQuestion(questionId);
+      const deletedQuestion = await questionRepository.deleteQuestion(
+        questionId
+      );
+      if (!deletedQuestion) {
+        throw new Error("Question not found");
+      }
+
+      await Answer.deleteMany({ question_id: questionId });
+
+      return { message: "Question and answers deleted successfully" };
     } catch (error) {
       console.error("Error deleting question:", error);
       throw new Error("Something went wrong while deleting the question");
