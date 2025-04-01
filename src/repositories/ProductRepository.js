@@ -1,4 +1,5 @@
 const Product = require("../models/product");
+const mongoose = require('mongoose');
 
 class ProductRepository {
   async getAllProducts(filter = {}, options = {}) {

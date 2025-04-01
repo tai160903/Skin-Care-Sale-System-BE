@@ -15,6 +15,7 @@ const address = require("./address");
 const dashboard = require("./dashboard");
 const skinType = require("./skintype");
 const category  = require("./category");
+const restore = require("./restore")
 const router = express.Router();
 
 router.use("/auth", auth);
@@ -29,6 +30,7 @@ router.use("/orders", order);
 router.use("/shippings", shipping);
 router.use("/reviews", review);
 router.use("/blogs", blog);
+router.use("/restore", restore)
 router.use("/routines", routine);
 router.use("/shipfees", shipFee);
 router.use("/address", address);
