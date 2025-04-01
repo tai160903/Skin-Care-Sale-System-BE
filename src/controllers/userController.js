@@ -16,7 +16,6 @@ const userController = {
 
   getCustomerById: async (req, res) => {
     try {
-      console.log(req.params.customerId);
       const id = req.params.customerId;
       const response = await userService.getCustomerById(id);
       return res.status(response?.status || 200).json({
@@ -43,11 +42,10 @@ const userController = {
     }
   },
   getAllStaff: async (req, res) => {
-    try{
-
-      const data   = await userService.getAllStaff();
+    try {
+      const data = await userService.getAllStaff();
       return res.status(200).json(data);
-    }catch{
+    } catch {
       return res.status(500).json({ message: error.message });
     }
   },
@@ -69,24 +67,27 @@ const userController = {
       return res.status(500).json({ message: error.message });
     }
   },
-  async  GetCustomerIdByUserId(req, res) {
+  async GetCustomerIdByUserId(req, res) {
     try {
-      const customerId = await userService.getCustomerIdByUserId(req.params.customerId);
+      const customerId = await userService.getCustomerIdByUserId(
+        req.params.customerId
+      );
       return res.json(customerId);
     } catch (error) {
       return res.status(500).json({ message: error.message });
     }
   },
-  async updateCustomer(req,res){
-    try{
-      const data = await userService.updateCustomer(req.params.customerId,req.body);
+  async updateCustomer(req, res) {
+    try {
+      const data = await userService.updateCustomer(
+        req.params.customerId,
+        req.body
+      );
       return res.status(200).json(data);
-    }catch(error){
+    } catch (error) {
       return res.status(500).json({ message: error.message });
     }
-  }
-
+  },
 };
-
 
 module.exports = userController;

@@ -54,13 +54,13 @@ const ReviewController = {
 
   async getReviewsByProductId(req, res) {
     try {
-      console.log(req.params.productId);
-      const reviews = await ReviewService.getReviewsByProductId(req.params.productId);
+      const reviews = await ReviewService.getReviewsByProductId(
+        req.params.productId
+      );
       res.status(200).json(reviews);
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
   },
-
 };
 module.exports = ReviewController;

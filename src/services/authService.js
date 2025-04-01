@@ -59,14 +59,11 @@ const authService = {
   },
 
   login: async ({ email, password }) => {
-    console.log(email, password);
-
     const { error } = loginSchema.validate({ email, password });
     if (error) return { message: error.details[0].message, status: 400 };
 
     try {
       const user = await userRepository.findByEmail(email);
-      console.log(user);
       if (!user) {
         return { message: "User not found", status: 400 };
       }
@@ -76,7 +73,6 @@ const authService = {
       }
 
       const isPasswordMatch = await bcrypt.compare(password, user.password);
-      console.log(isPasswordMatch);
       if (!isPasswordMatch) {
         return { message: "Incorrect password", status: 400 };
       }
