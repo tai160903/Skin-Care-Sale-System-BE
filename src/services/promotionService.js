@@ -33,7 +33,6 @@ const PromotionService = {
     let discount = 0;
 
     let code = crypto.randomBytes(6).toString("hex").toUpperCase();
-    console.log(code);
     const endDate = new Date();
     endDate.setMonth(endDate.getMonth() + 1);
 

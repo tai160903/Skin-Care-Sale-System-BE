@@ -13,9 +13,8 @@ router.get("/results/:userId", quizController.getResults);
 router.post("/create", quizController.createQuestion);
 router.post("/submit", validateQuizSubmission, quizController.submitQuestion);
 router.put("/update/:questionId", quizController.updateQuestion);
-router.put("/delete/:questionId", quizController.deleteQuestion);
+router.delete("/delete/:questionId", quizController.deleteQuestion);
 
-// Use global error handler
 router.use(errorHandler);
 
 module.exports = router;
