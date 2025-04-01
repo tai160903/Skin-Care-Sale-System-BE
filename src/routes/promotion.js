@@ -10,5 +10,9 @@ router.delete("/:id", PromotionController.deletePromotion);
 
 router.get("/", PromotionController.getAllPromotions);
 router.get("/:id", PromotionController.getPromotionById);
+router.get(
+  "/customer/:customerId",
+  PromotionController.getPromotionsByCustomerId
+);
 
 module.exports = router;
