@@ -1,4 +1,3 @@
-const { Types } = require("mongoose");
 const Customer = require("../models/customer");
 
 const customerRepository = {
