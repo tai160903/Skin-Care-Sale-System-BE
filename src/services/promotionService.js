@@ -11,6 +11,13 @@ const PromotionService = {
     return promotion;
   },
 
+  getPromotionsByCustomerId: async (customerId) => {
+    const customer = await CustomerRepository.findById(customerId);
+    if (!customer) throw new Error("Customer not found");
+    const promotions = await PromotionRepository.getByCustomerId(customerId);
+    return promotions;
+  },
+
   createPromotion: async (data) => {
     const startDate = new Date(data.start_date);
     const endDate = new Date(data.end_date);
@@ -61,30 +68,32 @@ const PromotionService = {
       end_date: endDate,
     });
 
-  return { message: "Promotion created successfully", data: promotion };
-},
+    return { message: "Promotion created successfully", data: promotion };
+  },
 
-  
-    updatePromotion: async (id, data) => {
-      const startDate = new Date(data.start_date);
-      const endDate = new Date(data.end_date);
-      const now = new Date();
-      
-      if (startDate >= endDate) 
-          throw new Error("ngày bắt đầu phải trước ngày kết thúc");
-      if (data.discount_percentage < 0 || data.discount_percentage > 100)
-          throw new Error("Phần trăm giảm giá phải từ 0 cho đến 100");
-      if (startDate < now || endDate < now)
-          throw new Error("ngày bắt đầu và ngày kết thúc phải ở tương lai");
-      const updatedPromotion = await PromotionRepository.update(id, data);
-      return {message : "Promotion updated successfully", data : updatedPromotion};
-    },
-  
-    deletePromotion: async (id) => {
-      const deletedPromotion = await PromotionRepository.delete(id);
-      if (!deletedPromotion) throw new Error("Promotion not found");
-      return deletedPromotion;
-    }
-  };
-  
-  module.exports = PromotionService;
+  updatePromotion: async (id, data) => {
+    const startDate = new Date(data.start_date);
+    const endDate = new Date(data.end_date);
+    const now = new Date();
+
+    if (startDate >= endDate)
+      throw new Error("ngày bắt đầu phải trước ngày kết thúc");
+    if (data.discount_percentage < 0 || data.discount_percentage > 100)
+      throw new Error("Phần trăm giảm giá phải từ 0 cho đến 100");
+    if (startDate < now || endDate < now)
+      throw new Error("ngày bắt đầu và ngày kết thúc phải ở tương lai");
+    const updatedPromotion = await PromotionRepository.update(id, data);
+    return {
+      message: "Promotion updated successfully",
+      data: updatedPromotion,
+    };
+  },
+
+  deletePromotion: async (id) => {
+    const deletedPromotion = await PromotionRepository.delete(id);
+    if (!deletedPromotion) throw new Error("Promotion not found");
+    return deletedPromotion;
+  },
+};
+
+module.exports = PromotionService;

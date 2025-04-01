@@ -14,7 +14,7 @@ const shipFee = require("./shipFee");
 const address = require("./address");
 const dashboard = require("./dashboard");
 const skinType = require("./skintype");
-const category  = require("./category");
+const category = require("./category");
 const router = express.Router();
 
 router.use("/auth", auth);
