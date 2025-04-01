@@ -12,7 +12,7 @@ const CartRepository = {
       const newCart = await Cart.create({ customer_id: customerId, items: [] });
       return newCart;
     } catch (error) {
-      throw new Error("Failed to create cart");
+      throw new Error("đã xảy ra lỗi khi tạo cart");
     }
   },
 

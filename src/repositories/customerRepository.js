@@ -15,7 +15,7 @@ const customerRepository = {
       return await Customer.findById(id);
     } catch (error) {
       console.error("Error fetching customer by ID:", error.message);
-      throw new Error("Failed to fetch customer.");
+      throw new Error("Không tìm thấy khách hàng này.");
     }
   },
 
@@ -24,7 +24,7 @@ const customerRepository = {
       return await Customer.find().populate("user", "email");
     } catch (error) {
       console.error("Error fetching customers:", error.message);
-      throw new Error("Failed to fetch customers.");
+      throw new Error("lấy danh sách khách hàng thất bại.");
     }
   },
 
@@ -48,7 +48,7 @@ const customerRepository = {
       return customer ? customer : null;
     } catch (error) {
       console.error("Error updating customer:", error.message);
-      throw new Error("Failed to update customer.");
+      throw new Error("cập nhật khách hàng thất bại.");
     }
   },
   async getCustomerIdByUserId(userID) {
@@ -66,7 +66,7 @@ const customerRepository = {
     try {
       const customer = await Customer.findById(customerId);
       if (!customer) {
-        throw new Error("Customer not found.");
+        throw new Error("Không tìm thấy khách hàng.");
       }
       var points = Math.floor(total / 1000);
       customer.point += points;
@@ -75,7 +75,7 @@ const customerRepository = {
       return customer;
     } catch (error) {
       console.error("Error updating customer points:", error.message);
-      throw new Error("Failed to update customer points.");
+      throw new Error("cập nhật điểm khách hàng thất bại.");
     }
   },
 };

@@ -18,7 +18,7 @@ const OrderService = {
   ) {
     try {
       let cart = await CartRepository.getCartByCustomerId(customerId);
-      if (!cart) throw new Error("Cart not found");
+      if (!cart) throw new Error("không tim thấy giỏ hàng");
 
       await ProductRepository.checkStockAvailability(cart.items);
 
@@ -96,7 +96,7 @@ const OrderService = {
     try {
       const order = await OrderRepository.getOrderById(id);
       if (!order) {
-        throw new Error("order not found");
+        throw new Error("không tìm thấy đơn hàng");
       }
       return { message: "get order success", data: order };
     } catch (error) {
@@ -150,7 +150,7 @@ const OrderService = {
     const ship = await ShippingRepository.getShippingByOrderId(id);
 
     if (!ship) {
-      throw new Error("Shipping not found");
+      throw new Error("không tìm thấy giao hàng");
     }
 
     if (order.order_status == "confirmed " && status == "pending") {
