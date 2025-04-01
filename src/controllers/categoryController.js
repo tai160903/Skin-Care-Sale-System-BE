@@ -21,7 +21,7 @@ const CategoryController = {
     try {
       const category = await CategoryService.getCategoryById(req.params.id);
       if (!category) {
-        return res.status(404).json({ message: "Category not found" });
+        return res.status(404).json({ message: "không tìm thấy loại này" });
       }
       res.status(200).json(category);
     } catch (error) {
@@ -50,7 +50,7 @@ const CategoryController = {
       if (!deletedCategory) {
         return res.status(404).json({ message: "Category not found" });
       }
-      res.status(200).json({ message: "Category deleted successfully" });
+      res.status(200).json({ message: "Loại này đã bị xóa" });
     } catch (error) {
       res.status(500).json({ message: error.message });
     }

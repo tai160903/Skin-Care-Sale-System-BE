@@ -22,7 +22,7 @@ class ProductController {
     try {
       const product = await productService.getProductById(req.params.id);
       if (!product) {
-        return res.status(404).json({ message: "product not found" });
+        return res.status(404).json({ message: "Không tìm thấy sản phẩm" });
       }
       res.status(200).json(product);
     } catch (error) {
@@ -57,7 +57,7 @@ class ProductController {
       );
 
       if (!updateProduct) {
-        return res.status(404).json({ message: "Product not found" });
+        return res.status(404).json({ message: "Không tìm thấy sản phẩm" });
       }
       res.status(200).json(updateProduct);
     } catch (error) {
@@ -68,7 +68,7 @@ class ProductController {
     try {
       const updateProduct = await productService.updateDisable(req.params.id);
       if (!updateProduct) {
-        return res.status(404).json({ message: "Product not found" });
+        return res.status(404).json({ message: "Không tìm thấy sản phẩm" });
       }
       res.status(200).json(updateProduct);
     } catch (error) {
@@ -81,7 +81,7 @@ class ProductController {
       const deleteProduct = await productService.deleteProduct(req.params.id);
       if (!deleteProduct) {
       }
-      res.status(200).json({ message: "Product deleted successfully" });
+      res.status(200).json({ message: "xóa sản phẩm thành công" });
     } catch (error) {
       res.status(500).json({ message: error.message });
     }

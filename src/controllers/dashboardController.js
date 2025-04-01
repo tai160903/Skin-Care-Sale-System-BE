@@ -5,6 +5,7 @@ const DashboardController =  {
     try {
       let { startDate, endDate } = req.query;
 
+      console.log(startDate, endDate);
       
       if (!startDate || !endDate) {
         const now = new Date();

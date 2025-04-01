@@ -13,7 +13,7 @@ const OrderRepository = {
   async getOrderById(orderId) {
     const order = await Order.findById(orderId).populate("items.product_id");
     if (!order) {
-      throw new Error("Order not found");
+      throw new Error("không tìm thấy đơn hàng");
     }
     return order;
   },
@@ -30,11 +30,10 @@ const OrderRepository = {
       .populate(options.populate);
   },
   async getOrdersByCustomerId(customerId) {
-    const orders = await Order.find({ customer_id: customerId }).populate(
-      "items.product_id"
-    );
-    if (!orders) {
-      throw new Error("Orders not found");
+
+    const orders = await Order.find({ customer_id: customerId }).populate('items.product_id');
+    if(!orders){
+        throw new Error("không tìm thấy đơn hàng");
     }
     return orders;
   },
