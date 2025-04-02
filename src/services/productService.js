@@ -13,7 +13,9 @@ class ProductService {
         limit = "10",
       } = query;
 
-      const filter = {};
+      const filter = {
+        isDisabled: false,
+      };
 
       if (q) {
         filter.name = { $regex: q, $options: "i" };

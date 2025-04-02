@@ -1,5 +1,5 @@
 const Product = require("../models/product");
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 class ProductRepository {
   async getAllProducts(filter = {}, options = {}) {
@@ -19,7 +19,6 @@ class ProductRepository {
   async updateStockAndPurchaseCount(orderItems) {
     const session = await mongoose.startSession();
     session.startTransaction();
-
     try {
       for (const item of orderItems) {
         const product = await Product.findOneAndUpdate(

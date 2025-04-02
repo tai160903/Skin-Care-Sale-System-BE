@@ -7,7 +7,9 @@ const RoutineRepository = {
     );
   },
   async getAllRoutines() {
-    return await Routine.find().populate("steps.recommendProducts");
+    return await Routine.find()
+      .populate("skinType")
+      .populate("steps.recommendProducts");
   },
   async createRoutine(routineData) {
     return await Routine.create(routineData);
@@ -23,7 +25,9 @@ const RoutineRepository = {
     );
   },
   async getById(id) {
-    const routin = await Routine.findById(id).populate("steps.recommendProducts");;
+    const routin = await Routine.findById(id).populate(
+      "steps.recommendProducts"
+    );
     if (!routin) {
       throw new Error("không tìm thấy lộ trình");
     }

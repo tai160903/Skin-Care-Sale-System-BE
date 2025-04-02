@@ -10,9 +10,10 @@ const OrderController = {
         payment_method,
         address,
         phone,
-        discount,
+        discounted,
         totalPay,
         shipping_price,
+        promotionId
       } = req.body;
       if (!customerId || !payment_method || !address || !phone) {
         return res.status(400).json({ message: "Missing required fields" });
@@ -23,16 +24,15 @@ const OrderController = {
         payment_method,
         address,
         phone,
-        discount,
+        discounted,
         totalPay,
-        shipping_price
+        shipping_price,
+        promotionId
       );
       res.status(201).json(newOrder);
     } catch (error) {
       console.error("Error creating order:", error);
-      return res
-        .status(500)
-        .json({ message: "Internal server error", error: error.message });
+      return res.status(500).json({ message: error.message });
     }
   },
   async deleteOrder(req, res) {
