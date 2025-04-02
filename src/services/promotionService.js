@@ -1,5 +1,6 @@
 const PromotionRepository = require("../repositories/promotionRepository");
 const CustomerRepository = require("../repositories/customerRepository");
+const PromotionUsageRepository = require("../repositories/promotionUsageRepository");
 const crypto = require("crypto");
 
 const PromotionService = {
@@ -15,8 +16,17 @@ const PromotionService = {
     const customer = await CustomerRepository.findById(customerId);
     if (!customer) throw new Error("Customer not found");
     const promotions = await PromotionRepository.getByCustomerId(customerId);
-    return promotions;
-  },
+
+    
+    const availablePromotions = [];
+    for (const promo of promotions) {
+        const isUsed = await PromotionUsageRepository.findUsage(customerId, promo._id);
+        if (!isUsed) {
+            availablePromotions.push(promo);
+        }
+    }
+    return availablePromotions;
+},
 
   createPromotion: async (data) => {
     const startDate = new Date(data.start_date);
