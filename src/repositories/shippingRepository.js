@@ -18,28 +18,29 @@ const ShippingRepository = {
   },
   async getAllShipping(filter = {}, { page, limit }) {
     try {
-        const query = {};
+      const query = {};
 
-        if (filter.order_id) query.order_id = filter.order_id;
-        if (filter.customer_id) query.customer_id = filter.customer_id;
-        if (filter.shipping_status) query.shipping_status = filter.shipping_status;
+      if (filter.order_id) query.order_id = filter.order_id;
+      if (filter.customer_id) query.customer_id = filter.customer_id;
+      if (filter.shipping_status)
+        query.shipping_status = filter.shipping_status;
 
-        const totalItems = await Shipping.countDocuments(query);
-        const shippings = await Shipping.find(query)
-            .populate('order_id')
-            .sort({ createdAt: -1 })
-            .limit(limit)
-            .skip((page - 1) * limit);
+      const totalItems = await Shipping.countDocuments(query);
+      const shippings = await Shipping.find(query)
+        .populate("order_id")
+        .sort({ createdAt: -1 })
+        .limit(limit)
+        .skip((page - 1) * limit);
 
-        return {
-            totalItems,
-            totalPages: Math.ceil(totalItems / limit),
-            currentPage: page,
-            data: shippings
-        };
+      return {
+        totalItems,
+        totalPages: Math.ceil(totalItems / limit),
+        currentPage: page,
+        data: shippings,
+      };
     } catch (error) {
-        console.error("lỗi khi lấy danh sách giao hàng:", error);
-        throw error;
+      console.error("lỗi khi lấy danh sách giao hàng:", error);
+      throw error;
     }
 },
 async getShippingByCustomerId(customerId) {
@@ -53,14 +54,14 @@ async getShippingByCustomerId(customerId) {
           }).sort({ createdAt: -1 });;
 
       return shippingData;
-  } catch (error) {
+    } catch (error) {
       console.error("lỗi khi lấy danh sách giao hàng by customer_id:", error);
       throw error;
-  }
-},
-  async getShippingByStatus(status){
+    }
+  },
+  async getShippingByStatus(status) {
     try {
-      return await Shipping.find({shipping_status: status});
+      return await Shipping.find({ shipping_status: status });
     } catch (error) {
       console.error("lỗi khi lấy danh sách giao hàng by status:", error);
       throw error;
@@ -80,8 +81,7 @@ async getShippingByCustomerId(customerId) {
 
   async getShippingByOrderId(orderId) {
     try {
-     
-      const ship = await Shipping.findOne({ order_id : orderId });
+      const ship = await Shipping.findOne({ order_id: orderId });
       return ship;
     } catch (error) {
       console.error("lỗi khi lấy danh sách giao hàng order_id:", error);
