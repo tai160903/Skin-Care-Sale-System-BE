@@ -50,7 +50,7 @@ async getShippingByCustomerId(customerId) {
               populate: {
                   path: 'items.product_id' 
               }
-          });
+          }).sort({ createdAt: -1 });;
 
       return shippingData;
   } catch (error) {
