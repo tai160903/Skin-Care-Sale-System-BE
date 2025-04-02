@@ -9,6 +9,16 @@ const RestoreController = {
             res.status(500).json({ message: "lỗi khi lấy danh sách trả hàng" });
         }
     },
+    async getRestoreByCustomerId(req, res){
+        try{
+            console.log(req.params.customerId);
+        const restore = await RestoreService.getRestoreByCustomerId(req.params.customerId);
+        res.status(200).json(restore);
+        }catch (error){
+        
+        res.status(500).json({ message: "lỗi khi lấy danh sách trả hàng của khách hàng" }); 
+        }
+    },
     async getRestoreById(req,res){
     try{
         const restore = await RestoreService.getRestoreById(req.parans._id);
@@ -31,6 +41,7 @@ const RestoreController = {
         res.status(500).json({ message: "lỗi khi lấy cập nhật trả hàng" }); 
         }
     },
+    
     async createRestore(req,res){
         try{
         console.log(req.body);

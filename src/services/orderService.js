@@ -5,6 +5,7 @@ const stripe = require("../config/stripe");
 const CustomerRepository = require("../repositories/customerRepository");
 const ProductRepository = require("../repositories/productRepository");
 const ShippingService = require("../services/shippingService");
+const PromotionUsageRepository = require("../repositories/promotionUsageRepository");
 
 const OrderService = {
   async createOrder(
@@ -12,9 +13,10 @@ const OrderService = {
     payment_method,
     address,
     phone,
-    disscount,
+    discounted,
     totalPay,
-    shipping_price
+    shipping_price,
+    promotionId
   ) {
     try {
       let cart = await CartRepository.getCartByCustomerId(customerId);
@@ -26,7 +28,7 @@ const OrderService = {
         customer_id: customerId,
         items: cart.items,
         totalPay: totalPay,
-        discount: disscount,
+        discount: discounted,
         payment_method: payment_method,
         shipping_price: shipping_price,
       });
@@ -40,6 +42,12 @@ const OrderService = {
           status: "Pending",
         },
       });
+
+      const promotion = await PromotionUsageRepository. findUsage(customerId, promotionId);
+      if(promotion){
+        throw new Error("Bạn đã sử dụng mã giảm giá này trước đó");
+      }
+      await PromotionUsageRepository.createUsage(customerId, promotionId);
 
       let checkoutUrl = null;
       if (!newOrder._id) {
@@ -106,7 +114,7 @@ const OrderService = {
   async deleteOrderById(id) {
     const order = await this.getOrderById(id);
 
-    await productRepository.restoreStockAndPurchaseCount(order.items);
+    await ProductRepository.restoreStockAndPurchaseCount(order.items);
 
     return await OrderRepository.deleteOrderById(id);
   },

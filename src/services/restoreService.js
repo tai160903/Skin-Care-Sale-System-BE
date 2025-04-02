@@ -1,6 +1,6 @@
 const RestoreRepository = require("../repositories/restoreRepository");
 const OrderRepository = require("../repositories/orderRepository");
-const ProducRepository = require("../repositories/ProductRepository")
+const ProducRepository = require("../repositories/productRepository")
 
 const RestoreService = {
     createRestore: async (data) => {
@@ -14,6 +14,10 @@ const RestoreService = {
         const data = await RestoreRepository.getRestoreById(id);
         return ({message : "Lấy đơn hoàn trả thành công", data});
     },    
+    getRestoreByCustomerId : async (CustomerId) => {
+        const data = await RestoreRepository.getRestoreByCustomerId(CustomerId);
+        return ({message : "Lấy danh sách hoàn trả của khách hàng", data}); 
+    },
     updateRestore: async (id, status, response) => {  
         const restore = await RestoreRepository.getRestoreById(id);
         if (!restore) {

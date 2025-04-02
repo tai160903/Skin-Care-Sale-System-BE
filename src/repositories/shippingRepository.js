@@ -44,7 +44,7 @@ const ShippingRepository = {
 },
 async getShippingByCustomerId(customerId) {
   try {
-      const shippingData = await Shipping.find({ customer_id: customerId.customer_id })
+      const shippingData = await Shipping.find({ customer_id: customerId })
           .populate({
               path: 'order_id',
               populate: {
