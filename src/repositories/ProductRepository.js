@@ -106,8 +106,8 @@ class ProductRepository {
         { _id: item.product_id },
         {
           $inc: {
-            stock: item.quantity,
-            purchaseCount: -item.quantity,
+            stock:  item.quantity,
+            purchaseCount: - item.quantity,
           },
         }
       );
