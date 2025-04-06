@@ -22,7 +22,8 @@ const RoutineRepository = {
       id,
       { skinTpe: routinData.skinType, steps: routinData.steps },
       { new: true }
-    );
+    ).populate("skinType")
+    .populate("steps.recommendProducts");
   },
   async getById(id) {
     const routin = await Routine.findById(id).populate(

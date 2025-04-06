@@ -9,7 +9,7 @@ const PromotionUsageSchema = new mongoose.Schema({
     promotion_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Promotion",
-      required: true,
+     
     },
     used_at: { type: Date, default: Date.now }
   });

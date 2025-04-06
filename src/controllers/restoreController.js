@@ -38,7 +38,8 @@ const RestoreController = {
         }
         res.status(200).json(restore);
         }catch (error){
-        res.status(500).json({ message: "lỗi khi lấy cập nhật trả hàng" }); 
+            console.log(error.message);
+        res.status(500).json({message : error.message}); 
         }
     },
     

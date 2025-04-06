@@ -42,13 +42,13 @@ const OrderService = {
           status: "Pending",
         },
       });
-
+      if(promotionId){
       const promotion = await PromotionUsageRepository. findUsage(customerId, promotionId);
       if(promotion){
         throw new Error("Bạn đã sử dụng mã giảm giá này trước đó");
       }
       await PromotionUsageRepository.createUsage(customerId, promotionId);
-
+    }
       let checkoutUrl = null;
       if (!newOrder._id) {
         throw new Error("Missing order_id ");
@@ -165,6 +165,11 @@ const OrderService = {
         "đơn hàng đã được xác nhận, không thể chuyển về trạng thái chờ xác nhận"
       );
     }
+    if (order.order_status == "pending" && status == "completed") {
+      throw new Error(
+        "đơn hàng chưa được xác nhận, không thể chuyển về trạng thái đã hoàn thành"
+      );
+    }
     if (
       order.order_status == "completed" &&
       ship.shipping_status == "Delivered"
@@ -172,12 +177,13 @@ const OrderService = {
       throw new Error("đơn hàng đã được giao, không thể chuyển về trạng thái ");
     }
 
-    if (status == "Cancelled") {
-      await ShippingService.updateStatusShipping(ship._id, status);
-      await productRepository.restoreStockAndPurchaseCount(order.items);
+    if (status == "cancelled") {
+      let statusShipping = "Cancelled";
+      await ShippingService.updateStatusShipping(ship._id, statusShipping);
+      await ProductRepository.restoreStockAndPurchaseCount(order.items);
     }
 
-    if (order.order_status == "Cancelled") {
+    if (order.order_status == "cancelled") {
       throw new Error(
         "đơn hàng này đã được hủy, nên không thể chỉnh sửa trạng thái"
       );
