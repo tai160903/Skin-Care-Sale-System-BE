@@ -1,6 +1,12 @@
 const productRepository = require("../repositories/productRepository");
 
 class ProductService {
+  async getAll(){
+    const data = await productRepository.getAll();
+    return ({
+      message: "Lấy danh sách sản phẩm thành công",
+      data})
+  }
   async getAllProducts(query) {
     try {
       const {

@@ -13,7 +13,10 @@ const RestoreRepository = {
     },
 
     async getAllRestore(){
-        return await Restore.find({}).populate('product_id');
+        return await Restore.find({}).populate('product_id')
+        .sort({ createdAt: -1 })
+        .populate({ path: 'customer_id', select: 'name' })
+        .populate({ path: 'product_id', select: 'name' });
     },
     async getRestoreById(id){
         return await Restore.findById(id);    
