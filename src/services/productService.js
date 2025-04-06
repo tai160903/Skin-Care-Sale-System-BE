@@ -53,6 +53,7 @@ class ProductService {
         message: "Products fetched successfully",
         page: options.page,
         limit: options.limit,
+        totalItems: totalProducts,
         totalPages,
         data: data,
       };

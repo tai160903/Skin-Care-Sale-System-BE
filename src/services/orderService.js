@@ -43,11 +43,16 @@ const OrderService = {
         },
       });
 
-      const promotion = await PromotionUsageRepository. findUsage(customerId, promotionId);
-      if(promotion){
-        throw new Error("Bạn đã sử dụng mã giảm giá này trước đó");
+      if (promotionId) {
+        const promotion = await PromotionUsageRepository.findUsage(
+          customerId,
+          promotionId
+        );
+        if (promotion) {
+          throw new Error("Bạn đã sử dụng mã giảm giá này trước đó");
+        }
+        await PromotionUsageRepository.createUsage(customerId, promotionId);
       }
-      await PromotionUsageRepository.createUsage(customerId, promotionId);
 
       let checkoutUrl = null;
       if (!newOrder._id) {
@@ -80,7 +85,7 @@ const OrderService = {
         await ProductRepository.updateStockAndPurchaseCount(newOrder.items);
         await CustomerRepository.updatePoint(customerId, newOrder.totalPay);
         return {
-          messase: "created Order succees",
+          messase: "Tạo đơn hàng thành công",
           data: { Url: checkoutUrl, order: newOrder, shipping: newShipping },
         };
       } else {
@@ -91,7 +96,7 @@ const OrderService = {
         );
         await CartRepository.clearCart(customerId);
         return {
-          messase: "created Order succees",
+          messase: "Tạo đơn hàng thành công",
           data: { order: newOrder, shipping: newShipping },
         };
       }
