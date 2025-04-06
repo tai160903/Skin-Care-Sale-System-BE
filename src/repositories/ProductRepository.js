@@ -2,6 +2,13 @@ const Product = require("../models/product");
 const mongoose = require('mongoose');
 
 class ProductRepository {
+
+  async getAll(){
+    return await Product.find().populate([
+      "skinType",
+      "category",
+    ]);;
+  }
   async getAllProducts(filter = {}, options = {}) {
     return await Product.find(filter)
       .skip(options?.page * options?.limit - options?.limit)
@@ -37,6 +44,18 @@ class ProductRepository {
       await session.abortTransaction();
       session.endSession();
       throw new Error(error.message);
+    }
+  }
+  async UpdateStockRestore(orderItems){
+    for (const item of orderItems) {
+      await Product.updateOne(
+        { _id: item.product_id },
+        {
+          $inc: {
+            stock: - item.quantity,
+          },
+        }
+      );
     }
   }
   async checkStockAvailability(orderItems) {

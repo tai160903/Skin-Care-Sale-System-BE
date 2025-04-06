@@ -35,22 +35,18 @@ const RestoreService = {
         )} ngày.`,
       };
     }
+    if (restore.restore_status === "Reject") {
+      throw new Error("hoàn trả đã bị từ chối, không thể thay đổi trạng thái");
+    }
+    if (restore.restore_status === "Accepted") {
+      throw new Error("hoàn trả đã được chấp nhận, không thể thay đổi trạng thái");
+    }
     if (status === "Accepted") {
-      await ProducRepository.updateStockAndPurchaseCount([
+      await ProducRepository.UpdateStockRestore([
         { product_id: restore.product_id, quantity: restore.quantity },
       ]);
       const data = await RestoreRepository.updateRestore(id, status, response);
       return { message: "hoàn trả thành công", data };
-    }
-    if (restore.restore_status === "Accepted") {
-      return {
-        message: "hoàn trả đã được chất nhận, không thể thay đổi trạng thái",
-      };
-    }
-    if (restore.restore_status === "Reject") {
-      return {
-        message: "hoàn trả đã bị từ chối, không thể thay đổi trạng thái",
-      };
     }
     const data = await RestoreRepository.updateRestore(id, status, response);
     return data;

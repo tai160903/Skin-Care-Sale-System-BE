@@ -81,8 +81,16 @@ const ShippingService = {
       if (!shipping) {
         return ({message : "shipping not found"});
       }
+      console.log("status:", status);
       const order = await OrderRepository.getOrderById(shipping.order_id);
-      console.log(order);
+      if(status === "Cancelled"){
+        const order_status = "cancelled";
+        const order = await OrderRepository.updateStatusOrder(shipping.order_id,order_status);
+        return await ShippingRepository.updateStatusShipping(id, status);
+      }
+      if(shipping.shipping_status === "Pending" && status === "Delivered"){
+        return ({message : "đơn hàng chưa được vận chuyển, nên không chuyển thành đã giao được"});
+      }
       if(order.order_status === "pending" && ["Shipping", "Delivered", "Cancelled"].includes(status)){
         return ({message : "đơn hàng chưa được xác nhận, không thể chuyển về trạng thái giao hàng"});
       }
@@ -96,17 +104,7 @@ const ShippingService = {
       if (shipping.shipping_status === "Delivered") {
         return ({message : "đơn hàng đã được giao"});
       }
-      const data = await ShippingRepository.updateStatusShipping(id, status);
-      if(!data){
-        return ({message : "update status shipping failed"});
-      }
-      if(status === "Cancelled"){
-        const order_status = "cancelled";
-        const order = await OrderRepository.updateStatusOrder(shipping.order_id,order_status);
-        if(!order){
-          return ({message : "không tìm thấy đơn hàng"});
-        }
-      }
+     
 
 
       if(status === "Delivered"){
@@ -115,6 +113,10 @@ const ShippingService = {
       if(!order){
         return ({message : "update status order fail"});
       }
+    }
+    const data = await ShippingRepository.updateStatusShipping(id, status);
+    if(!data){
+      return ({message : "update status shipping failed"});
     }
       return ({message : "update status shipping success", data});
     

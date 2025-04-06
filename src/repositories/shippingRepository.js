@@ -100,6 +100,7 @@ async getShippingByCustomerId(customerId) {
 
   async updateStatusShipping(id, status) {
     try {
+      console.log("id shipping", status);
       return await Shipping.findByIdAndUpdate(
         id,
         { shipping_status: status },

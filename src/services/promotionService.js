@@ -90,7 +90,7 @@ const PromotionService = {
       throw new Error("ngày bắt đầu phải trước ngày kết thúc");
     if (data.discount_percentage < 0 || data.discount_percentage > 100)
       throw new Error("Phần trăm giảm giá phải từ 0 cho đến 100");
-    if (startDate < now || endDate < now)
+    if (endDate < now)
       throw new Error("ngày bắt đầu và ngày kết thúc phải ở tương lai");
     const updatedPromotion = await PromotionRepository.update(id, data);
     return {

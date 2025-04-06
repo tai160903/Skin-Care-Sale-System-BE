@@ -165,6 +165,11 @@ const OrderService = {
         "đơn hàng đã được xác nhận, không thể chuyển về trạng thái chờ xác nhận"
       );
     }
+    if (order.order_status == "pending" && status == "completed") {
+      throw new Error(
+        "đơn hàng chưa được xác nhận, không thể chuyển về trạng thái đã hoàn thành"
+      );
+    }
     if (
       order.order_status == "completed" &&
       ship.shipping_status == "Delivered"
@@ -173,7 +178,8 @@ const OrderService = {
     }
 
     if (status == "cancelled") {
-      await ShippingService.updateStatusShipping(ship._id, status);
+      let statusShipping = "Cancelled";
+      await ShippingService.updateStatusShipping(ship._id, statusShipping);
       await ProductRepository.restoreStockAndPurchaseCount(order.items);
     }
 
