@@ -1,6 +1,7 @@
 const Question = require("../models/question");
 const Answer = require("../models/answer");
 const UserAnswer = require("../models/userAnswer");
+const { text } = require("body-parser");
 
 class QuestionRepository {
   async getAllQuestions() {
@@ -29,10 +30,24 @@ class QuestionRepository {
     return await Question.create(question);
   }
 
-  async updateQuestion(questionId, question) {
-    return await Question.findByIdAndUpdate(questionId, question, {
-      new: true,
-    });
+  async updateQuestion(questionId, updateData) {
+    const { question, answers } = updateData;
+
+    await Question.findByIdAndUpdate(questionId, { question }, { new: true });
+
+    for (const answer of answers) {
+      const { _id, text, skinType } = answer;
+
+      if (_id) {
+        await Answer.findByIdAndUpdate(_id, { text, skinType }, { new: true });
+      } else {
+        await Answer.create({ text, skinType, question_id: questionId });
+      }
+    }
+
+    return {
+      message: "Question and answers updated successfully",
+    };
   }
 
   async deleteQuestion(questionId) {
