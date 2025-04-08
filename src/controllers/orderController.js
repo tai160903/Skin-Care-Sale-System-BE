@@ -99,9 +99,9 @@ const OrderController = {
     const session = event.data.object;
     if (event.type === "checkout.session.completed") {
       await CartRepository.clearCart(session.metadata.customer_id);
-    } else {
+    } else if (event.type === "checkout.session.expired") {
       await OrderService.deleteOrderById(session.metadata.order_id);
-    }
+  }
     res.status(200).json({ received: true });
   },
 };

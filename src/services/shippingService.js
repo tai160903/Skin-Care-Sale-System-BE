@@ -85,8 +85,10 @@ const ShippingService = {
       const order = await OrderRepository.getOrderById(shipping.order_id);
       if(status === "Cancelled"){
         const order_status = "cancelled";
-        const order = await OrderRepository.updateStatusOrder(shipping.order_id,order_status);
-        return await ShippingRepository.updateStatusShipping(id, status);
+        const OrderService = require("../services/orderService"); // Import trễ
+        const data = await ShippingRepository.updateStatusShipping(id, status);
+        await OrderService.updateStatusOrder(shipping.order_id, order_status);
+        return data;
       }
       if(shipping.shipping_status === "Pending" && status === "Delivered"){
         return ({message : "đơn hàng chưa được vận chuyển, nên không chuyển thành đã giao được"});

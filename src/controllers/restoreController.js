@@ -48,13 +48,13 @@ const RestoreController = {
         console.log(req.body);
         const restore = await RestoreService.createRestore(req.body);
         res.status(201).json(restore)
-    } catch (error){
-        console.log(error);
-        res.status(500).json({ message: "lỗi khi tạo trả hàng" });
-        
+    }catch (error){
+        console.log(error.message);
+    res.status(500).json({message : error.message}); 
     }
     }
-}
+    }
+
 
 module.exports = RestoreController
 

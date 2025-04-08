@@ -10,11 +10,7 @@ const RestoreService = {
     const differenceInDays = (now - createdAtDate) / (1000 * 60 * 60 * 24);
     console.log("differenceInDays", differenceInDays);
     if (differenceInDays > 7) {
-      return {
-        message: `Bạn chỉ có thể trả hàng trong vòng 7 ngày. Đơn hàng của bạn đã được tạo cách đây ${Math.floor(
-          differenceInDays
-        )} ngày.`,
-      };
+      throw new Error(`Bạn chỉ có thể trả hàng trong vòng 7 ngày. Đơn hàng của bạn đã được tạo cách đây ${Math.floor(differenceInDays)} ngày.`);
     }
     return await RestoreRepository.createRestore(data);
   },
@@ -37,17 +33,6 @@ const RestoreService = {
     }
 
     const order = await OrderRepository.getOrderById(restore.order_id);
-    const createdAtDate = new Date(order.createdAt);
-    const now = new Date();
-    const differenceInDays = (now - createdAtDate) / (1000 * 60 * 60 * 24);
-    console.log("differenceInDays", differenceInDays);
-    if (differenceInDays > 7) {
-      return {
-        message: `Bạn chỉ có thể trả hàng trong vòng 7 ngày. Đơn hàng của bạn đã được tạo cách đây ${Math.floor(
-          differenceInDays
-        )} ngày.`,
-      };
-    }
     if (restore.restore_status === "Reject") {
       throw new Error("hoàn trả đã bị từ chối, không thể thay đổi trạng thái");
     }
@@ -59,6 +44,7 @@ const RestoreService = {
         { product_id: restore.product_id, quantity: restore.quantity },
       ]);
       const data = await RestoreRepository.updateRestore(id, status, response);
+      console.log("check");
       return { message: "hoàn trả thành công", data };
     }
     const data = await RestoreRepository.updateRestore(id, status, response);
