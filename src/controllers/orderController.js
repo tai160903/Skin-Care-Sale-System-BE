@@ -10,12 +10,13 @@ const OrderController = {
         payment_method,
         address,
         phone,
+        name,
         discounted,
         totalPay,
         shipping_price,
-        promotionId
+        promotionId,
       } = req.body;
-      if (!customerId || !payment_method || !address || !phone) {
+      if (!customerId || !payment_method || !address || !phone || !name) {
         return res.status(400).json({ message: "Missing required fields" });
       }
 
@@ -24,6 +25,7 @@ const OrderController = {
         payment_method,
         address,
         phone,
+        name,
         discounted,
         totalPay,
         shipping_price,
@@ -66,14 +68,18 @@ const OrderController = {
         .json({ message: "Internal server error", error: error.message });
     }
   },
-  async getOrdersByCustomerId(req,res){
-    try{
-        const orders = await OrderService.getOrdersByCustomerId(req.params.customerId);
-        res.status(200).json(orders);
-     }catch(error) {
-            return res.status(500).json({ message: "Internal server error", error: error.message });
-        }
-},
+  async getOrdersByCustomerId(req, res) {
+    try {
+      const orders = await OrderService.getOrdersByCustomerId(
+        req.params.customerId
+      );
+      res.status(200).json(orders);
+    } catch (error) {
+      return res
+        .status(500)
+        .json({ message: "Internal server error", error: error.message });
+    }
+  },
 
   async updateOrderStatus(req, res) {
     try {

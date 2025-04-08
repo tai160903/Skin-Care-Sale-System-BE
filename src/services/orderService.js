@@ -13,6 +13,7 @@ const OrderService = {
     payment_method,
     address,
     phone,
+    name,
     discounted,
     totalPay,
     shipping_price,
@@ -36,6 +37,7 @@ const OrderService = {
       let newShipping = await ShippingRepository.createShipping({
         order_id: newOrder._id,
         shippingdata: {
+          name: name,
           customer_id: customerId,
           address: address,
           phone: phone,
