@@ -3,7 +3,6 @@ const OrderRepository = require("../repositories/orderRepository");
 const WAREHOUSE_LOCATION = { lat: 10.84144, lng: 106.80986 };
 const geolib = require("geolib");
 const ShipFeeService = require("../services/shipFeeService");
-const OrderService = require("../services/orderService");
 
 const ShippingService = {
   async createShipping({ order_id, shippingdata }) {
@@ -86,8 +85,10 @@ const ShippingService = {
       const order = await OrderRepository.getOrderById(shipping.order_id);
       if(status === "Cancelled"){
         const order_status = "cancelled";
-        await OrderService.updateStatusOrder(shipping.order_id,order_status);
-        return await ShippingRepository.updateStatusShipping(id, status);
+        const OrderService = require("../services/orderService"); // Import trễ
+        const data = await ShippingRepository.updateStatusShipping(id, status);
+        await OrderService.updateStatusOrder(shipping.order_id, order_status);
+        return data;
       }
       if(shipping.shipping_status === "Pending" && status === "Delivered"){
         return ({message : "đơn hàng chưa được vận chuyển, nên không chuyển thành đã giao được"});

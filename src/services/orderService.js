@@ -194,9 +194,14 @@ const OrderService = {
 
     if (status == "cancelled") {
       let statusShipping = "Cancelled";
+      if(ship.shipping_status == "Cancelled") {
+        console.log("đơn hàng đã được hủy");
+        await ProductRepository.restoreStockAndPurchaseCount(order.items);
+      } else {
       await ShippingService.updateStatusShipping(ship._id, statusShipping);
       await ProductRepository.restoreStockAndPurchaseCount(order.items);
     }
+  }
 
     if (order.order_status == "cancelled") {
       throw new Error(
