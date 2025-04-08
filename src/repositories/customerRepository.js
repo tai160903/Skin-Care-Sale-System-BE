@@ -1,5 +1,5 @@
 const Customer = require("../models/customer");
-
+const ConditionPointRepository = require("./conditonPointRepository");
 const customerRepository = {
   create: async (customerData) => {
     try {
@@ -63,11 +63,12 @@ const customerRepository = {
   },
   async updatePoint(customerId, total) {
     try {
+      const conditionPoint = await ConditionPointRepository.getConditionPoints();
       const customer = await Customer.findById(customerId);
       if (!customer) {
         throw new Error("Không tìm thấy khách hàng.");
       }
-      var points = Math.floor(total / 1000);
+      var points = Math.floor(total / conditionPoint[0].condition);
       customer.point += points;
       await customer.save();
 

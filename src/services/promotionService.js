@@ -1,6 +1,7 @@
 const PromotionRepository = require("../repositories/promotionRepository");
 const CustomerRepository = require("../repositories/customerRepository");
 const PromotionUsageRepository = require("../repositories/promotionUsageRepository");
+const PromotionConditionRepository = require("../repositories/promotionConditionRepository");
 const crypto = require("crypto");
 
 const PromotionService = {
@@ -59,13 +60,11 @@ const PromotionService = {
       throw new Error("Customer not found");
     }
 
-    if (point == 10000) {
-      discount = 5;
-    } else if (point == 20000) {
-      discount = 7;
-    } else if (point == 30000) {
-      discount = 10;
+    const promotionCondition = await PromotionConditionRepository.getPromotionConditionByPoint(point);
+    if (!promotionCondition) {
+      throw new Error("Promotion condition not found");
     }
+    discount = promotionCondition.discount;
     customer.point -= point;
     await customer.save();
 
