@@ -3,6 +3,7 @@ const OrderRepository = require("../repositories/orderRepository");
 const WAREHOUSE_LOCATION = { lat: 10.84144, lng: 106.80986 };
 const geolib = require("geolib");
 const ShipFeeService = require("../services/shipFeeService");
+const OrderService = require("../services/orderService");
 
 const ShippingService = {
   async createShipping({ order_id, shippingdata }) {
@@ -85,7 +86,7 @@ const ShippingService = {
       const order = await OrderRepository.getOrderById(shipping.order_id);
       if(status === "Cancelled"){
         const order_status = "cancelled";
-        const order = await OrderRepository.updateStatusOrder(shipping.order_id,order_status);
+        await OrderService.updateStatusOrder(shipping.order_id,order_status);
         return await ShippingRepository.updateStatusShipping(id, status);
       }
       if(shipping.shipping_status === "Pending" && status === "Delivered"){
