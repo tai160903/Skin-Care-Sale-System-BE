@@ -14,6 +14,7 @@ const OrderService = {
     payment_method,
     address,
     phone,
+    name,
     discounted,
     totalPay,
     shipping_price,
@@ -37,19 +38,25 @@ const OrderService = {
       let newShipping = await ShippingRepository.createShipping({
         order_id: newOrder._id,
         shippingdata: {
+          name: name,
           customer_id: customerId,
           address: address,
           phone: phone,
           status: "Pending",
         },
       });
-      if(promotionId){
-      const promotion = await PromotionUsageRepository. findUsage(customerId, promotionId);
-      if(promotion){
-        throw new Error("Bạn đã sử dụng mã giảm giá này trước đó");
+
+      if (promotionId) {
+        const promotion = await PromotionUsageRepository.findUsage(
+          customerId,
+          promotionId
+        );
+        if (promotion) {
+          throw new Error("Bạn đã sử dụng mã giảm giá này trước đó");
+        }
+        await PromotionUsageRepository.createUsage(customerId, promotionId);
       }
-      await PromotionUsageRepository.createUsage(customerId, promotionId);
-    }
+
       let checkoutUrl = null;
       if (!newOrder._id) {
         throw new Error("Missing order_id ");
@@ -81,7 +88,7 @@ const OrderService = {
         await ProductRepository.updateStockAndPurchaseCount(newOrder.items);
         await CustomerRepository.updatePoint(customerId, newOrder.totalPay);
         return {
-          messase: "created Order succees",
+          messase: "Tạo đơn hàng thành công",
           data: { Url: checkoutUrl, order: newOrder, shipping: newShipping },
         };
       } else {
@@ -92,7 +99,7 @@ const OrderService = {
         // );
         await CartRepository.clearCart(customerId);
         return {
-          messase: "created Order succees",
+          messase: "Tạo đơn hàng thành công",
           data: { order: newOrder, shipping: newShipping },
         };
       }

@@ -10,11 +10,12 @@ const CartService = {
     }
 
     const product = await productRepository.getProductById(productId);
-   
+
     if (!product) throw new Error("Product not found");
     var priceAtTime = 0;
     if (product.discountPercentage > 0) {
-      priceAtTime = product.price - (product.price * product.discountPercentage) / 100;
+      priceAtTime =
+        product.price - (product.price * product.discountPercentage) / 100;
     } else {
       priceAtTime = product.price;
     }
@@ -38,7 +39,6 @@ const CartService = {
     );
     cart.finalPrice = cart.totalPrice - cart.discountpercent;
 
-   
     return await CartRepository.updateCart(cart);
   },
 
@@ -49,7 +49,8 @@ const CartService = {
     const itemIndex = cart.items.findIndex((item) =>
       item.product_id.equals(productId)
     );
-    if (itemIndex < 0) throw new Error("Không tìm thấy sản phẩm trong giỏ hàng");
+    if (itemIndex < 0)
+      throw new Error("Không tìm thấy sản phẩm trong giỏ hàng");
 
     if (cart.items[itemIndex].quantity > 1) {
       cart.items[itemIndex].quantity -= 1;
@@ -86,7 +87,7 @@ const CartService = {
 
     return {
       cart: updatedCart,
-      message: "đã xóa sản phẩm khỏi giỏ hàng"
+      message: "Đã xóa sản phẩm khỏi giỏ hàng",
     };
   },
 
@@ -95,10 +96,10 @@ const CartService = {
       const promotion = await PromotionRepository.getByCode(promoCode);
       if (!promotion) throw new Error("mã giảm giá không hợp lệ");
 
-  //    const now = new Date();
-   //   if (promotion.start_date > now || promotion.end_date < now) {
-    //    throw new Error("Promotion is not valid at this time");
-   //   }
+      //    const now = new Date();
+      //   if (promotion.start_date > now || promotion.end_date < now) {
+      //    throw new Error("Promotion is not valid at this time");
+      //   }
 
       return promotion;
     } catch (error) {

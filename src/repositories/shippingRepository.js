@@ -6,6 +6,7 @@ const ShippingRepository = {
     try {
       return await Shipping.create({
         customer_id: shippingdata.customer_id,
+        shipping_name: shippingdata.name,
         order_id: order_id,
         shipping_address: shippingdata.address,
         shipping_phone: shippingdata.phone,
@@ -42,16 +43,17 @@ const ShippingRepository = {
       console.error("lỗi khi lấy danh sách giao hàng:", error);
       throw error;
     }
-},
-async getShippingByCustomerId(customerId) {
-  try {
+  },
+  async getShippingByCustomerId(customerId) {
+    try {
       const shippingData = await Shipping.find({ customer_id: customerId })
-          .populate({
-              path: 'order_id',
-              populate: {
-                  path: 'items.product_id' 
-              }
-          }).sort({ createdAt: -1 });;
+        .populate({
+          path: "order_id",
+          populate: {
+            path: "items.product_id",
+          },
+        })
+        .sort({ createdAt: -1 });
 
       return shippingData;
     } catch (error) {
