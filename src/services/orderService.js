@@ -7,6 +7,7 @@ const ProductRepository = require("../repositories/productRepository");
 const ShippingService = require("../services/shippingService");
 const PromotionUsageRepository = require("../repositories/promotionUsageRepository");
 
+
 const OrderService = {
   async createOrder(
     customerId,
@@ -85,10 +86,10 @@ const OrderService = {
         };
       } else {
         await ProductRepository.updateStockAndPurchaseCount(newOrder.items);
-        await CustomerRepository.updatePoint(
-          customerId,
-          newOrder.totalPay - newOrder.shipping_price
-        );
+        // await CustomerRepository.updatePoint(
+        //   customerId,
+        //   newOrder.totalPay - newOrder.shipping_price
+        // );
         await CartRepository.clearCart(customerId);
         return {
           messase: "created Order succees",
@@ -170,6 +171,13 @@ const OrderService = {
         "đơn hàng chưa được xác nhận, không thể chuyển về trạng thái đã hoàn thành"
       );
     }
+    if (status == "completed"){
+      await CustomerRepository.updatePoint(
+        order.customer_id,
+        order.totalPay - order.shipping_price
+      );
+    }
+
     if (
       order.order_status == "completed" &&
       ship.shipping_status == "Delivered"

@@ -4,6 +4,18 @@ const ProducRepository = require("../repositories/productRepository");
 
 const RestoreService = {
   createRestore: async (data) => {
+    const order = await OrderRepository.getOrderById(data.order_id);
+    const createdAtDate = new Date(order.createdAt);
+    const now = new Date();
+    const differenceInDays = (now - createdAtDate) / (1000 * 60 * 60 * 24);
+    console.log("differenceInDays", differenceInDays);
+    if (differenceInDays > 7) {
+      return {
+        message: `Bạn chỉ có thể trả hàng trong vòng 7 ngày. Đơn hàng của bạn đã được tạo cách đây ${Math.floor(
+          differenceInDays
+        )} ngày.`,
+      };
+    }
     return await RestoreRepository.createRestore(data);
   },
   getAllRestore: async () => {
@@ -28,6 +40,7 @@ const RestoreService = {
     const createdAtDate = new Date(order.createdAt);
     const now = new Date();
     const differenceInDays = (now - createdAtDate) / (1000 * 60 * 60 * 24);
+    console.log("differenceInDays", differenceInDays);
     if (differenceInDays > 7) {
       return {
         message: `Bạn chỉ có thể trả hàng trong vòng 7 ngày. Đơn hàng của bạn đã được tạo cách đây ${Math.floor(
