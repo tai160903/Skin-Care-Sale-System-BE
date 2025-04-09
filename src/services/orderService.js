@@ -86,6 +86,7 @@ const OrderService = {
 
         checkoutUrl = session.url; // Lưu URL thanh toán để gửi về FE
         await ProductRepository.updateStockAndPurchaseCount(newOrder.items);
+        console.log("customerId", customerId);
         await CustomerRepository.updatePoint(customerId, newOrder.totalPay);
         return {
           messase: "Tạo đơn hàng thành công",
@@ -93,10 +94,10 @@ const OrderService = {
         };
       } else {
         await ProductRepository.updateStockAndPurchaseCount(newOrder.items);
-        // await CustomerRepository.updatePoint(
-        //   customerId,
-        //   newOrder.totalPay - newOrder.shipping_price
-        // );
+        await CustomerRepository.updatePoint(
+          customerId,
+          newOrder.totalPay - newOrder.shipping_price
+        );
         await CartRepository.clearCart(customerId);
         return {
           messase: "Tạo đơn hàng thành công",
@@ -181,6 +182,7 @@ const OrderService = {
     }
     if (status == "completed"){
       await CustomerRepository.updatePoint(
+        console.log("customerId", order.customer_id),
         order.customer_id,
         order.totalPay - order.shipping_price
       );
