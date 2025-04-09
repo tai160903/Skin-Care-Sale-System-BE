@@ -16,7 +16,7 @@ const dashboard = require("./dashboard");
 const skinType = require("./skintype");
 const category  = require("./category");
 const restore = require("./restore");
-const promotionCondition = require("./promotionCondition")
+const promotionCondition = require("./PromotionCondition")
 const conditionPoint = require("./conditionPoint")
 const router = express.Router();
 

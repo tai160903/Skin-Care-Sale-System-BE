@@ -22,8 +22,10 @@ const ConditionPointController = {
     ,
     updateConditionPoint: async (req, res) => {
         try {
-            const { id } = req.params;
-            const conditionPointData = req.body;
+            const  id  = req.params.id;
+            const conditionPointData = req.body.codition;
+            console.log(req.params);
+            console.log(req.body);
             const updatedConditionPoint = await ConditionPointService.updateConditionPoint(id, conditionPointData);
             res.status(200).json(updatedConditionPoint);
         } catch (error) {
