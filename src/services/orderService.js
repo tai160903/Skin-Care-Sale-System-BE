@@ -76,7 +76,7 @@ const OrderService = {
           ],
           mode: "payment",
           success_url: `http://localhost:5173/success`,
-          cancel_url: `http://localhost:5173/cancel`,
+          cancel_url: `http://localhost:5173/cancel?order_id=${newOrder._id.toString()}`,
           metadata: {
             order_id: newOrder._id.toString(),
             shipping_id: newShipping._id.toString(),
@@ -120,8 +120,9 @@ const OrderService = {
   },
 
   async deleteOrderById(id) {
-    const order = await this.getOrderById(id);
+    const order = await OrderRepository.getOrderById(id);
 
+    console.log(order);
     await ProductRepository.restoreStockAndPurchaseCount(order.items);
 
     return await OrderRepository.deleteOrderById(id);

@@ -19,7 +19,9 @@ const ConditionPointRepository = {
   },
   async updateConditionPoint(id, conditionPointData) {
     try {
-      return await ConditionPoint.findByIdAndUpdate(id, conditionPointData, { new: true });
+      console.log(conditionPointData);
+      console.log(id);
+      return await ConditionPoint.findByIdAndUpdate({_id: id}, {condition : conditionPointData}, { new: true });
     } catch (error) {
       throw new Error('Error updating condition point: ' + error.message);
     }
